@@ -4,8 +4,31 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { myAxios } from "../myAxios";
 
+//============
+//============
+//============
+//============
+//============
 const NavBar = () => {
+	//============
+	//============
+	const loggedInUser = !true;
 	const [showMobileMenu, setShowMobileMenu] = useState(false);
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	const handleLogout = () => {};
+	//============
+	//============
+	//============
 	const testFetch = async () => {
 		try {
 			const reply = await myAxios.get("/");
@@ -14,6 +37,22 @@ const NavBar = () => {
 			console.log(error);
 		}
 	};
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
 	return (
 		<StyledWrapper>
 			<nav className="navbar navbar-expand-md navbar-light bg-light">
@@ -84,14 +123,25 @@ const NavBar = () => {
 									Admin
 								</Link>
 							</li>
-							<li className="nav-item">
-								<Link
-									className="nav-link active"
-									to={"/login-register"}
-								>
-									Login / Register
-								</Link>
-							</li>
+							{loggedInUser ? (
+								<>
+									<li className="nav-item nav-link active">
+										Logout
+									</li>
+									<li className="nav-item nav-link active">
+										<i class="fa-solid fa-user"></i>
+									</li>
+								</>
+							) : (
+								<li className="nav-item">
+									<Link
+										className="nav-link active"
+										to={"/login-register"}
+									>
+										Login / Register
+									</Link>
+								</li>
+							)}
 						</ul>
 					</div>
 				</div>
