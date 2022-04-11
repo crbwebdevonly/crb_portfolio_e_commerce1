@@ -5,5 +5,5 @@ const myBaseURL = `http://localhost:5000`;
 console.log(myBaseURL);
 // axios
 export const myAxios = axios.create({
-	baseURL: myBaseURL,
+	// baseURL: myBaseURL,
 });
