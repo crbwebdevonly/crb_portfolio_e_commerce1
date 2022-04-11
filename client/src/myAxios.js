@@ -7,3 +7,8 @@ console.log(myBaseURL);
 export const myAxios = axios.create({
 	// baseURL: myBaseURL,
 });
+
+myAxios.interceptors.request.use((req) => {
+	req.headers.test119 = "crb119";
+	return req;
+});
