@@ -1,14 +1,14 @@
-const { handleLogin } = require("../controllers/authControllers");
+const {
+	handleLogin,
+	handleRegister,
+} = require("../controllers/authControllers");
 
 const authRouter = require("express").Router();
 
-authRouter.get("/register", (req, res) => {
-     const mode = process.env.NODE_ENV
-	res.json({ msg: `aut register hit--${mode}` });
-});
+authRouter.get("/register", handleRegister);
 //============
 //============
-authRouter.post("/login",handleLogin)
+authRouter.post("/login", handleLogin);
 //============
 //============
 //============

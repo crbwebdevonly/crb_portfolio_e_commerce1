@@ -1,9 +1,13 @@
 import React from "react";
+import { useContext } from "react";
 import { useState } from "react";
+import { AuthContext } from "../context/AuthContext";
 import { myAxios } from "../myAxios";
 
 const LoginRegisterPage = () => {
 	//============
+	const { doLogin, doLogout } = useContext(AuthContext);
+
 	//============
 	const [isLoginMode, setIsLoginMode] = useState(true);
 	//
@@ -21,6 +25,7 @@ const LoginRegisterPage = () => {
 	//============
 	const handleLogin = () => {
 		console.log(email, password);
+		doLogin({ email, password });
 	};
 	//============
 	//============

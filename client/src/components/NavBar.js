@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { AuthContext } from "../context/AuthContext";
 import { myAxios } from "../myAxios";
 
 //============
@@ -11,6 +12,7 @@ import { myAxios } from "../myAxios";
 //============
 const NavBar = () => {
 	//============
+     const {doLogin, doLogout} = useContext(AuthContext)
 	//============
 	const loggedInUser = !true;
 	const [showMobileMenu, setShowMobileMenu] = useState(false);
