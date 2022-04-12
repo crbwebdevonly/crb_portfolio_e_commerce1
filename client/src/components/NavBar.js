@@ -98,7 +98,7 @@ const NavBar = () => {
 									className="nav-link active"
 									to={"/"}
 								>
-									Home
+									Home2
 								</Link>
 							</li>
 							<li className="nav-item">
