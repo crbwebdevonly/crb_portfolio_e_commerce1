@@ -1,11 +1,37 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { AuthContext } from "../context/AuthContext";
 import { myAxios } from "../myAxios";
 
+//============
+//============
+//============
+//============
+//============
 const NavBar = () => {
+	//============
+	const { doLogout, user } = useContext(AuthContext);
+	//============
 	const [showMobileMenu, setShowMobileMenu] = useState(false);
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	const handleLogout = () => {
+		doLogout();
+	};
+	//============
+	//============
+	//============
 	const testFetch = async () => {
 		try {
 			const reply = await myAxios.get("/");
@@ -14,6 +40,22 @@ const NavBar = () => {
 			console.log(error);
 		}
 	};
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
 	return (
 		<StyledWrapper>
 			<nav className="navbar navbar-expand-md navbar-light bg-light">
@@ -84,14 +126,28 @@ const NavBar = () => {
 									Admin
 								</Link>
 							</li>
-							<li className="nav-item">
-								<Link
-									className="nav-link active"
-									to={"/login-register"}
-								>
-									Login / Register
-								</Link>
-							</li>
+							{user ? (
+								<>
+									<li
+										className="nav-item nav-link active"
+										onClick={handleLogout}
+									>
+										Logout
+									</li>
+									<li className="nav-item nav-link active">
+										<i class="fa-solid fa-user"></i>
+									</li>
+								</>
+							) : (
+								<li className="nav-item">
+									<Link
+										className="nav-link active"
+										to={"/login-register"}
+									>
+										Login / Register
+									</Link>
+								</li>
+							)}
 						</ul>
 					</div>
 				</div>
@@ -107,5 +163,14 @@ const StyledWrapper = styled.div`
 		/* border: 1px solid red; */
 		margin-left: auto;
 		margin-right: 10px;
+	}
+
+	li {
+		cursor: pointer;
+		transition: all 0.2s ease-in-out;
+		&:hover {
+			opacity: 0.6;
+			transform: scale(0.8);
+		}
 	}
 `;

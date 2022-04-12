@@ -1,5 +1,7 @@
+import { useContext } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import NavBar from "./components/NavBar";
+import { AuthContext } from "./context/AuthContext";
 import AdminPage from "./pages/AdminPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import HomePage from "./pages/HomePage";
@@ -9,23 +11,35 @@ import ProductsListPage from "./pages/ProductsListPage";
 //============
 //============
 //============
-//============
-//============
-let loggedInUser = !true;
-//============
-//============
-//============
-const AuthRedirect = ({ children }) => {
-	if (loggedInUser) return { ...children };
-	else return <Navigate to="/login-register" />;
-};
-
-const AuthAdminRedirect = ({ children }) => {
-	if (loggedInUser) return { children };
-	else return <Navigate to="/login-register" />;
-};
 
 function App() {
+	//============
+	//============
+	const { user } = useContext(AuthContext);
+	//============
+	console.log(user, "app user");
+	//============
+	//============
+	const AuthRedirect = ({ children }) => {
+		if (user) return { ...children };
+		else return <Navigate to="/" />;
+	};
+	//============
+	//============
+
+	const AuthAdminRedirect = ({ children }) => {
+		if (user?.isAdmin) return { ...children };
+		else return <Navigate to="/login-register" />;
+	};
+	//============
+	//============
+	const LoginRedirect = ({ children }) => {
+		if (user) return <Navigate to="/" />;
+		else return { ...children };
+	};
+	//============
+	//============
+
 	return (
 		<>
 			<NavBar />
@@ -42,9 +56,9 @@ function App() {
 				<Route
 					path="/admin"
 					element={
-						<AuthRedirect>
+						<AuthAdminRedirect>
 							<AdminPage />
-						</AuthRedirect>
+						</AuthAdminRedirect>
 					}
 				/>
 				<Route

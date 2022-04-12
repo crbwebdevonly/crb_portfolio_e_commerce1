@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const path = require("path");
 const morgan = require("morgan");
 const cors = require("cors");
@@ -51,6 +52,12 @@ myServer.use("/api/auth", authRouter);
 //============database
 //============
 //============
+mongoose.connect(process.env.DB_CONNECTION_STRING, () => {
+	console.count("//=====================");
+	console.log("database connected....crb");
+	console.count("//=====================");
+	startServer();
+});
 //============
 //============
 //============
@@ -77,11 +84,13 @@ if (process.env.NODE_ENV === "production") {
 //============
 //============
 let PORT = process.env.PORT || 5000;
-myServer.listen(PORT, () => {
-	console.log(`crb server listining @${PORT}....`);
-	console.log("//============");
-	console.log("//============");
-	//
-});
+const startServer = () => {
+	myServer.listen(PORT, () => {
+		console.log(`crb server listining @${PORT}....`);
+		console.log("//============");
+		console.log("//============");
+		//
+	});
+};
 //============
 //============
