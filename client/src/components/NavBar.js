@@ -12,9 +12,8 @@ import { myAxios } from "../myAxios";
 //============
 const NavBar = () => {
 	//============
-     const {doLogin, doLogout} = useContext(AuthContext)
+	const { doLogout, user } = useContext(AuthContext);
 	//============
-	const loggedInUser = !true;
 	const [showMobileMenu, setShowMobileMenu] = useState(false);
 	//============
 	//============
@@ -27,7 +26,9 @@ const NavBar = () => {
 	//============
 	//============
 	//============
-	const handleLogout = () => {};
+	const handleLogout = () => {
+		doLogout();
+	};
 	//============
 	//============
 	//============
@@ -125,9 +126,12 @@ const NavBar = () => {
 									Admin
 								</Link>
 							</li>
-							{loggedInUser ? (
+							{user ? (
 								<>
-									<li className="nav-item nav-link active">
+									<li
+										className="nav-item nav-link active"
+										onClick={handleLogout}
+									>
 										Logout
 									</li>
 									<li className="nav-item nav-link active">
@@ -159,5 +163,14 @@ const StyledWrapper = styled.div`
 		/* border: 1px solid red; */
 		margin-left: auto;
 		margin-right: 10px;
+	}
+
+	li {
+		cursor: pointer;
+		transition: all 0.2s ease-in-out;
+		&:hover {
+			opacity: 0.6;
+			transform: scale(0.8);
+		}
 	}
 `;

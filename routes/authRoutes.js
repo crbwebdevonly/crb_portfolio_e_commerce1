@@ -5,7 +5,7 @@ const {
 
 const authRouter = require("express").Router();
 
-authRouter.get("/register", handleRegister);
+authRouter.post("/register", handleRegister);
 //============
 //============
 authRouter.post("/login", handleLogin);

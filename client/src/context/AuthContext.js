@@ -10,7 +10,8 @@ export const AuthContext = createContext();
 //============
 //============
 const initialState = {
-	loggedInUser: null,
+	user: null,
+	error: false,
 };
 //============
 //============
@@ -21,18 +22,17 @@ export const AuthContextProvider = ({ children }) => {
 	//============
 
 	//============
+	//============
+	//============
 	const doLogin = async (user) => {
-          try {
-               const reply = await    myAxios.post(
-                    "/api/auth/login",
-                    user
-               );
-               // console.log(action.payload, "reducer2");
-               console.log(reply);
-          } catch (error) {
-               console.log(error);
-          }
-		dispatch({ type: "DO_LOGIN", payload: user });
+		try {
+			const reply = await myAxios.post("/api/auth/login", user);
+			console.log(reply);
+			dispatch({ type: "LOGIN_SUCCESS", payload: reply.data.user });
+		} catch (error) {
+			dispatch({ type: "LOGIN_FAIL" });
+			setError();
+		}
 	};
 	//============
 	//============
@@ -41,7 +41,32 @@ export const AuthContextProvider = ({ children }) => {
 	};
 	//============
 	//============
-	const provideValues = { ...state, doLogin, doLogout };
+	const setError = () => {
+		dispatch({ type: "SET_ERROR" });
+		setTimeout(() => {
+			dispatch({ type: "CLEAR_ERROR" });
+		}, 2000);
+	};
+	//============
+	//============
+	const doRegister = async (newUser) => {
+		try {
+			const reply = await myAxios.post("/api/auth/register", newUser);
+			console.log(reply);
+			dispatch({ type: "REGISTER_SUCCESS", payload: reply.data });
+		} catch (error) {
+			setError();
+		}
+	};
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	const provideValues = { ...state, doLogin, doLogout, doRegister };
 	//============
 	//============
 	return (

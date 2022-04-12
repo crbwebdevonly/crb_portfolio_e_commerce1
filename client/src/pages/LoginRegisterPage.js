@@ -1,12 +1,16 @@
 import React from "react";
+import { useEffect } from "react";
 import { useContext } from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { myAxios } from "../myAxios";
 
 const LoginRegisterPage = () => {
 	//============
-	const { doLogin, doLogout } = useContext(AuthContext);
+	const nav = useNavigate();
+	//============
+	const { user, doLogin, doRegister, error } = useContext(AuthContext);
+	console.log(error, "eeeee");
 
 	//============
 	const [isLoginMode, setIsLoginMode] = useState(true);
@@ -18,8 +22,23 @@ const LoginRegisterPage = () => {
 
 	//============
 	//============
+	useEffect(() => {
+		//   first
+		if (user) {
+			nav("/");
+		}
+
+		return () => {
+			//     second
+		};
+	}, [user]);
+
+	//============
+	//============
+	//============
 	const handleRegister = () => {
-		console.log(email, password);
+		console.log(email, password, "register");
+		doRegister({ email, password });
 	};
 	//============
 	//============
@@ -30,13 +49,13 @@ const LoginRegisterPage = () => {
 	//============
 	//============
 	const handleDemoUserLogin = () => {
-		console.log(email, password);
+		doLogin({ email: "demouser1", password: "1" });
 	};
 
 	//============
 	//============
 	const handleDemoAdminLogin = () => {
-		console.log(email, password);
+		doLogin({ email: "demoadmin1", password: "1" });
 	};
 	//============
 	//============
@@ -60,6 +79,11 @@ const LoginRegisterPage = () => {
 				/>
 				<label>Email address</label>
 			</div>
+			{error && (
+				<div className="alert alert-danger text-center">
+					login-error
+				</div>
+			)}
 			<div className="form-floating">
 				<input
 					type="text"
