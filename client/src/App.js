@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
+import MiniCart from "./components/MiniCart";
 import NavBar from "./components/NavBar";
 import { AuthContext } from "./context/AuthContext";
 import AdminPage from "./pages/AdminPage";
@@ -43,6 +44,7 @@ function App() {
 	return (
 		<>
 			<NavBar />
+			<MiniCart />
 			<Routes>
 				<Route path="/" element={<HomePage />} />
 				<Route

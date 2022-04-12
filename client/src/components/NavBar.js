@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { AuthContext } from "../context/AuthContext";
+import { CheckoutContext } from "../context/CheckoutContext";
 import { myAxios } from "../myAxios";
 
 //============
@@ -11,6 +12,9 @@ import { myAxios } from "../myAxios";
 //============
 //============
 const NavBar = () => {
+	//============
+	//============
+	const { totalQty } = useContext(CheckoutContext);
 	//============
 	const { doLogout, user } = useContext(AuthContext);
 	//============
@@ -152,6 +156,15 @@ const NavBar = () => {
 					</div>
 				</div>
 			</nav>
+			<i class="fa-solid fa-cart-shopping cart">
+				{totalQty > 0 && (
+					<span class="position-absolute top-0 start-100 translate-middle badge  bg-success">
+						{totalQty}
+					</span>
+				)}
+			</i>
+			{/* <div className="cart">
+			</div> */}
 		</StyledWrapper>
 	);
 };
@@ -162,7 +175,7 @@ const StyledWrapper = styled.div`
 	.navbar-toggler {
 		/* border: 1px solid red; */
 		margin-left: auto;
-		margin-right: 10px;
+		margin-right: 20px;
 	}
 
 	li {
@@ -171,6 +184,17 @@ const StyledWrapper = styled.div`
 		&:hover {
 			opacity: 0.6;
 			transform: scale(0.8);
+		}
+	}
+
+	.cart {
+		position: absolute;
+		top: 20px;
+		right: 10px;
+		span {
+			font-size: 0.55rem;
+			padding: 5px;
+			opacity: 0.8;
 		}
 	}
 `;
