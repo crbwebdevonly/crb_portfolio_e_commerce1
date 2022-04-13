@@ -14,7 +14,8 @@ import { myAxios } from "../myAxios";
 const NavBar = () => {
 	//============
 	//============
-	const { totalQty } = useContext(CheckoutContext);
+	const { totalQty, toggleShowMiniCart, resetCart } =
+		useContext(CheckoutContext);
 	//============
 	const { doLogout, user } = useContext(AuthContext);
 	//============
@@ -32,6 +33,7 @@ const NavBar = () => {
 	//============
 	const handleLogout = () => {
 		doLogout();
+		// resetCart();
 	};
 	//============
 	//============
@@ -138,8 +140,12 @@ const NavBar = () => {
 									>
 										Logout
 									</li>
-									<li className="nav-item nav-link active">
-										<i class="fa-solid fa-user"></i>
+									<li className="nav-item nav-link active user-icon">
+										<i class="fa-solid fa-user">
+											<div className="name">
+												{user.email}
+											</div>
+										</i>
 									</li>
 								</>
 							) : (
@@ -156,9 +162,12 @@ const NavBar = () => {
 					</div>
 				</div>
 			</nav>
-			<i class="fa-solid fa-cart-shopping cart">
+			<i
+				className="fa-solid fa-cart-shopping cart"
+				onClick={toggleShowMiniCart}
+			>
 				{totalQty > 0 && (
-					<span class="position-absolute top-0 start-100 translate-middle badge  bg-success">
+					<span className="position-absolute top-0 start-100 translate-middle badge  bg-success">
 						{totalQty}
 					</span>
 				)}
@@ -202,6 +211,26 @@ const StyledWrapper = styled.div`
 			font-size: 0.55rem;
 			padding: 5px;
 			opacity: 0.8;
+		}
+	}
+	.user-icon {
+		cursor: pointer;
+		transition: all 0.2s ease-in-out;
+		position: relative;
+		.name {
+			display: none;
+		}
+		&:hover {
+			transform: scale(0.95);
+
+			.name {
+				position: absolute;
+				bottom: -20px;
+				right: 10px;
+				display: block;
+				opacity: 1;
+				font-size: 0.6rem;
+			}
 		}
 	}
 `;

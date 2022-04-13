@@ -1,5 +1,7 @@
-import { useReducer } from "react";
+import { useContext, useReducer } from "react";
+import { useEffect } from "react";
 import { createContext } from "react";
+import { AuthContext } from "./AuthContext";
 import { CheckoutContextReducer } from "./CheckoutContextReducer";
 
 //============
@@ -18,7 +20,32 @@ const initialState = {
 export const CheckoutContextProvider = ({ children }) => {
 	//============
 	//============
+	const { user } = useContext(AuthContext);
+	//============
+	//============
 	const [state, dispatch] = useReducer(CheckoutContextReducer, initialState);
+	//============
+	//============
+	//============
+	//============
+	useEffect(() => {
+		//   first
+		if (!user) {
+			resetCart();
+		}
+
+		return () => {
+			//     second
+		};
+	}, [user]);
+
+	//============
+	//============
+
+	//============
+	//============
+	//============
+	//============
 	//============
 	//============
 	const addItem = (item) => {
@@ -38,6 +65,9 @@ export const CheckoutContextProvider = ({ children }) => {
 	};
 	//============
 	//============
+	const resetCart = () => {
+		dispatch({ type: "RESET", payload: initialState });
+	};
 	//============
 	//============
 	//============
@@ -46,6 +76,7 @@ export const CheckoutContextProvider = ({ children }) => {
 		addItem,
 		removeItem,
 		toggleShowMiniCart,
+		resetCart,
 	};
 	//============
 	//============

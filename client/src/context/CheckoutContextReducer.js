@@ -25,7 +25,7 @@ export const CheckoutContextReducer = (state, action) => {
 	if (action.type === "TOGGLE_MINI_CART") {
 		return { ...state, showMiniCart: !showMiniCart };
 	}
-	if (action.type === "kkk_ITEM") {
-		return { ...state, cartItems, totalQty, totalAmount };
+	if (action.type === "RESET") {
+		return { ...action.payload };
 	} else return state;
 };
