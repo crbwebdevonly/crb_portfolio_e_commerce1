@@ -62,7 +62,7 @@ const NavBar = () => {
 	//============
 	return (
 		<StyledWrapper>
-			<nav className="navbar navbar-expand-md navbar-light bg-light">
+			<nav className="navbar navbar-expand-md navbar-light bg-light ">
 				<div className="container-fluid">
 					<div className="navbar-brand" onClick={testFetch}>
 						crb_eCommerce1
@@ -172,6 +172,12 @@ const NavBar = () => {
 export default NavBar;
 
 const StyledWrapper = styled.div`
+	/* nav { */
+	position: fixed;
+	top: 0;
+	z-index: 2;
+	width: 100%;
+	/* } */
 	.navbar-toggler {
 		/* border: 1px solid red; */
 		margin-left: auto;
@@ -188,6 +194,7 @@ const StyledWrapper = styled.div`
 	}
 
 	.cart {
+		/* z-index: 3; */
 		position: absolute;
 		top: 20px;
 		right: 10px;

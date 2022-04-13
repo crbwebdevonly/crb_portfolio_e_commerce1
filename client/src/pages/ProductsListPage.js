@@ -11,6 +11,7 @@ const ProductsListPage = () => {
 			<div>ProductsListPage</div>
 			{fakeProducts.map((e) => (
 				<li
+					key={e.id}
 					onClick={() => {
 						addItem(e);
 					}}
