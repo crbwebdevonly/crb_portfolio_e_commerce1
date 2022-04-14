@@ -141,7 +141,7 @@ const NavBar = () => {
 										Logout
 									</li>
 									<li className="nav-item nav-link active user-icon">
-										<i class="fa-solid fa-user">
+										<i className="fa-solid fa-user">
 											<div className="name">
 												{user.email}
 											</div>
@@ -185,8 +185,8 @@ export default NavBar;
 
 const StyledWrapper = styled.div`
 	/* nav { */
-	position: fixed;
-	top: 0;
+	position: sticky;
+	top: 0px;
 	z-index: 2;
 	width: 100%;
 	/* } */

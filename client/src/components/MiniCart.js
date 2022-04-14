@@ -70,7 +70,7 @@ const MiniCart = () => {
 
 	//============
 	return (
-		<StyledWrapper className="rounded-2" ref={miniCartRef}>
+		<StyledWrapper className="rounded-2 shadow" ref={miniCartRef}>
 			{/* <div>MiniCart</div> */}
 			{cartItems.length < 1 && <h4>No Items in Cart</h4>}
 			{cartItems.map((e, i) => (
