@@ -1,6 +1,7 @@
 import React from "react";
 import { useContext } from "react";
 import styled from "styled-components";
+import ProductItem from "../components/ProductItem";
 import { CheckoutContext } from "../context/CheckoutContext";
 import { fakeProducts } from "../fakeProducts";
 
@@ -10,15 +11,16 @@ const ProductsListPage = () => {
 		<StyledWrapper>
 			<div>ProductsListPage</div>
 			{fakeProducts.map((e) => (
-				<li
-					key={e.id}
-					onClick={() => {
-						addItem(e);
-					}}
-				>
-					<h6>{e.title}</h6>
-					<h6>{e.price}</h6>
-				</li>
+				<ProductItem {...e} />
+				// <li
+				// 	key={e.id}
+				// 	onClick={() => {
+				// 		addItem(e);
+				// 	}}
+				// >
+				// 	<h6>{e.title}</h6>
+				// 	<h6>{e.price}</h6>
+				// </li>
 			))}
 		</StyledWrapper>
 	);
