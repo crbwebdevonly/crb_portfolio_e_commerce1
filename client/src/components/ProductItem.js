@@ -16,33 +16,32 @@ const ProductItem = (props) => {
 	//============
 	return (
 		<StyledWrapper>
-			<Link to={"/"}>
-				<div className="card p-2">
-					<img
-						src={image}
-						className="card-img-top mx-auto"
-						alt="..."
-					/>
-					<div className="card-body99">
-						<h5 className="card-title fs-5 my-3">{title}</h5>
-						{/* <p className="card-text">
-						Some quick example text to build on the card title
-						and make up the bulk of the card's content.
-					</p> */}
-						<div className="price-wrap">
-							<div
-								className="btn btn-primary"
-								onClick={() => {
-									addItemWithID(id);
-								}}
-							>
-								Add to Cart
-							</div>
-							<h5 className="card-title">${price}</h5>
-						</div>
+			<div className="card p-2">
+				<Link to={`/product-item/${id}`}>
+					<div className="img-wrap">
+						<img
+							src={image}
+							className="card-img-top mx-auto"
+							alt="..."
+						/>
+						<h5 className="card-title fs-5 mt-5 mb-3">
+							{title}
+						</h5>
 					</div>
+					
+				</Link>
+				<div className="price-wrap">
+					<div
+						className="btn btn-primary"
+						onClick={() => {
+							addItemWithID(id);
+						}}
+					>
+						Add to Cart
+					</div>
+					<h5 className="card-title">${price}</h5>
 				</div>
-			</Link>
+			</div>
 		</StyledWrapper>
 	);
 };
@@ -50,11 +49,18 @@ const ProductItem = (props) => {
 export default ProductItem;
 
 const StyledWrapper = styled.div`
+	/* position: relative; */
 	/* flex: 1; */
 	height: 100%;
 	width: 100%;
 	padding: 10px;
 	max-width: 24rem;
+	/* z-index: 1; */
+
+	img {
+		/* border: 1px solid red; */
+		margin-left: auto;
+	}
 	&:hover {
 		filter: brightness(0.9);
 	}
@@ -71,10 +77,16 @@ const StyledWrapper = styled.div`
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
+		/* align-items: center; */
+	}
+	.img-wrap {
+		display: flex;
+		flex-direction: column;
 	}
 	.price-wrap {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		/* z-index: 99; */
 	}
 `;

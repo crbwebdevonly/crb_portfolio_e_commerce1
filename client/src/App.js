@@ -11,6 +11,7 @@ import HomePage from "./pages/HomePage";
 import LoginRegisterPage from "./pages/LoginRegisterPage";
 import PageNotFound from "./pages/PageNotFound";
 import ProductsListPage from "./pages/ProductsListPage";
+import SingleProductPage from "./pages/SingleProductPage";
 //============
 //============
 //============
@@ -75,6 +76,10 @@ function App() {
 				<Route
 					path="/productslist"
 					element={<ProductsListPage />}
+				/>
+				<Route
+					path="/product-item/:productId"
+					element={<SingleProductPage />}
 				/>
 				<Route
 					path="/admin"
