@@ -93,7 +93,7 @@ const MiniCart = () => {
 					Checkout
 				</button>
 				<button
-					className="me-auto btn btn-warning p-1 mx-1"
+					className="me-auto btn btn-warning p-1 mx-1 w-auto"
 					onClick={resetCart}
 				>
 					Clear Cart

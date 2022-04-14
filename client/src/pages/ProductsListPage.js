@@ -39,7 +39,9 @@ const StyledWrapper = styled.div`
 		/* grid-template-columns: repeat(auto-fill, min-max(200px, 1fr)); */
 		/* grid-template-columns: repeat(auto-fill, 300px); */
 		place-items: center;
+		/* grid-auto-rows: 1fr; */
 		grid-template-columns: repeat(1, 1fr);
+
 		@media screen and (min-width: 650px) {
 			grid-template-columns: repeat(2, 1fr);
 		}
