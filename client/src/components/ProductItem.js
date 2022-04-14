@@ -1,8 +1,18 @@
 import React from "react";
+import { useContext } from "react";
 import styled from "styled-components";
+import { CheckoutContext } from "../context/CheckoutContext";
 
 const ProductItem = (props) => {
-	const { title, price, description, category, image, rating } = props;
+	//============
+	//============
+	const { addItemWithID } = useContext(CheckoutContext);
+	//============
+	//============
+	const { id,title, price, description, category, image, rating } = props;
+	//============
+	//============
+	//============
 	return (
 		<StyledWrapper>
 			<div className="card p-2">
@@ -18,7 +28,7 @@ const ProductItem = (props) => {
 						and make up the bulk of the card's content.
 					</p> */}
 					<div className="price-wrap">
-						<div className="btn btn-primary">Add to Cart</div>
+						<div className="btn btn-primary" onClick={()=>{addItemWithID(id)}}>Add to Cart</div>
 						<h5 className="card-title">${price}</h5>
 					</div>
 				</div>
