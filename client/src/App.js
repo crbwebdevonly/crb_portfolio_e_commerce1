@@ -1,7 +1,10 @@
+import { useEffect } from "react";
 import { useContext } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
+import MiniCart from "./components/MiniCart";
 import NavBar from "./components/NavBar";
 import { AuthContext } from "./context/AuthContext";
+import { CheckoutContext } from "./context/CheckoutContext";
 import AdminPage from "./pages/AdminPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import HomePage from "./pages/HomePage";
@@ -15,9 +18,28 @@ import ProductsListPage from "./pages/ProductsListPage";
 function App() {
 	//============
 	//============
+	const { showMiniCart } = useContext(CheckoutContext);
+	//============
+	//============
 	const { user } = useContext(AuthContext);
 	//============
 	console.log(user, "app user");
+	//============
+	//============
+	//============
+	//============
+	useEffect(() => {
+		//   first
+
+		return () => {
+			//     second
+		};
+	}, [user]);
+
+	//============
+	//============
+	//============
+	//============
 	//============
 	//============
 	const AuthRedirect = ({ children }) => {
@@ -43,6 +65,7 @@ function App() {
 	return (
 		<>
 			<NavBar />
+			{showMiniCart && <MiniCart />}
 			<Routes>
 				<Route path="/" element={<HomePage />} />
 				<Route

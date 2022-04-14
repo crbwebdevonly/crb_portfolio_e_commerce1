@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { AuthContext } from "../context/AuthContext";
+import { CheckoutContext } from "../context/CheckoutContext";
 import { myAxios } from "../myAxios";
 
 //============
@@ -11,6 +12,10 @@ import { myAxios } from "../myAxios";
 //============
 //============
 const NavBar = () => {
+	//============
+	//============
+	const { totalQty, toggleShowMiniCart, resetCart } =
+		useContext(CheckoutContext);
 	//============
 	const { doLogout, user } = useContext(AuthContext);
 	//============
@@ -28,6 +33,7 @@ const NavBar = () => {
 	//============
 	const handleLogout = () => {
 		doLogout();
+		// resetCart();
 	};
 	//============
 	//============
@@ -58,7 +64,7 @@ const NavBar = () => {
 	//============
 	return (
 		<StyledWrapper>
-			<nav className="navbar navbar-expand-md navbar-light bg-light">
+			<nav className="navbar navbar-expand-md navbar-light bg-light ">
 				<div className="container-fluid">
 					<div className="navbar-brand" onClick={testFetch}>
 						crb_eCommerce1
@@ -98,7 +104,7 @@ const NavBar = () => {
 									className="nav-link active"
 									to={"/"}
 								>
-									Home
+									Home2
 								</Link>
 							</li>
 							<li className="nav-item">
@@ -134,8 +140,12 @@ const NavBar = () => {
 									>
 										Logout
 									</li>
-									<li className="nav-item nav-link active">
-										<i class="fa-solid fa-user"></i>
+									<li className="nav-item nav-link active user-icon">
+										<i className="fa-solid fa-user">
+											<div className="name">
+												{user.email}
+											</div>
+										</i>
 									</li>
 								</>
 							) : (
@@ -152,6 +162,21 @@ const NavBar = () => {
 					</div>
 				</div>
 			</nav>
+			<i
+				className="fa-solid fa-cart-shopping cart"
+				onClick={toggleShowMiniCart}
+			>
+				{totalQty > 0 && (
+					<span
+						className="position-absolute top-0 start-100 translate-middle badge  bg-success"
+						// onClick={toggleShowMiniCart}
+					>
+						{totalQty}
+					</span>
+				)}
+			</i>
+			{/* <div className="cart">
+			</div> */}
 		</StyledWrapper>
 	);
 };
@@ -159,10 +184,16 @@ const NavBar = () => {
 export default NavBar;
 
 const StyledWrapper = styled.div`
+	/* nav { */
+	position: sticky;
+	top: 0px;
+	z-index: 2;
+	width: 100%;
+	/* } */
 	.navbar-toggler {
 		/* border: 1px solid red; */
 		margin-left: auto;
-		margin-right: 10px;
+		margin-right: 20px;
 	}
 
 	li {
@@ -171,6 +202,40 @@ const StyledWrapper = styled.div`
 		&:hover {
 			opacity: 0.6;
 			transform: scale(0.8);
+		}
+	}
+
+	.cart {
+		/* z-index: 3; */
+		position: absolute;
+		top: 20px;
+		right: 10px;
+		cursor: pointer;
+
+		span {
+			font-size: 0.55rem;
+			padding: 5px;
+			opacity: 0.8;
+		}
+	}
+	.user-icon {
+		cursor: pointer;
+		transition: all 0.2s ease-in-out;
+		position: relative;
+		.name {
+			display: none;
+		}
+		&:hover {
+			transform: scale(0.95);
+
+			.name {
+				position: absolute;
+				bottom: -20px;
+				right: 10px;
+				display: block;
+				opacity: 1;
+				font-size: 0.6rem;
+			}
 		}
 	}
 `;

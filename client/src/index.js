@@ -6,6 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter } from "react-router-dom";
 import { AuthContextProvider } from "./context/AuthContext";
+import { CheckoutContextProvider } from "./context/CheckoutContext";
 
 // ReactDOM.render(
 // 	<React.StrictMode>
@@ -22,7 +23,9 @@ root.render(
 	<React.StrictMode>
 		<BrowserRouter>
 			<AuthContextProvider>
-				<App />
+				<CheckoutContextProvider>
+					<App />
+				</CheckoutContextProvider>
 			</AuthContextProvider>
 		</BrowserRouter>
 	</React.StrictMode>
