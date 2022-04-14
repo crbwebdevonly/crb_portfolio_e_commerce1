@@ -167,7 +167,10 @@ const NavBar = () => {
 				onClick={toggleShowMiniCart}
 			>
 				{totalQty > 0 && (
-					<span className="position-absolute top-0 start-100 translate-middle badge  bg-success">
+					<span
+						className="position-absolute top-0 start-100 translate-middle badge  bg-success"
+						// onClick={toggleShowMiniCart}
+					>
 						{totalQty}
 					</span>
 				)}
@@ -207,6 +210,8 @@ const StyledWrapper = styled.div`
 		position: absolute;
 		top: 20px;
 		right: 10px;
+		cursor: pointer;
+
 		span {
 			font-size: 0.55rem;
 			padding: 5px;

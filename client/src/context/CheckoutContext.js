@@ -55,12 +55,18 @@ export const CheckoutContextProvider = ({ children }) => {
 	};
 	//============
 	//============
-	const removeItem = (id) => {
-		dispatch({ type: "REMOVE_ITEM", payload: id });
+	const removeItemWithID = (id) => {
+		dispatch({ type: "REMOVE_ITEM_WITH_ID", payload: id });
+	};
+	//============
+	//============
+	const removeItemWithIndex = (index) => {
+		dispatch({ type: "REMOVE_ITEM_WITH_INDEX", payload: index });
 	};
 	//============
 	//============
 	const toggleShowMiniCart = () => {
+		console.log("minicart show dispatch");
 		dispatch({ type: "TOGGLE_MINI_CART" });
 	};
 	//============
@@ -74,7 +80,8 @@ export const CheckoutContextProvider = ({ children }) => {
 	const contextValues = {
 		...state,
 		addItem,
-		removeItem,
+		removeItemWithID,
+		removeItemWithIndex,
 		toggleShowMiniCart,
 		resetCart,
 	};

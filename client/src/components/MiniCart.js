@@ -12,8 +12,9 @@ const MiniCart = () => {
 		showMiniCart,
 		totalQty,
 		totalAmount,
-		removeItem,
-		// toggleShowMiniCart,
+		removeItemWithIndex,
+		toggleShowMiniCart,
+		resetCart,
 	} = useContext(CheckoutContext);
 	//============
 	//============
@@ -22,25 +23,44 @@ const MiniCart = () => {
 	//============
 
 	//============
-	//============
-	//============ to close cart if clicked outside
+	//============handle delete plus
+	//============close cart if clicked outside
 	useEffect(() => {
 		//   first
-		const outsideCartClicked = (e) => {
+		const handleClick = (e) => {
 			console.log(e.target);
 			if (miniCartRef.current) {
 				if (miniCartRef.current.contains(e.target)) {
+					// clicked inside->> check-if delete
 					console.log("inside");
-				} else console.log("OUTside");
+					// console.log(
+					// 	e.target.classList.contains("delete-cart-item")
+					// );
+					if (e.target.classList.contains("delete-cart-item")) {
+						console.log("delete", e.target.id);
+
+						removeItemWithIndex(Number(e.target.id));
+					}
+				} else {
+					// clicked-outside >>close minicart
+					console.log("OUTside");
+					if (
+						e.target.classList.contains("cart") ||
+						e.target.classList.contains("badge")
+					) {
+						return;
+					}
+					toggleShowMiniCart();
+				}
 			}
 		};
 		if (showMiniCart) {
-			document.addEventListener("click", outsideCartClicked);
+			document.addEventListener("click", handleClick);
 		}
 
 		return () => {
 			//     second
-			document.removeEventListener("click", outsideCartClicked);
+			document.removeEventListener("click", handleClick);
 		};
 	}, [showMiniCart]);
 
@@ -53,12 +73,13 @@ const MiniCart = () => {
 		<StyledWrapper className="rounded-2" ref={miniCartRef}>
 			{/* <div>MiniCart</div> */}
 			{cartItems.length < 1 && <h4>No Items in Cart</h4>}
-			{cartItems.map((e) => (
-				<li key={e.id}>
+			{cartItems.map((e, i) => (
+				<li key={i}>
 					<i
-						className="fa-solid fa-trash-can "
+						className="fa-solid fa-trash-can delete-cart-item"
+						id={i}
 						onClick={() => {
-							removeItem(e.id);
+							// removeItem(e.id);
 						}}
 					></i>
 					<h5>{e.title}</h5>
@@ -70,6 +91,12 @@ const MiniCart = () => {
 			<div className="total-wrap p-1">
 				<button className="me-auto btn btn-primary p-1">
 					Checkout
+				</button>
+				<button
+					className="me-auto btn btn-warning p-1 mx-1"
+					onClick={resetCart}
+				>
+					Clear Cart
 				</button>
 				<div className="qty">{totalQty} Items </div>
 				<div className="amount">Total ${totalAmount}</div>
@@ -133,7 +160,7 @@ const StyledWrapper = styled.div`
 			font-size: 0.6rem;
 		}
 		.qty {
-			margin-right: 20px;
+			margin: 0 20px;
 		}
 		.amount {
 			font-weight: bolder;

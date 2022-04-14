@@ -9,17 +9,29 @@ export const CheckoutContextReducer = (state, action) => {
 		totalAmount = cartItems.forEach((e) => {
 			amt += e.price;
 		});
-		totalAmount = amt;
+		totalAmount = amt.toFixed(2);
 		return { ...state, cartItems, totalQty, totalAmount };
 	}
-	if (action.type === "REMOVE_ITEM") {
+	if (action.type === "REMOVE_ITEM_WITH_ID") {
+		console.log("reducer-remove", action.payload);
+
 		cartItems = cartItems.filter((e) => e.id !== action.payload);
 		totalQty = cartItems.length;
 		let amt = 0;
 		totalAmount = cartItems.forEach((e) => {
 			amt += e.price;
 		});
-		totalAmount = amt;
+		totalAmount = amt.toFixed(2);
+		return { ...state, cartItems, totalQty, totalAmount };
+	}
+	if (action.type === "REMOVE_ITEM_WITH_INDEX") {
+		cartItems = cartItems.filter((e, i) => i !== action.payload);
+		totalQty = cartItems.length;
+		let amt = 0;
+		totalAmount = cartItems.forEach((e) => {
+			amt += e.price;
+		});
+		totalAmount = amt.toFixed(2);
 		return { ...state, cartItems, totalQty, totalAmount };
 	}
 	if (action.type === "TOGGLE_MINI_CART") {
