@@ -2,6 +2,7 @@ import React from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { CheckoutContext } from "../context/CheckoutContext";
 
@@ -20,6 +21,7 @@ const MiniCart = () => {
 	//============
 	const miniCartRef = useRef();
 	//============
+	const navigate = useNavigate();
 	//============
 
 	//============
@@ -89,11 +91,17 @@ const MiniCart = () => {
 			<hr />
 			<hr />
 			<div className="total-wrap p-1">
-				<button className="me-auto btn btn-primary p-1">
+				<button
+					className="me-auto btn btn-primary p-1"
+					onClick={() => {
+						toggleShowMiniCart();
+						navigate("/checkout");
+					}}
+				>
 					Checkout
 				</button>
 				<button
-					className="me-auto btn btn-warning p-1 mx-1"
+					className="me-auto btn btn-warning p-1 mx-1 w-auto"
 					onClick={resetCart}
 				>
 					Clear Cart

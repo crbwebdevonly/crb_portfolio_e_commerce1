@@ -10,7 +10,9 @@ import CheckoutPage from "./pages/CheckoutPage";
 import HomePage from "./pages/HomePage";
 import LoginRegisterPage from "./pages/LoginRegisterPage";
 import PageNotFound from "./pages/PageNotFound";
+import PaymentPage from "./pages/PaymentPage";
 import ProductsListPage from "./pages/ProductsListPage";
+import SingleProductPage from "./pages/SingleProductPage";
 //============
 //============
 //============
@@ -77,6 +79,10 @@ function App() {
 					element={<ProductsListPage />}
 				/>
 				<Route
+					path="/product-item/:productId"
+					element={<SingleProductPage />}
+				/>
+				<Route
 					path="/admin"
 					element={
 						<AuthAdminRedirect>
@@ -89,6 +95,7 @@ function App() {
 					element={<LoginRegisterPage />}
 				/>
 				<Route path="/checkout" element={<CheckoutPage />} />
+				<Route path="/payment" element={<PaymentPage />} />
 				<Route path="*" element={<PageNotFound />} />
 			</Routes>
 		</>

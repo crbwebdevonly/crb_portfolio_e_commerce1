@@ -1,3 +1,5 @@
+import { fakeProducts } from "../fakeProducts";
+
 export const CheckoutContextReducer = (state, action) => {
 	let { cartItems, showMiniCart, totalQty, totalAmount } = state;
 
@@ -12,6 +14,20 @@ export const CheckoutContextReducer = (state, action) => {
 		totalAmount = amt.toFixed(2);
 		return { ...state, cartItems, totalQty, totalAmount };
 	}
+	//============
+	//============
+	if (action.type === "ADD_ITEM_WITH_ID") {
+		const addItem = fakeProducts.find((e) => e.id === action.payload);
+		cartItems = [...cartItems, addItem];
+		totalQty = cartItems.length;
+		let amt = 0;
+		totalAmount = cartItems.forEach((e) => {
+			amt += e.price;
+		});
+		totalAmount = amt.toFixed(2);
+		return { ...state, cartItems, totalQty, totalAmount };
+	}
+	//============
 	if (action.type === "REMOVE_ITEM_WITH_ID") {
 		console.log("reducer-remove", action.payload);
 

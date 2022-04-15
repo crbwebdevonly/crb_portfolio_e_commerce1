@@ -55,6 +55,11 @@ export const CheckoutContextProvider = ({ children }) => {
 	};
 	//============
 	//============
+	const addItemWithID = (id) => {
+		dispatch({ type: "ADD_ITEM_WITH_ID", payload: id });
+	};
+	//============
+	//============
 	const removeItemWithID = (id) => {
 		dispatch({ type: "REMOVE_ITEM_WITH_ID", payload: id });
 	};
@@ -80,6 +85,7 @@ export const CheckoutContextProvider = ({ children }) => {
 	const contextValues = {
 		...state,
 		addItem,
+		addItemWithID,
 		removeItemWithID,
 		removeItemWithIndex,
 		toggleShowMiniCart,
