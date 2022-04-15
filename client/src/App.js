@@ -1,6 +1,10 @@
 import { useEffect } from "react";
 import { useContext } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
+import AdminOrdersList from "./components/AdminOrdersList";
+import AdminProductsList from "./components/AdminProductsList";
+import AdminStats from "./components/AdminStats";
+import AdminUserList from "./components/AdminUserList";
 import MiniCart from "./components/MiniCart";
 import NavBar from "./components/NavBar";
 import { AdminContextProvider } from "./context/AdminContext";
@@ -92,7 +96,16 @@ function App() {
 							</AdminContextProvider>
 						</AuthAdminRedirect>
 					}
-				/>
+				>
+					<Route index element={<AdminStats />} />
+					<Route path="stats" element={<AdminStats />} />
+					<Route path="users" element={<AdminUserList />} />
+					<Route
+						path="products"
+						element={<AdminProductsList />}
+					/>
+					<Route path="orders" element={<AdminOrdersList />} />
+				</Route>
 				<Route
 					path="/login-register"
 					element={<LoginRegisterPage />}

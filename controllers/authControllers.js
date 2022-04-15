@@ -4,6 +4,30 @@ const { response } = require("express");
 const UserModel = require("../DataModels/UserModel");
 
 //============
+//============
+//============
+const handleGetAllUsers = async (req, res) => {
+	try {
+		const users = await UserModel.find();
+		res.status(200).json(users);
+	} catch (error) {
+		res.status(500).json({ msg: "error-getting all-usera", error });
+	}
+};
+//============
+//============
+//============
+//============
+//============
+//============
+//============
+//============
+//============
+//============
+//============
+//============
+//============
+//============
 const handleLogin = async (req, res) => {
 	const loginUser = req.body;
 	const { email, password } = req.body;
@@ -44,6 +68,6 @@ const handleRegister = async (req, res) => {
 //============
 //============
 //============
-module.exports = { handleLogin, handleRegister };
+module.exports = { handleGetAllUsers, handleLogin, handleRegister };
 //============
 //============

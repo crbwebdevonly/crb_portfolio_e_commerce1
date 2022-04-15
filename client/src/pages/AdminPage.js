@@ -14,13 +14,11 @@ const AdminPage = () => {
 
 	return (
 		<StyledWrapper className="container shadow">
-			<div className="row">
-				<div className="col-3">
-					<AdminControlPanel className="bg-secondary" />
-				</div>
-				<div className="col">
-					<Outlet />
-				</div>
+			<div className="control">
+				<AdminControlPanel className="bg-secondary" />
+			</div>
+			<div className="outlet mt-5 pt-5">
+				<Outlet />
 			</div>
 		</StyledWrapper>
 	);
