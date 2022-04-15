@@ -1,4 +1,6 @@
 import React from "react";
+import { useEffect } from "react";
+import { useState } from "react";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -12,6 +14,22 @@ const ProductItem = (props) => {
 	//============
 	const { id, title, price, description, category, image, rating } = props;
 	//============
+	//============
+	const [showAddedtoCart, setshowAddedtoCart] = useState(false);
+	//============
+	useEffect(() => {
+		//   first
+		if (showAddedtoCart) {
+			setTimeout(() => {
+				setshowAddedtoCart(false);
+			}, 1500);
+		}
+
+		return () => {
+			//     second
+		};
+	}, [showAddedtoCart]);
+
 	//============
 	//============
 	return (
@@ -28,18 +46,23 @@ const ProductItem = (props) => {
 							{title}
 						</h5>
 					</div>
-					
 				</Link>
 				<div className="price-wrap">
 					<div
 						className="btn btn-primary"
 						onClick={() => {
+							setshowAddedtoCart(true);
 							addItemWithID(id);
 						}}
 					>
 						Add to Cart
 					</div>
 					<h5 className="card-title">${price}</h5>
+					{showAddedtoCart && (
+						<div class="alert alert-success m-0">
+							Added to Cart
+						</div>
+					)}
 				</div>
 			</div>
 		</StyledWrapper>
@@ -88,5 +111,19 @@ const StyledWrapper = styled.div`
 		justify-content: space-between;
 		align-items: center;
 		/* z-index: 99; */
+		position: relative;
+	}
+	.alert {
+		position: absolute;
+		font-size: 0.8rem;
+		height: 10px;
+		z-index: 99;
+		/* padding: 0px;
+		margin: 0;
+		padding: 10px; */
+		bottom: 110%;
+		left: 0px;
+		display: grid;
+		place-content: center;
 	}
 `;
