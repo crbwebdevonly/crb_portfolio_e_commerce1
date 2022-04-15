@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import MiniCart from "./components/MiniCart";
 import NavBar from "./components/NavBar";
+import { AdminContextProvider } from "./context/AdminContext";
 import { AuthContext } from "./context/AuthContext";
 import { CheckoutContext } from "./context/CheckoutContext";
 import AdminPage from "./pages/AdminPage";
@@ -86,7 +87,9 @@ function App() {
 					path="/admin"
 					element={
 						<AuthAdminRedirect>
-							<AdminPage />
+							<AdminContextProvider>
+								<AdminPage />
+							</AdminContextProvider>
 						</AuthAdminRedirect>
 					}
 				/>
