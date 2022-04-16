@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { myAxios } from "../myAxios";
+import InputControlled from "./InputControlled";
 import Spinner from "./Spinner";
 
 const AdminEditUser = (props) => {
@@ -15,8 +16,9 @@ const AdminEditUser = (props) => {
 	//============
 	const [loading, setLoading] = useState(true);
 	const [isError, setisError] = useState(false);
-	const [isEdit, setisEdit] = useState(false);
+	const [editMode, setEditMode] = useState(false);
 	const [user, setUser] = useState({});
+	const [userUpdate, setUserUpdate] = useState({});
 	//============
 	//============
 	const { _id: id, email, password, isAdmin, createdAt, image } = user;
@@ -32,6 +34,7 @@ const AdminEditUser = (props) => {
 					userId,
 				});
 				setUser(reply.data);
+				setUserUpdate(reply.data);
 				setLoading(false);
 			} catch (error) {}
 		};
@@ -43,6 +46,25 @@ const AdminEditUser = (props) => {
 
 	//============
 	//============
+
+	//============
+	//============
+	// const generateInputs = () => {
+	// 	const entries = Object.entries(userUpdate);
+	// 	return entries.map((e, i) => (
+	// 		<InputControlled
+	// 			key={i}
+	// 			label={e[0]}
+	// 			dataValue={userUpdate[e[0]]}
+	// 			handleChange={handleUserUpdateChange}
+	// 		/>
+	// 	));
+	// };
+	//============
+	//============
+	const handleUserUpdateChange = (e) => {
+		setUserUpdate((p) => ({ ...p, [e.target.name]: e.target.value }));
+	};
 	//============
 	//============
 	//============
@@ -71,64 +93,51 @@ const AdminEditUser = (props) => {
 						<i className="fa-solid fa-user display-1 mx-auto"></i>
 					)}
 				</div>
-				<h5 className="card-title  mt-5 mb-3">Email: {email}</h5>
-				<h5 className="card-title  mt-5 mb-3">userId:{userId}</h5>
-				<div className="price-wrap">
+				<div className="info-wrap">
 					<h5 className="card-title">
 						Admin: {isAdmin ? "Yes" : "No"}
 					</h5>
+					<h5>userID: {id}</h5>
+					<h5>Email: {email}</h5>
+					<h5>password: {password}</h5>
 				</div>
-			</div>
-			{!isEdit && (
-				<div className="edit-control-wrap d-flex">
-					<i
-						className="fa-solid fa-toggle-off fs-1 text-warning"
+				<hr />
+				{!editMode ? (
+					<button
+						className="btn btn-warning w-50 ms-auto"
 						onClick={() => {
-							setisEdit(true);
+							setEditMode(true);
 						}}
 					>
-						{" "}
-					</i>
-					<h3>Toggle to Edit User</h3>
-				</div>
-			)}
-			{isEdit && (
-				<div className="edit-control-wrap d-flex  ">
-					<i
-						className="fa-solid fa-toggle-on fs-1 text-danger"
-						onClick={() => {
-							setisEdit(false);
-						}}
-					></i>
-					<h2>Edit Enabled</h2>
-				</div>
-			)}
-			{!isEdit && (
-				<div className="edit-wrap">
-					<div className="form-floating mb-3">
-						<input
-							type="email"
-							className="form-control"
-							id="floatingInput"
-							placeholder="name@example.com"
-							disabled={isEdit}
-						/>
-						<label>Email address</label>
-					</div>
-					<div className="form-floating">
-						<input
-							type="password"
-							className="form-control"
-							id="floatingPassword"
-							placeholder="Password"
-						/>
-						<label>Password</label>
-					</div>
-					<button className="btn btn-outline-warning my-4">
-						Apply Update
+						Enable Edit
 					</button>
-				</div>
-			)}
+				) : (
+					<button
+						className="btn btn-info w-50"
+						onClick={() => {
+							setEditMode(false);
+						}}
+					>
+						Disable Edit
+					</button>
+				)}
+				<hr />
+				{editMode && (
+					<>
+						<div className="edit-control-wrap">
+							<InputControlled
+								type="select"
+								label="isAdmin"
+								dataValue="true"
+								optionsList={["true", "false"]}
+							/>
+						</div>
+						<div className="btn btn-danger w-50">
+							Apply Update
+						</div>
+					</>
+				)}
+			</div>
 		</StyledWrapper>
 	);
 };
@@ -139,7 +148,7 @@ const StyledWrapper = styled.div`
 	height: 100%;
 	width: 100%;
 	padding: 10px;
-	max-width: 24rem;
+	/* max-width: 24rem; */
 	margin: 0 auto;
 	a {
 		text-decoration: none;

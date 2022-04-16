@@ -1,7 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
-import InputControlled from "../components/InputControlled";
 
 const AdminUsersPage = () => {
 	//============
@@ -17,11 +16,7 @@ const AdminUsersPage = () => {
 
 	return (
 		<StyledWrapper>
-			<InputControlled
-				label="email"
-				dataValue="123"
-				handleChange={handleChange}
-			/>
+			
 			<Outlet />
 		</StyledWrapper>
 	);
