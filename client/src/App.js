@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useContext } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
+import AdminEditUser from "./components/AdminEditUser";
 import AdminOrdersList from "./components/AdminOrdersList";
 import AdminProductsList from "./components/AdminProductsList";
 import AdminStats from "./components/AdminStats";
@@ -11,6 +12,7 @@ import { AdminContextProvider } from "./context/AdminContext";
 import { AuthContext } from "./context/AuthContext";
 import { CheckoutContext } from "./context/CheckoutContext";
 import AdminPage from "./pages/AdminPage";
+import AdminUsersPage from "./pages/AdminUsersPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import HomePage from "./pages/HomePage";
 import LoginRegisterPage from "./pages/LoginRegisterPage";
@@ -99,7 +101,15 @@ function App() {
 				>
 					<Route index element={<AdminStats />} />
 					<Route path="stats" element={<AdminStats />} />
-					<Route path="users" element={<AdminUserList />} />
+					<Route path="users" element={<AdminUsersPage />}>
+						{/* <Route path="users" element={<AdminUserList />}> */}
+						<Route index element={<AdminUserList />} />
+
+						<Route
+							path=":userId"
+							element={<AdminEditUser />}
+						/>
+					</Route>
 					<Route
 						path="products"
 						element={<AdminProductsList />}

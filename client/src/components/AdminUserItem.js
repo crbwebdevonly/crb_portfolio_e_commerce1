@@ -10,7 +10,7 @@ const AdminUserItem = (props) => {
 	//============
 	//============
 	//============
-	const { _id: id, email, password, isAdmin, createdAt } = props;
+	const { _id: id, email, password, isAdmin, createdAt, image } = props;
 	//============
 	//============
 	//============
@@ -21,18 +21,20 @@ const AdminUserItem = (props) => {
 		<StyledWrapper>
 			<div className="card p-2">
 				<Link to={`/admin/users/${id}`}>
-					<div className="img-wrap">
-						<img
-							src={
-								" https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg"
-							}
-							className="card-img-top mx-auto"
-							alt="profile image"
-						/>
-						<h5 className="card-title  mt-5 mb-3">
-							Email: {email}
-						</h5>
+					<div className="img-wrap d-grid justify-content-center">
+						{image ? (
+							<img
+								src={image}
+								className="card-img-top mx-auto"
+								alt="profile image"
+							/>
+						) : (
+							<i className="fa-solid fa-user display-1 mx-auto"></i>
+						)}
 					</div>
+					<h5 className="card-title  mt-5 mb-3">
+						Email: {email}
+					</h5>
 				</Link>
 				<div className="price-wrap">
 					<h5 className="card-title">

@@ -11,11 +11,21 @@ const handleGetAllUsers = async (req, res) => {
 		const users = await UserModel.find();
 		res.status(200).json(users);
 	} catch (error) {
-		res.status(500).json({ msg: "error-getting all-usera", error });
+		res.status(500).json({ msg: "error-getting all-users", error });
 	}
 };
 //============
 //============
+//============
+const handleGetOneUser = async (req, res) => {
+	try {
+		const user = await UserModel.findById(req.body.userId);
+		res.status(200).json(user);
+	} catch (error) {
+		res.status(500).json({ msg: "error-getting ONE-user", error });
+	}
+};
+
 //============
 //============
 //============
@@ -68,6 +78,11 @@ const handleRegister = async (req, res) => {
 //============
 //============
 //============
-module.exports = { handleGetAllUsers, handleLogin, handleRegister };
+module.exports = {
+	handleGetAllUsers,
+	handleGetOneUser,
+	handleLogin,
+	handleRegister,
+};
 //============
 //============

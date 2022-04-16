@@ -1,6 +1,7 @@
 import React from "react";
 import { useContext } from "react";
 import { useEffect } from "react";
+import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { AdminContext } from "../context/AdminContext";
 import AdminUserItem from "./AdminUserItem";
@@ -39,6 +40,7 @@ const AdminUserList = () => {
 					<AdminUserItem key={i} {...e} />
 				))}
 			</div>
+			<Outlet />
 		</StyledWrapper>
 	);
 };
