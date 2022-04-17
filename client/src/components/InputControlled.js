@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 // import styled from "styled-components";
 
@@ -6,18 +7,43 @@ const InputControlled = (props) => {
 	//============
 	//============
 	const {
-		label,
 		name,
-		dataValue,
+		label = name,
+		updateValue,
 		handleChange,
 		type = "text",
 		optionsList = [],
+		setUpdateObject,
+		originalData,
 	} = props;
 	//============
-	const [originalData, setOriginalData] = useState(dataValue);
 	//============
 	//============
 	const [edit, setEdit] = useState(false);
+	//============
+	//============
+	//============
+	useEffect(() => {
+		// if edit on-add data to update object
+		if (edit) {
+			setUpdateObject((p) => ({ ...p, [name]: originalData }));
+		}
+
+		//  if edit off-remove data from update object
+		// or retun to original
+		if (!edit) {
+			setUpdateObject((p) => {
+				let prev = { ...p };
+				delete prev[name];
+				return prev;
+			});
+		}
+
+		return () => {
+			//     second
+		};
+	}, [edit]);
+
 	//============
 	//============
 	//============
@@ -49,31 +75,35 @@ const InputControlled = (props) => {
 				{type === "text" && (
 					<input
 						type="text"
-						name={name || label}
+						name={name}
+						label={label}
 						className="form-control w-100"
-						placeholder={label}
-						value={edit ? dataValue : originalData}
+						value={
+							edit ? setUpdateObject[name] : originalData
+						}
 						onChange={handleChange}
 						disabled={!edit}
 					/>
 				)}{" "}
-                    {type === "select-bool" && (
+				{type === "select-bool" && (
 					<select
 						className="form-select"
-						value={edit ? dataValue : originalData}
+						value={edit ? updateValue : originalData}
 						disabled={!edit}
+						onChange={handleChange}
+						name={label || name}
+						label={label || name}
 					>
-						{label}
-						{optionsList.map((e) => (
-							<option value={e}>{e}</option>
-						))}
+                              <option value={true}>{"Yes"}</option>
+                              <option value={false}>{"No"}</option>
 					</select>
 				)}
 				{type === "select" && (
 					<select
 						className="form-select"
-						value={edit ? dataValue : originalData}
+						value={edit ? updateValue : originalData}
 						disabled={!edit}
+						onChange={handleChange}
 					>
 						{label}
 						{optionsList.map((e) => (

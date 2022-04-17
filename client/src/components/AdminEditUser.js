@@ -19,6 +19,7 @@ const AdminEditUser = (props) => {
 	const [editMode, setEditMode] = useState(false);
 	const [user, setUser] = useState({});
 	const [userUpdate, setUserUpdate] = useState({});
+	const [applyDisable, setapplyDisable] = useState(true);
 	//============
 	//============
 	const { _id: id, email, password, isAdmin, createdAt, image } = user;
@@ -34,7 +35,8 @@ const AdminEditUser = (props) => {
 					userId,
 				});
 				setUser(reply.data);
-				setUserUpdate(reply.data);
+				// const { email, password, isAdmin } = reply.data;
+				// setUserUpdate({ email, password, isAdmin });
 				setLoading(false);
 			} catch (error) {}
 		};
@@ -46,6 +48,32 @@ const AdminEditUser = (props) => {
 
 	//============
 	//============
+	useEffect(() => {
+		//   first
+		if (!editMode) setUserUpdate({});
+
+		return () => {
+			//     second
+		};
+	}, [editMode]);
+
+	//============
+	//============
+	useEffect(() => {
+		//   first-apply update valid check
+		setapplyDisable(false);
+		if (Object.entries(userUpdate).length < 1) {
+			setapplyDisable(true);
+			return;
+		}
+		Object.entries(userUpdate).forEach((e) => {
+			if (!e[1] && typeof e[1] !== "boolean") setapplyDisable(true);
+		});
+
+		return () => {
+			//     second
+		};
+	}, [userUpdate]);
 
 	//============
 	//============
@@ -55,7 +83,7 @@ const AdminEditUser = (props) => {
 	// 		<InputControlled
 	// 			key={i}
 	// 			label={e[0]}
-	// 			dataValue={userUpdate[e[0]]}
+	// 			updateValue={userUpdate[e[0]]}
 	// 			handleChange={handleUserUpdateChange}
 	// 		/>
 	// 	));
@@ -63,10 +91,20 @@ const AdminEditUser = (props) => {
 	//============
 	//============
 	const handleUserUpdateChange = (e) => {
-		setUserUpdate((p) => ({ ...p, [e.target.name]: e.target.value }));
+		console.log(e.target.name, e.target.value);
+		setUserUpdate((p) => {
+			let value = e.target.value;
+			if (value === "true" || value === "false") {
+				value = JSON.parse(value);
+			}
+			return { ...p, [e.target.name]: value };
+		});
 	};
 	//============
 	//============
+	const handleApplyUpdate = () => {
+		console.log(userUpdate);
+	};
 	//============
 	//============
 	//============
@@ -81,6 +119,8 @@ const AdminEditUser = (props) => {
 	//============
 	return (
 		<StyledWrapper>
+			{/* <h6>user: {JSON.stringify(user)}</h6> */}
+			{/* <h6>update: {JSON.stringify(userUpdate)}</h6> */}
 			<div className="card p-2">
 				<div className="img-wrap d-grid justify-content-center">
 					{image ? (
@@ -126,15 +166,44 @@ const AdminEditUser = (props) => {
 					<>
 						<div className="edit-control-wrap">
 							<InputControlled
-								type="select"
+								type="select-bool"
 								label="isAdmin"
-								dataValue="true"
-								optionsList={["true", "false"]}
+								name="isAdmin"
+								originalData={user.isAdmin}
+								updateValue={userUpdate.isAdmin}
+								handleChange={handleUserUpdateChange}
+								setUpdateObject={setUserUpdate}
 							/>
 						</div>
-						<div className="btn btn-danger w-50">
-							Apply Update
+						<div className="edit-control-wrap">
+							<InputControlled
+								type="text"
+								name="email"
+								// label="email"
+								originalData={user.email}
+								updateValue={userUpdate.email}
+								handleChange={handleUserUpdateChange}
+								setUpdateObject={setUserUpdate}
+							/>
 						</div>
+						<div className="edit-control-wrap">
+							<InputControlled
+								type="text"
+								name="password"
+								label="password"
+								originalData={user.password}
+								updateValue={userUpdate.password}
+								handleChange={handleUserUpdateChange}
+								setUpdateObject={setUserUpdate}
+							/>
+						</div>
+						<button
+							className="btn btn-danger w-50"
+							onClick={handleApplyUpdate}
+							disabled={applyDisable}
+						>
+							Apply Update
+						</button>
 					</>
 				)}
 			</div>

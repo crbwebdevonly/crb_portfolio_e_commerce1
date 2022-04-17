@@ -6,6 +6,7 @@ import AdminOrdersList from "./components/AdminOrdersList";
 import AdminProductsList from "./components/AdminProductsList";
 import AdminStats from "./components/AdminStats";
 import AdminUserList from "./components/AdminUserList";
+import DeleteMe from "./components/DeleteMe";
 import MiniCart from "./components/MiniCart";
 import NavBar from "./components/NavBar";
 import { AdminContextProvider } from "./context/AdminContext";
@@ -73,6 +74,7 @@ function App() {
 
 	return (
 		<>
+			{/* <DeleteMe /> */}
 			<NavBar />
 			{showMiniCart && <MiniCart />}
 			<Routes>
