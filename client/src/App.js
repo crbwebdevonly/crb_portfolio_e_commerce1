@@ -23,6 +23,9 @@ import ProductsListPage from "./pages/ProductsListPage";
 import SingleProductPage from "./pages/SingleProductPage";
 //============
 //============
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+//============
 //============
 
 function App() {
@@ -75,6 +78,7 @@ function App() {
 	return (
 		<>
 			{/* <DeleteMe /> */}
+			<ToastContainer position="bottom-right" autoClose={1000} />
 			<NavBar />
 			{showMiniCart && <MiniCart />}
 			<Routes>

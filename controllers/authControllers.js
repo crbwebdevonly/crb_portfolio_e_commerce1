@@ -28,6 +28,23 @@ const handleGetOneUser = async (req, res) => {
 
 //============
 //============
+const handleUpdateUser = async (req, res) => {
+	try {
+		const user = await UserModel.findByIdAndUpdate(
+			req.params.id,
+			req.body,
+			{ new: true }
+		);
+		if (!user) {
+			res.status(400).json({
+				msg: "error updating user- not found",
+			});
+		}
+		res.status(200).json(user);
+	} catch (error) {
+		res.status(500).json({ msg: "error updating user", error });
+	}
+};
 //============
 //============
 //============
@@ -81,6 +98,7 @@ const handleRegister = async (req, res) => {
 module.exports = {
 	handleGetAllUsers,
 	handleGetOneUser,
+	handleUpdateUser,
 	handleLogin,
 	handleRegister,
 };

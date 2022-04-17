@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useContext } from "react";
 import { Link, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import { myAxios } from "../myAxios";
 import InputControlled from "./InputControlled";
@@ -102,8 +103,18 @@ const AdminEditUser = (props) => {
 	};
 	//============
 	//============
-	const handleApplyUpdate = () => {
+	const handleApplyUpdate = async () => {
 		console.log(userUpdate);
+		try {
+			const reply = await myAxios.put(
+				`/api/auth/updateuser/${user._id}`,
+				userUpdate
+			);
+			console.log(reply);
+               toast.success("Update user success")
+		} catch (error) {
+			console.log(error.response);
+		}
 	};
 	//============
 	//============
