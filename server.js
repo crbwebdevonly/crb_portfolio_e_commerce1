@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const authRouter = require("./routes/authRoutes");
+const productsRouter = require("./routes/productRoutes");
 dotenv.config();
 
 const myServer = express();
@@ -41,6 +42,7 @@ if (process.env.NODE_ENV === "development") {
 //============
 
 myServer.use("/api/auth", authRouter);
+myServer.use("/api/products",productsRouter)
 //============
 //============
 //============

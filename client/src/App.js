@@ -26,6 +26,7 @@ import SingleProductPage from "./pages/SingleProductPage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AdminAddNewUser from "./components/AdminAddNewUser";
+import AdminProductsPage from "./pages/AdminProductsPage";
 //============
 //============
 
@@ -121,10 +122,9 @@ function App() {
 							element={<AdminAddNewUser />}
 						/>
 					</Route>
-					<Route
-						path="products"
-						element={<AdminProductsList />}
-					/>
+					<Route path="products" element={<AdminProductsPage />}>
+						<Route index element={<AdminProductsList />} />
+					</Route>
 					<Route path="orders" element={<AdminOrdersList />} />
 				</Route>
 				<Route
