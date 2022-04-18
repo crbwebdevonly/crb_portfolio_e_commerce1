@@ -5,6 +5,9 @@ const UserModel = require("../DataModels/UserModel");
 
 //============
 //============
+const demoAdminID = "62553e08b142025551b84281";
+const demoUserID = "625dc1942d81623df53fd12b";
+//============
 //============
 const handleGetAllUsers = async (req, res) => {
 	try {
@@ -29,6 +32,13 @@ const handleGetOneUser = async (req, res) => {
 //============
 //============
 const handleUpdateUser = async (req, res) => {
+	// prevent demo user/admin update
+
+	if (req.params.id === demoAdminID || req.params.id === demoUserID) {
+		return res
+			.status(400)
+			.json({ msg: "cannot -update , this account is protected" });
+	}
 	try {
 		const user = await UserModel.findByIdAndUpdate(
 			req.params.id,
@@ -48,6 +58,11 @@ const handleUpdateUser = async (req, res) => {
 //============
 //============
 const handleDeleteUser = async (req, res) => {
+	if (req.params.id === demoAdminID || req.params.id === demoUserID) {
+		return res
+			.status(400)
+			.json({ msg: "cannot -delete , this account is protected" });
+	}
 	try {
 		const reply = await UserModel.deleteOne({ _id: req.params.id });
 		res.status(200).json({ msg: "user delete success", reply });
