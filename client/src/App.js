@@ -25,6 +25,7 @@ import SingleProductPage from "./pages/SingleProductPage";
 //============
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AdminAddNewUser from "./components/AdminAddNewUser";
 //============
 //============
 
@@ -114,6 +115,10 @@ function App() {
 						<Route
 							path=":userId"
 							element={<AdminEditUser />}
+						/>
+						<Route
+							path="add-new-user"
+							element={<AdminAddNewUser />}
 						/>
 					</Route>
 					<Route

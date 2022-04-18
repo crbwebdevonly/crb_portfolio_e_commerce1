@@ -47,6 +47,13 @@ const handleUpdateUser = async (req, res) => {
 };
 //============
 //============
+const handleDeleteUser= async (req,res)=>{
+try {
+     
+} catch (error) {
+     
+}
+}
 //============
 //============
 //============

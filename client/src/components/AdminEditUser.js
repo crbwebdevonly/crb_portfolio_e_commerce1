@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useContext } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import { myAxios } from "../myAxios";
@@ -25,6 +25,7 @@ const AdminEditUser = (props) => {
 	//============
 	const { _id: id, email, password, isAdmin, createdAt, image } = user;
 	//============
+	const navigate = useNavigate();
 	//============
 	//============
 	//============
@@ -110,14 +111,24 @@ const AdminEditUser = (props) => {
 				`/api/auth/updateuser/${user._id}`,
 				userUpdate
 			);
-			console.log(reply);
-               toast.success("Update user success")
+			toast.success("Update user success");
 		} catch (error) {
-			console.log(error.response);
+			toast.error("Update user failed");
 		}
 	};
 	//============
 	//============
+	const handleDeleteUser = async () => {
+		try {
+			const reply = await myAxios.delete(`/api/auth/delete/${id}`);
+			toast.success(" user Deleted");
+			setTimeout(() => {
+				navigate("/adim/users");
+			}, 2000);
+		} catch (error) {
+			toast.error("Update user failed");
+		}
+	};
 	//============
 	//============
 	if (isError)
@@ -163,14 +174,24 @@ const AdminEditUser = (props) => {
 						Enable Edit
 					</button>
 				) : (
-					<button
-						className="btn btn-info w-50"
-						onClick={() => {
-							setEditMode(false);
-						}}
-					>
-						Disable Edit
-					</button>
+					<>
+						<button
+							className="btn btn-info w-50"
+							onClick={() => {
+								setEditMode(false);
+							}}
+						>
+							Disable Edit
+						</button>
+						<i class="fa-solid fa-user-slash ms-auto fs-1  ">
+							<button
+								className="btn btn-danger fs-6 ms-2"
+								onClick={handleDeleteUser}
+							>
+								Deletethis User
+							</button>
+						</i>
+					</>
 				)}
 				<hr />
 				{editMode && (

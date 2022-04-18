@@ -1,7 +1,7 @@
 import React from "react";
 import { useContext } from "react";
 import { useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { AdminContext } from "../context/AdminContext";
 import AdminUserItem from "./AdminUserItem";
@@ -34,7 +34,9 @@ const AdminUserList = () => {
 	//============
 	return (
 		<StyledWrapper className="container ">
-			<div>AdminUserList</div>
+			<button className="btn btn-info">
+				<Link to="add-new-user">Add New User</Link>
+			</button>
 			<div className="all-users-container">
 				{usersList.map((e, i) => (
 					<AdminUserItem key={i} {...e} />

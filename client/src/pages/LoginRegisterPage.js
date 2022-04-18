@@ -7,10 +7,13 @@ import { AuthContext } from "../context/AuthContext";
 
 const LoginRegisterPage = () => {
 	//============
+	//============
+	//============
+	//============
+	//============
 	const nav = useNavigate();
 	//============
 	const { user, doLogin, doRegister, error } = useContext(AuthContext);
-	console.log(error, "eeeee");
 
 	//============
 	const [isLoginMode, setIsLoginMode] = useState(true);
@@ -33,6 +36,12 @@ const LoginRegisterPage = () => {
 		};
 	}, [user]);
 
+	//============
+	//============
+	//============
+	
+
+	//============
 	//============
 	//============
 	//============
@@ -139,23 +148,26 @@ const LoginRegisterPage = () => {
 					</button>
 				)}
 			</div>
+			
 
-			<div className="input-group  my-3 ">
-				<button
-					className="btn btn-success ms-auto "
-					type="button"
-					onClick={handleDemoUserLogin}
-				>
-					Demo User Login
-				</button>
-				<button
-					className="btn btn-warning "
-					type="button"
-					onClick={handleDemoAdminLogin}
-				>
-					Demo Admin Login
-				</button>
-			</div>
+			{(
+				<div className="input-group  my-3 ">
+					<button
+						className="btn btn-success ms-auto "
+						type="button"
+						onClick={handleDemoUserLogin}
+					>
+						Demo User Login
+					</button>
+					<button
+						className="btn btn-warning "
+						type="button"
+						onClick={handleDemoAdminLogin}
+					>
+						Demo Admin Login
+					</button>
+				</div>
+			)}
 		</div>
 	);
 };
