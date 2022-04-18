@@ -120,10 +120,10 @@ const AdminEditUser = (props) => {
 	//============
 	const handleDeleteUser = async () => {
 		try {
-			const reply = await myAxios.delete(`/api/auth/delete/${id}`);
+			const reply = await myAxios.delete(`/api/auth/deleteuser/${id}`);
 			toast.success(" user Deleted");
 			setTimeout(() => {
-				navigate("/adim/users");
+				navigate("/admin/users");
 			}, 2000);
 		} catch (error) {
 			toast.error("Update user failed");
@@ -175,22 +175,25 @@ const AdminEditUser = (props) => {
 					</button>
 				) : (
 					<>
-						<button
-							className="btn btn-info w-50"
-							onClick={() => {
-								setEditMode(false);
-							}}
-						>
-							Disable Edit
-						</button>
-						<i class="fa-solid fa-user-slash ms-auto fs-1  ">
+						{" "}
+						<div className="d-sm-flex">
 							<button
-								className="btn btn-danger fs-6 ms-2"
-								onClick={handleDeleteUser}
+								className="btn btn-info w-50 "
+								onClick={() => {
+									setEditMode(false);
+								}}
 							>
-								Deletethis User
+								Disable Edit
 							</button>
-						</i>
+							<i class="fa-solid fa-user-slash ms-auto fs-1 shadowp p-1  ">
+								<button
+									className="btn btn-danger fs-6 ms-2"
+									onClick={handleDeleteUser}
+								>
+									Delete this User
+								</button>
+							</i>
+						</div>
 					</>
 				)}
 				<hr />

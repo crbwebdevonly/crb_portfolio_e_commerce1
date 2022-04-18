@@ -47,13 +47,14 @@ const handleUpdateUser = async (req, res) => {
 };
 //============
 //============
-const handleDeleteUser= async (req,res)=>{
-try {
-     
-} catch (error) {
-     
-}
-}
+const handleDeleteUser = async (req, res) => {
+	try {
+		const reply = await UserModel.deleteOne({ _id: req.params.id });
+		res.status(200).json({ msg: "user delete success", reply });
+	} catch (error) {
+		res.status(500).json({ msg: "error-deleting-user", error });
+	}
+};
 //============
 //============
 //============
@@ -106,6 +107,7 @@ module.exports = {
 	handleGetAllUsers,
 	handleGetOneUser,
 	handleUpdateUser,
+	handleDeleteUser,
 	handleLogin,
 	handleRegister,
 };

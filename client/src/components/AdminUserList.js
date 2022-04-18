@@ -34,9 +34,9 @@ const AdminUserList = () => {
 	//============
 	return (
 		<StyledWrapper className="container ">
-			<button className="btn btn-info">
-				<Link to="add-new-user">Add New User</Link>
-			</button>
+			<Link to="add-new-user">
+				<button className="btn btn-info">Add New User</button>
+			</Link>
 			<div className="all-users-container">
 				{usersList.map((e, i) => (
 					<AdminUserItem key={i} {...e} />
