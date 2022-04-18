@@ -8,7 +8,8 @@ export const AuthContextReducer = (state, action) => {
 			return { ...state, user: action.payload, error: false };
 		case "REGISTER_SUCCESS":
 			return { ...state, user: action.payload, error: false };
-
+		// case "CREATE_NEW_USER_SUCCESS":
+		// 	return { ...state, user: action.payload, error: false };
 		case "DO_LOGOUT":
 			return { ...state, user: null, error: false };
 

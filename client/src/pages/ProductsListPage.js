@@ -5,7 +5,7 @@ import ProductItem from "../components/ProductItem";
 import { CheckoutContext } from "../context/CheckoutContext";
 import { fakeProducts } from "../fakeProducts";
 
-const ProductsListPage = () => {
+const ProductsListPage = ({admin}) => {
 	const { addItem } = useContext(CheckoutContext);
 	return (
 		<StyledWrapper>
@@ -36,10 +36,7 @@ const StyledWrapper = styled.div`
 	.all-products-container {
 		padding: 20px;
 		display: grid;
-		/* grid-template-columns: repeat(auto-fill, min-max(200px, 1fr)); */
-		/* grid-template-columns: repeat(auto-fill, 300px); */
 		place-items: center;
-		/* grid-auto-rows: 1fr; */
 		grid-template-columns: repeat(1, 1fr);
 
 		@media screen and (min-width: 650px) {

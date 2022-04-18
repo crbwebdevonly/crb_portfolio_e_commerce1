@@ -60,6 +60,16 @@ export const AuthContextProvider = ({ children }) => {
 	};
 	//============
 	//============
+     //============
+	//============
+	// const doCreateNewUser = async (newUser) => {
+	// 	try {
+	// 		const reply = await myAxios.post("/api/auth/register", newUser);
+	// 		dispatch({ type: "CREATE_NEW_USER_SUCCESS", payload: reply.data });
+	// 	} catch (error) {
+	// 		setError();
+	// 	}
+	// };
 	//============
 	//============
 	//============

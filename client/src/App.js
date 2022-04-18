@@ -1,11 +1,19 @@
 import { useEffect } from "react";
 import { useContext } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
+import AdminEditUser from "./components/AdminEditUser";
+import AdminOrdersList from "./components/AdminOrdersList";
+import AdminProductsList from "./components/AdminProductsList";
+import AdminStats from "./components/AdminStats";
+import AdminUserList from "./components/AdminUserList";
+import DeleteMe from "./components/DeleteMe";
 import MiniCart from "./components/MiniCart";
 import NavBar from "./components/NavBar";
+import { AdminContextProvider } from "./context/AdminContext";
 import { AuthContext } from "./context/AuthContext";
 import { CheckoutContext } from "./context/CheckoutContext";
 import AdminPage from "./pages/AdminPage";
+import AdminUsersPage from "./pages/AdminUsersPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import HomePage from "./pages/HomePage";
 import LoginRegisterPage from "./pages/LoginRegisterPage";
@@ -14,6 +22,10 @@ import PaymentPage from "./pages/PaymentPage";
 import ProductsListPage from "./pages/ProductsListPage";
 import SingleProductPage from "./pages/SingleProductPage";
 //============
+//============
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import AdminAddNewUser from "./components/AdminAddNewUser";
 //============
 //============
 
@@ -66,6 +78,8 @@ function App() {
 
 	return (
 		<>
+			{/* <DeleteMe /> */}
+			<ToastContainer position="bottom-right" autoClose={1000} />
 			<NavBar />
 			{showMiniCart && <MiniCart />}
 			<Routes>
@@ -86,10 +100,33 @@ function App() {
 					path="/admin"
 					element={
 						<AuthAdminRedirect>
-							<AdminPage />
+							<AdminContextProvider>
+								<AdminPage />
+							</AdminContextProvider>
 						</AuthAdminRedirect>
 					}
-				/>
+				>
+					<Route index element={<AdminStats />} />
+					<Route path="stats" element={<AdminStats />} />
+					<Route path="users" element={<AdminUsersPage />}>
+						{/* <Route path="users" element={<AdminUserList />}> */}
+						<Route index element={<AdminUserList />} />
+
+						<Route
+							path=":userId"
+							element={<AdminEditUser />}
+						/>
+						<Route
+							path="add-new-user"
+							element={<AdminAddNewUser />}
+						/>
+					</Route>
+					<Route
+						path="products"
+						element={<AdminProductsList />}
+					/>
+					<Route path="orders" element={<AdminOrdersList />} />
+				</Route>
 				<Route
 					path="/login-register"
 					element={<LoginRegisterPage />}
