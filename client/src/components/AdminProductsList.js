@@ -9,6 +9,7 @@ import { AdminContext } from "../context/AdminContext";
 import { useEffect } from "react";
 import { Spinner } from "react-bootstrap";
 import AdminProductItem from "./AdminProductItem";
+import { Link } from "react-router-dom";
 
 const AdminProductsList = () => {
 	//============
@@ -53,10 +54,14 @@ const AdminProductsList = () => {
 
 	//============
 	//============
-	if (loading)
-		return <div className="spinner-border mx-auto d-grid "></div>;
+	if (loading) return <div className="spinner-border mx-auto d-grid "></div>;
 	//============
-	if (error) return <h5 className="alert alert-danger">Error occured- getting all products</h5>;
+	if (error)
+		return (
+			<h5 className="alert alert-danger">
+				Error occured- getting all products
+			</h5>
+		);
 	//============
 	return (
 		<>
@@ -64,6 +69,11 @@ const AdminProductsList = () => {
 				{/* <button className="btn btn-warning" onClick={handleSeedProducts}>
 				Seed Products
 			</button> */}
+				<Link to="add-new-product">
+					<button className="btn btn-info">
+						Add New Product
+					</button>
+				</Link>
 				<div className="all-products-container ">
 					{productsList.map((e, i) => (
 						<AdminProductItem key={i} {...e} />
@@ -76,7 +86,7 @@ const AdminProductsList = () => {
 
 export default AdminProductsList;
 const StyledWrapper = styled.div`
-	border: 1px solid blue;
+	/* border: 1px solid blue; */
 	margin: 5px 0;
 	.all-products-container {
 		padding: 20px;

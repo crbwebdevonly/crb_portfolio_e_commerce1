@@ -28,6 +28,7 @@ import "react-toastify/dist/ReactToastify.css";
 import AdminAddNewUser from "./components/AdminAddNewUser";
 import AdminProductsPage from "./pages/AdminProductsPage";
 import AdminEditProduct from "./components/AdminEditProduct";
+import AdminAddNewProduct from "./components/AdminAddNewProduct";
 //============
 //============
 
@@ -126,6 +127,7 @@ function App() {
 					<Route path="products" element={<AdminProductsPage />}>
 						<Route index element={<AdminProductsList />} />
                               <Route path="edit-product/:productId" element={<AdminEditProduct/>}/>
+                              <Route path="add-new-product" element={<AdminAddNewProduct/>}/>
 					</Route>
 					<Route path="orders" element={<AdminOrdersList />} />
 				</Route>

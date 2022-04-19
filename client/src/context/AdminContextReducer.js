@@ -1,5 +1,14 @@
 export const AdminContextReducer = (state, action) => {
 	switch (action.type) {
+		case "FETCH_BEGIN":
+			return { ...state, loading: true, error: false };
+		case "FETCH_SUCCESS":
+			return { ...state, loading: false, error: false };
+		case "FETCH_ERROR":
+			return { ...state, loading: false, error: true };
+		//============
+		//============
+		//============
 		case "SET_LOADING_TRUE":
 			return { ...state, loading: true };
 
@@ -7,6 +16,8 @@ export const AdminContextReducer = (state, action) => {
 			return { ...state, loading: false };
 		case "SET_ERROR":
 			return { ...state, error: true, loading: false };
+		case "CLEAR_ERROR":
+			return { ...state, error: false };
 
 		case "GET_ALL_USERS": {
 			return {
@@ -67,6 +78,17 @@ export const AdminContextReducer = (state, action) => {
 				...state,
 				updateProductData: {
 					...state.updateProductData,
+					[name]: value,
+				},
+			};
+		}
+		case "NEW_PRODUCT_DATA_CHANGE": {
+			let { name, value } = action.payload;
+			
+			return {
+				...state,
+				newProductData: {
+					...state.newProductData,
 					[name]: value,
 				},
 			};

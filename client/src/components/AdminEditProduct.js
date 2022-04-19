@@ -22,10 +22,19 @@ const AdminEditProduct = () => {
 		handleupdateProductDataChange,
 		loading,
 		error,
+		applyProductUpdate,
 	} = useContext(AdminContext);
 
 	//============
-	const { id, title, price, description, category, image, rating } = product;
+	const {
+		_id: id,
+		title,
+		price,
+		description,
+		category,
+		image,
+		rating,
+	} = product;
 	//============
 	//============
 	// const [product, setProduct] = useState({});
@@ -44,7 +53,17 @@ const AdminEditProduct = () => {
 	}, [productId]);
 
 	//============
-
+	//============
+	//============
+	if (loading) return <div className="spinner-border mx-auto d-grid "></div>;
+	//============
+	if (error)
+		return (
+			<h5 className="alert alert-danger">
+				Error occured- updating product
+			</h5>
+		);
+	//============
 	//============
 	//============
 	//============
@@ -105,7 +124,7 @@ const AdminEditProduct = () => {
 			{editEnable && (
 				<div className="update-form ">
 					<div className="row g-3">
-						<div class="col-md-6">
+						<div className="col-md-6">
 							<label for="inputEmail4" class="form-label">
 								Title
 							</label>
@@ -117,7 +136,7 @@ const AdminEditProduct = () => {
 								onChange={handleupdateProductDataChange}
 							/>
 						</div>
-						<div class="col-md-6">
+						<div className="col-md-6">
 							<label
 								for="inputPassword4"
 								className="form-label"
@@ -133,6 +152,18 @@ const AdminEditProduct = () => {
 							/>
 						</div>
 					</div>
+                         <div className="col-md-6">
+							<label for="inputEmail4" class="form-label">
+								Image URL
+							</label>
+							<input
+								type="text"
+								name="image"
+								className="form-control"
+								value={updateProductData.image}
+								onChange={handleupdateProductDataChange}
+							/>
+						</div>
 					<label className="form-label">Description</label>
 					<textarea
 						className="form-control"
@@ -143,7 +174,7 @@ const AdminEditProduct = () => {
 						name="description"
 					></textarea>
 					<div className="row g-3">
-						<div class="col-md-6">
+						<div className="col-md-6">
 							<label className="form-label">Price</label>
 							<input
 								type="text"
@@ -153,7 +184,7 @@ const AdminEditProduct = () => {
 								value={updateProductData.price}
 							/>
 						</div>
-						<div class="col-md-6">
+						<div className="col-md-6">
 							<label className="form-label">Rating</label>
 							<input
 								className="form-control"
@@ -164,7 +195,12 @@ const AdminEditProduct = () => {
 							/>
 						</div>
 					</div>
-					<button className="btn btn-danger w-50 my-3 ">
+					<button
+						className="btn btn-danger w-50 my-3 "
+						onClick={() => {
+							applyProductUpdate(id);
+						}}
+					>
 						Apply Update
 					</button>
 				</div>
