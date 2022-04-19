@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const authRouter = require("./routes/authRoutes");
-const productsRouter = require("./routes/productRoutes");
+const productsRouter = require("./routes/productsRoutes");
 dotenv.config();
 
 const myServer = express();

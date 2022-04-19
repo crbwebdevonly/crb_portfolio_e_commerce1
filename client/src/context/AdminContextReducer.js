@@ -1,9 +1,76 @@
 export const AdminContextReducer = (state, action) => {
 	switch (action.type) {
-		case "GET_ALL_USERS":
-			return { ...state, usersList: action.payload };
+		case "SET_LOADING_TRUE":
+			return { ...state, loading: true };
 
-			break;
+		case "SET_LOADING_FALSE":
+			return { ...state, loading: false };
+		case "SET_ERROR":
+			return { ...state, error: true, loading: false };
+
+		case "GET_ALL_USERS": {
+			return {
+				...state,
+				usersList: action.payload,
+				loading: false,
+				error: false,
+			};
+		}
+		case "GET_ALL_PRODUCTS": {
+			return {
+				...state,
+				productsList: action.payload,
+				loading: false,
+				error: false,
+			};
+		}
+
+		case "SET_EDIT_PRODUCT": {
+			return {
+				...state,
+				editProduct: action.payload,
+				loading: false,
+				error: false,
+			};
+		}
+		case "CANCEL_EDIT_PRODUCT": {
+			return {
+				...state,
+				editEnable: false,
+				updateProductData: {},
+			};
+		}
+		case "ENABLE_EDIT_PRODUCT": {
+			const { category, description, image, price, rating, title } =
+				state.editProduct;
+			return {
+				...state,
+				editEnable: true,
+				updateProductData: {
+					category,
+					description,
+					image,
+					price,
+					rating,
+					title,
+				},
+			};
+		}
+		case "UPDATE_PRODUCT_DATA_CHANGE": {
+			let { name, value } = action.payload;
+			// value = value.trim();
+			if (name === "price" || name === "rating") {
+				value = Number(value);
+			}
+
+			return {
+				...state,
+				updateProductData: {
+					...state.updateProductData,
+					[name]: value,
+				},
+			};
+		}
 
 		default:
 			return state;

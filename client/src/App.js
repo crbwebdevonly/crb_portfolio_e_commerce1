@@ -27,6 +27,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AdminAddNewUser from "./components/AdminAddNewUser";
 import AdminProductsPage from "./pages/AdminProductsPage";
+import AdminEditProduct from "./components/AdminEditProduct";
 //============
 //============
 
@@ -38,7 +39,7 @@ function App() {
 	//============
 	const { user } = useContext(AuthContext);
 	//============
-	console.log(user, "app user");
+	// console.log(user, "app user");
 	//============
 	//============
 	//============
@@ -124,6 +125,7 @@ function App() {
 					</Route>
 					<Route path="products" element={<AdminProductsPage />}>
 						<Route index element={<AdminProductsList />} />
+                              <Route path="edit-product/:productId" element={<AdminEditProduct/>}/>
 					</Route>
 					<Route path="orders" element={<AdminOrdersList />} />
 				</Route>

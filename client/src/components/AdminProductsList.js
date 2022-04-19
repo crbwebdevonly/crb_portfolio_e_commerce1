@@ -1,10 +1,21 @@
 import React from "react";
 import { toast } from "react-toastify";
 import { fakeProducts } from "../fakeProducts";
+import styled from "styled-components";
 import { myAxios } from "../myAxios";
-import ProductsListPage from "../pages/ProductsListPage";
+import ProductItem from "./ProductItem";
+import { useContext } from "react";
+import { AdminContext } from "../context/AdminContext";
+import { useEffect } from "react";
+import { Spinner } from "react-bootstrap";
+import AdminProductItem from "./AdminProductItem";
 
 const AdminProductsList = () => {
+	//============
+	//============
+	const { getAllProducts, productsList, loading, error } =
+		useContext(AdminContext);
+	//============
 	//============
 	//============
 	//============
@@ -32,16 +43,55 @@ const AdminProductsList = () => {
 	//============
 	//============
 	//============
+	useEffect(() => {
+		//   first
+		getAllProducts();
+		return () => {
+			//     second
+		};
+	}, []);
+
+	//============
+	//============
+	if (loading)
+		return <div className="spinner-border mx-auto d-grid "></div>;
+	//============
+	if (error) return <h5 className="alert alert-danger">Error occured- getting all products</h5>;
 	//============
 	return (
 		<>
-			<div>AdminProductsList</div>
-			{/* <button className="btn btn-warning" onClick={handleSeedProducts}>
+			<StyledWrapper>
+				{/* <button className="btn btn-warning" onClick={handleSeedProducts}>
 				Seed Products
 			</button> */}
-			<ProductsListPage />
+				<div className="all-products-container ">
+					{productsList.map((e, i) => (
+						<AdminProductItem key={i} {...e} />
+					))}
+				</div>
+			</StyledWrapper>
 		</>
 	);
 };
 
 export default AdminProductsList;
+const StyledWrapper = styled.div`
+	border: 1px solid blue;
+	margin: 5px 0;
+	.all-products-container {
+		padding: 20px;
+		display: grid;
+		place-items: center;
+		grid-template-columns: repeat(1, 1fr);
+
+		@media screen and (min-width: 650px) {
+			grid-template-columns: repeat(2, 1fr);
+		}
+		@media screen and (min-width: 850px) {
+			grid-template-columns: repeat(3, 1fr);
+		}
+		@media screen and (min-width: 1050px) {
+			grid-template-columns: repeat(4, 1fr);
+		}
+	}
+`;
