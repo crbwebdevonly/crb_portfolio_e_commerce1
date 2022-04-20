@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { CheckoutContext } from "../context/CheckoutContext";
+import { CustomerContext } from "../context/CustomerContext";
 
 const MiniCart = () => {
 	//============
@@ -16,7 +16,7 @@ const MiniCart = () => {
 		removeItemWithIndex,
 		toggleShowMiniCart,
 		resetCart,
-	} = useContext(CheckoutContext);
+	} = useContext(CustomerContext);
 	//============
 	//============
 	const miniCartRef = useRef();
@@ -80,9 +80,7 @@ const MiniCart = () => {
 					<i
 						className="fa-solid fa-trash-can delete-cart-item"
 						id={i}
-						onClick={() => {
-							// removeItem(e.id);
-						}}
+						
 					></i>
 					<h5>{e.title}</h5>
 					<h6>${e.price}</h6>

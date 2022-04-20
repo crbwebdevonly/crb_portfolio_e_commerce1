@@ -1,29 +1,42 @@
 import { useContext, useReducer } from "react";
 import { useEffect } from "react";
 import { createContext } from "react";
+import { myAxios } from "../myAxios";
 import { AuthContext } from "./AuthContext";
-import { CheckoutContextReducer } from "./CheckoutContextReducer";
+import { CustomerContextReducer } from "./CustomerContextReducer";
 
 //============
 //============
-export const CheckoutContext = createContext();
+export const CustomerContext = createContext();
 //============
 //============
 const initialState = {
+	loading: false,
+	error: false,
+	//============
+	//============
+	productsList: [],
+	//============
+	//============
 	cartItems: [],
 	showMiniCart: false,
 	totalQty: 0,
 	totalAmount: 0,
+	//============
+	//============
+	order: {},
+	//============
+	//============
 };
 //============
 //============
-export const CheckoutContextProvider = ({ children }) => {
+export const CustomerContextProvider = ({ children }) => {
 	//============
 	//============
 	const { user } = useContext(AuthContext);
 	//============
 	//============
-	const [state, dispatch] = useReducer(CheckoutContextReducer, initialState);
+	const [state, dispatch] = useReducer(CustomerContextReducer, initialState);
 	//============
 	//============
 	//============
@@ -43,6 +56,37 @@ export const CheckoutContextProvider = ({ children }) => {
 	//============
 
 	//============
+	//============
+	//============
+	//============
+	//============
+	const delyedClearError = () => {
+		setTimeout(() => {
+			dispatch({ type: "CLEAR_ERROR" });
+		}, 2000);
+	};
+	//============
+	//============
+	const blinkError = () => {
+		dispatch({ type: "FETCH_ERROR" });
+		delyedClearError();
+	};
+	//============
+	//============
+	//============
+	//============
+	const getAllProducts = async () => {
+		dispatch({ type: "FETCH_BEGIN" });
+
+		try {
+			const reply = await myAxios.get("/api/products/getallproducts");
+			dispatch({ type: "GET_ALL_PRODUCTS", payload: reply.data });
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+			// console.log(error);
+		}
+	};
 	//============
 	//============
 	//============
@@ -77,13 +121,23 @@ export const CheckoutContextProvider = ({ children }) => {
 	//============
 	//============
 	const resetCart = () => {
-		dispatch({ type: "RESET", payload: initialState });
+		dispatch({ type: "RESET_CART", payload: initialState });
 	};
+	//============
+	//============
+	//============
+	//============
+	//============
+	const placeOrder = () => {};
+	//============
+	//============
+	//============
 	//============
 	//============
 	//============
 	const contextValues = {
 		...state,
+          getAllProducts,
 		addItem,
 		addItemWithID,
 		removeItemWithID,
@@ -94,9 +148,9 @@ export const CheckoutContextProvider = ({ children }) => {
 	//============
 	//============
 	return (
-		<CheckoutContext.Provider value={contextValues}>
+		<CustomerContext.Provider value={contextValues}>
 			{children}
-		</CheckoutContext.Provider>
+		</CustomerContext.Provider>
 	);
 };
 //============

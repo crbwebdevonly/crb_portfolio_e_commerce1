@@ -2,8 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { useContext } from "react";
 
-import { CheckoutContext } from "../context/CheckoutContext";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import { CustomerContext } from "../context/CustomerContext";
 
 const CheckoutPage = () => {
 	//============
@@ -19,7 +20,14 @@ const CheckoutPage = () => {
 		removeItemWithIndex,
 		// toggleShowMiniCart,
 		resetCart,
-	} = useContext(CheckoutContext);
+	} = useContext(CustomerContext);
+	//============
+	//============
+	const { user } = useContext(AuthContext);
+	//============
+	//============
+	//============
+	//============
 	//============
 	//============
 	//============
@@ -52,7 +60,7 @@ const CheckoutPage = () => {
 				</thead>
 				<tbody>
 					{cartItems.map((e, i) => (
-						<tr>
+						<tr key={i}>
 							<th scope="row">{i + 1}</th>
 							<td>
 								<div className="desc-wrap">

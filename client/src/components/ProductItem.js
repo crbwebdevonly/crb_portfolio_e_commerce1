@@ -4,15 +4,23 @@ import { useState } from "react";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { CheckoutContext } from "../context/CheckoutContext";
+import { CustomerContext } from "../context/CustomerContext";
 
 const ProductItem = (props) => {
 	//============
 	//============
-	const { addItemWithID } = useContext(CheckoutContext);
+	const { addItemWithID } = useContext(CustomerContext);
 	//============
 	//============
-	const { id, title, price, description, category, image, rating } = props;
+	const {
+		_id: id,
+		title,
+		price,
+		description,
+		category,
+		image,
+		rating,
+	} = props;
 	//============
 	//============
 	const [showAddedtoCart, setshowAddedtoCart] = useState(false);
