@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 //============
 const OrderSchema = mongoose.Schema(
 	{
-		customerId: { type: String, required: true },
+		customerID: { type: String, required: true },
 		status: {
 			type: String,
 			required: true,

@@ -1,6 +1,7 @@
 import { useContext, useReducer } from "react";
 import { useEffect } from "react";
 import { createContext } from "react";
+import { toast } from "react-toastify";
 import { myAxios } from "../myAxios";
 import { AuthContext } from "./AuthContext";
 import { CustomerContextReducer } from "./CustomerContextReducer";
@@ -100,6 +101,7 @@ export const CustomerContextProvider = ({ children }) => {
 	//============
 	//============
 	const addItemWithID = (id) => {
+		console.log("add-dispatch-id", id);
 		dispatch({ type: "ADD_ITEM_WITH_ID", payload: id });
 	};
 	//============
@@ -115,7 +117,6 @@ export const CustomerContextProvider = ({ children }) => {
 	//============
 	//============
 	const toggleShowMiniCart = () => {
-		console.log("minicart show dispatch");
 		dispatch({ type: "TOGGLE_MINI_CART" });
 	};
 	//============
@@ -128,7 +129,30 @@ export const CustomerContextProvider = ({ children }) => {
 	//============
 	//============
 	//============
-	const placeOrder = () => {};
+	const placeOrder = async () => {
+		// validate
+		try {
+			if (state.cartItems < 1) {
+				throw new Error("Empty Cart");
+			}
+			if (!user) {
+				throw new Error("You must login");
+			}
+			const orderItemsID = state.cartItems.map((e) => e._id);
+			const orderData = {
+				customerID: user._id,
+				orderItemsID,
+				orderTotalAmount: state.totalAmount,
+				orderTotalQuantity: state.totalQty,
+			};
+			console.log(orderData);
+			toast.success("order placed");
+		} catch (error) {
+			toast.error(error.message);
+			return;
+		}
+		// place order
+	};
 	//============
 	//============
 	//============
@@ -137,13 +161,14 @@ export const CustomerContextProvider = ({ children }) => {
 	//============
 	const contextValues = {
 		...state,
-          getAllProducts,
+		getAllProducts,
 		addItem,
 		addItemWithID,
 		removeItemWithID,
 		removeItemWithIndex,
 		toggleShowMiniCart,
 		resetCart,
+		placeOrder,
 	};
 	//============
 	//============

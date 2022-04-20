@@ -60,7 +60,7 @@ export const CustomerContextReducer = (state, action) => {
 		totalAmount = cartItems.forEach((e) => {
 			amt += e.price;
 		});
-		totalAmount = amt.toFixed(2);
+		totalAmount = Number(amt.toFixed(2));
 		return { ...state, cartItems, totalQty, totalAmount };
 	}
 	//============
@@ -74,7 +74,8 @@ export const CustomerContextReducer = (state, action) => {
 		totalAmount = cartItems.forEach((e) => {
 			amt += e.price;
 		});
-		totalAmount = amt.toFixed(2);
+		totalAmount = Number(amt.toFixed(2));
+
 		return { ...state, cartItems, totalQty, totalAmount };
 	}
 	if (action.type === "REMOVE_ITEM_WITH_INDEX") {
@@ -84,7 +85,8 @@ export const CustomerContextReducer = (state, action) => {
 		totalAmount = cartItems.forEach((e) => {
 			amt += e.price;
 		});
-		totalAmount = amt.toFixed(2);
+		totalAmount = Number(amt.toFixed(2));
+          
 		return { ...state, cartItems, totalQty, totalAmount };
 	}
 	if (action.type === "TOGGLE_MINI_CART") {

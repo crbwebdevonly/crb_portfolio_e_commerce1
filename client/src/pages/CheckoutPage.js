@@ -20,6 +20,7 @@ const CheckoutPage = () => {
 		removeItemWithIndex,
 		// toggleShowMiniCart,
 		resetCart,
+		placeOrder,
 	} = useContext(CustomerContext);
 	//============
 	//============
@@ -27,6 +28,9 @@ const CheckoutPage = () => {
 	//============
 	//============
 	//============
+	const handlePlaceOrder = () => {
+		console.log(cartItems);
+	};
 	//============
 	//============
 	//============
@@ -66,8 +70,9 @@ const CheckoutPage = () => {
 								<div className="desc-wrap">
 									<div className="title">
 										<h6>{e.title}</h6>
-										<p>Product ID: {e.id}</p>
+										<p>Product ID: {e._id}</p>
 									</div>
+									<img src={e.image} alt="" />
 									<div className="control-wrap">
 										<div
 											className="btn btn-warning"
@@ -121,19 +126,18 @@ const CheckoutPage = () => {
 						</div>
 					</div>
 					<div className="col-md">
-						<div
+						<button
 							className="btn btn-primary"
-							onClick={() => {
-								// navigate("/payment");
-							}}
+							// disabled={cartItems<1}
+							onClick={placeOrder}
 						>
 							Place Order
-						</div>
+						</button>
 					</div>
 					<div className="col-md">
 						<button
 							className="btn btn-primary"
-							disabled="true"
+							disabled={true}
 							onClick={() => {
 								navigate("/payment");
 							}}
@@ -162,11 +166,22 @@ const StyledWrapper = styled.div`
 		align-items: flex-start;
 		justify-content: space-between;
 	}
+	.title {
+		max-width: 500px;
+	}
 	.control-wrap {
 		display: flex;
 	}
 	.total {
 		text-align: end;
 		font-size: 1.3rem;
+	}
+	p {
+		font-size: 0.7rem;
+	}
+	img {
+		width: 40px;
+		margin-left: auto;
+		margin-right: 20px;
 	}
 `;

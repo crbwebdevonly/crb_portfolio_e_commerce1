@@ -30,22 +30,22 @@ const MiniCart = () => {
 	useEffect(() => {
 		//   first
 		const handleClick = (e) => {
-			console.log(e.target);
+			// console.log(e.target);
 			if (miniCartRef.current) {
 				if (miniCartRef.current.contains(e.target)) {
 					// clicked inside->> check-if delete
-					console.log("inside");
+					// console.log("inside");
 					// console.log(
 					// 	e.target.classList.contains("delete-cart-item")
 					// );
 					if (e.target.classList.contains("delete-cart-item")) {
-						console.log("delete", e.target.id);
+						// console.log("delete", e.target.id);
 
 						removeItemWithIndex(Number(e.target.id));
 					}
 				} else {
 					// clicked-outside >>close minicart
-					console.log("OUTside");
+					// console.log("OUTside");
 					if (
 						e.target.classList.contains("cart") ||
 						e.target.classList.contains("badge")
@@ -56,6 +56,7 @@ const MiniCart = () => {
 				}
 			}
 		};
+		//============
 		if (showMiniCart) {
 			document.addEventListener("click", handleClick);
 		}
@@ -80,7 +81,6 @@ const MiniCart = () => {
 					<i
 						className="fa-solid fa-trash-can delete-cart-item"
 						id={i}
-						
 					></i>
 					<h5>{e.title}</h5>
 					<h6>${e.price}</h6>

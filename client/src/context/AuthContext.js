@@ -27,7 +27,6 @@ export const AuthContextProvider = ({ children }) => {
 	const doLogin = async (user) => {
 		try {
 			const reply = await myAxios.post("/api/auth/login", user);
-			console.log(reply);
 			dispatch({ type: "LOGIN_SUCCESS", payload: reply.data.user });
 		} catch (error) {
 			dispatch({ type: "LOGIN_FAIL" });
