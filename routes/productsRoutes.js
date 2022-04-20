@@ -13,6 +13,10 @@ const productsRouter = express.Router();
 // seed database
 productsRouter.post("/seed-products", handleProductsSeed);
 //============
+//============
+//============
+//============
+//============
 productsRouter.post("/add-new-product", handleAddNewProduct);
 //============
 productsRouter.get("/getallproducts", handleGetAllProducts);
