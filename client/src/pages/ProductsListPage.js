@@ -6,22 +6,14 @@ import { CheckoutContext } from "../context/CheckoutContext";
 import { fakeProducts } from "../fakeProducts";
 
 const ProductsListPage = ({admin}) => {
-	const { addItem } = useContext(CheckoutContext);
+	// const { addItem } = useContext(CheckoutContext);
 	return (
 		<StyledWrapper>
 			<div>ProductsListPage</div>
 			<div className="all-products-container ">
 				{fakeProducts.map((e, i) => (
 					<ProductItem key={i} {...e} />
-					// <li
-					// 	key={e.id}
-					// 	onClick={() => {
-					// 		addItem(e);
-					// 	}}
-					// >
-					// 	<h6>{e.title}</h6>
-					// 	<h6>{e.price}</h6>
-					// </li>
+					
 				))}
 			</div>
 		</StyledWrapper>

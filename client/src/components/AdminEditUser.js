@@ -111,7 +111,10 @@ const AdminEditUser = (props) => {
 				`/api/auth/updateuser/${user._id}`,
 				userUpdate
 			);
+			// window.location.reload(true);
+			// console.log(reply.data);
 			toast.success("Update user success");
+			setUser(reply.data);
 		} catch (error) {
 			toast.error("Update user failed");
 		}
