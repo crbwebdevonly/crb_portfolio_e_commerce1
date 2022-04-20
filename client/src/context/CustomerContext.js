@@ -1,6 +1,7 @@
 import { useContext, useReducer } from "react";
 import { useEffect } from "react";
 import { createContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { myAxios } from "../myAxios";
 import { AuthContext } from "./AuthContext";
@@ -40,6 +41,7 @@ export const CustomerContextProvider = ({ children }) => {
 	const [state, dispatch] = useReducer(CustomerContextReducer, initialState);
 	//============
 	//============
+	const navigate = useNavigate();
 	//============
 	//============
 	useEffect(() => {
@@ -147,7 +149,6 @@ export const CustomerContextProvider = ({ children }) => {
 				orderTotalQuantity: state.totalQty,
 			};
 			console.log(orderData);
-			toast.success("order placed");
 		} catch (error) {
 			toast.error(error.message);
 			return;
@@ -155,7 +156,16 @@ export const CustomerContextProvider = ({ children }) => {
 		// place order
 
 		try {
-			const reply = await myAxios.post("/api/orders/createorder",orderData);
+			const reply = await myAxios.post(
+				"/api/orders/createorder",
+				orderData
+			);
+			// dispatch({type:"ORDER_SUBMIT_SUCCESS"})
+			toast.success("order placed");
+			setTimeout(() => {
+				resetCart();
+				navigate("/");
+			}, 2000);
 		} catch (error) {
 			toast.error("error-placing order");
 			toast.error(error.response.msg);

@@ -94,5 +94,10 @@ export const CustomerContextReducer = (state, action) => {
 	}
 	if (action.type === "RESET_CART") {
 		return { ...state, cartItems: [], totalQty: 0, totalAmount: 0 };
-	} else return state;
+	}
+	if (action.type === "ORDER_SUBMIT_SUCCESS") {
+          return { ...state, cartItems: [], totalQty: 0, totalAmount: 0 };
+     }
+     
+     else return state;
 };
