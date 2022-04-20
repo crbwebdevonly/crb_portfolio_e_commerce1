@@ -114,6 +114,16 @@ export const AdminContextReducer = (state, action) => {
 			};
 		}
 
+          case "GET_ALL_ORDERS": {
+			return {
+				...state,
+				ordersList: action.payload,
+				loading: false,
+				error: false,
+			};
+		}
+
+
 		default:
 			return state;
 			break;

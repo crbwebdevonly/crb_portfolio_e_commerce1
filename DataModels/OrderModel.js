@@ -15,9 +15,11 @@ const OrderSchema = mongoose.Schema(
 		issue: {
 			type: [String],
 		},
-		orderItems: { type: [String], required: true },
+		orderItemsID: [{ type: String, required: true }],
 		orderTotalAmount: { type: Number, required: true },
 		orderTotalQuantity: { type: Number, required: true },
+		stringifiedOrderItems: { type: String, required: true },
+		stringifiedCustomer: { type: String, required: true },
 	},
 	{ timestamps: true }
 );

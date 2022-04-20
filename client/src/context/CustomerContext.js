@@ -147,6 +147,8 @@ export const CustomerContextProvider = ({ children }) => {
 				orderItemsID,
 				orderTotalAmount: state.totalAmount,
 				orderTotalQuantity: state.totalQty,
+                    stringifiedOrderItems:JSON.stringify(state.cartItems),
+                    stringifiedCustomer:JSON.stringify(user)
 			};
 			console.log(orderData);
 		} catch (error) {
@@ -171,6 +173,13 @@ export const CustomerContextProvider = ({ children }) => {
 			toast.error(error.response.msg);
 		}
 	};
+	//============
+	//============
+    
+	//============
+	//============
+	//============
+	//============
 	//============
 	//============
 	//============

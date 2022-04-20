@@ -48,6 +48,9 @@ export const AdminContextProvider = ({ children }) => {
 		},
 		//============
 		//============
+		ordersList: [],
+		//============
+		//============
 	};
 	//============
 	//============
@@ -217,6 +220,35 @@ export const AdminContextProvider = ({ children }) => {
 	//============
 	//============
 	//============
+	const getAllOrders = async () => {
+		dispatch({ type: "FETCH_BEGIN" });
+		try {
+			const reply = await myAxios.get(`/api/orders/getallorders`);
+			dispatch({ type: "GET_ALL_ORDERS", payload: reply.data });
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+			delyedClearError();
+		}
+	};
+	//============
+	//============
+	//============
+	//============
+	const deleteOrder = async (id) => {
+		try {
+			const reply = await myAxios.delete(
+				`/api/orders/deleteorder/${id}`
+			);
+			dispatch({ type: "DELETE_ORDER_SUCCESS" });
+
+			toast.warning(" Order deleted");
+			// navigate("/admin/products");
+		} catch (error) {
+			toast.error("error deleting");
+			blinkError();
+		}
+	};
 	//============
 	//============
 	//============
@@ -237,6 +269,8 @@ export const AdminContextProvider = ({ children }) => {
 		handleNewProductDataChange,
 		addNewProduct,
 		deleteProduct,
+		getAllOrders,
+		deleteOrder,
 	};
 	return (
 		<AdminContext.Provider value={contextValues}>

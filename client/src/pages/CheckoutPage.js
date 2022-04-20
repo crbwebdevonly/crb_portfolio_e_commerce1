@@ -53,7 +53,7 @@ const CheckoutPage = () => {
 	//============
 	return (
 		<StyledWrapper className="container">
-			<table class="table table-striped">
+			<table className="table table-striped">
 				<thead>
 					<tr>
 						<th scope="col">#</th>
