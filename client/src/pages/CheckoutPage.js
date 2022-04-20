@@ -116,11 +116,22 @@ const CheckoutPage = () => {
 						<div
 							className="btn btn-primary"
 							onClick={() => {
+								// navigate("/payment");
+							}}
+						>
+							Place Order
+						</div>
+					</div>
+					<div className="col-md">
+						<button
+							className="btn btn-primary"
+							disabled="true"
+							onClick={() => {
 								navigate("/payment");
 							}}
 						>
 							Proceed to Payment
-						</div>
+						</button>
 					</div>
 				</div>
 			</div>
