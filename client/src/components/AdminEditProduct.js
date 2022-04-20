@@ -23,6 +23,7 @@ const AdminEditProduct = () => {
 		loading,
 		error,
 		applyProductUpdate,
+		deleteProduct,
 	} = useContext(AdminContext);
 
 	//============
@@ -123,6 +124,16 @@ const AdminEditProduct = () => {
 			{/* edit form */}
 			{editEnable && (
 				<div className="update-form ">
+					<div className="row ">
+						<button
+							className="btn btn-danger w-50 ms-auto"
+							onClick={() => {
+								deleteProduct(id);
+							}}
+						>
+							Delete Product
+						</button>
+					</div>
 					<div className="row g-3">
 						<div className="col-md-6">
 							<label for="inputEmail4" class="form-label">
@@ -152,18 +163,18 @@ const AdminEditProduct = () => {
 							/>
 						</div>
 					</div>
-                         <div className="col-md-6">
-							<label for="inputEmail4" class="form-label">
-								Image URL
-							</label>
-							<input
-								type="text"
-								name="image"
-								className="form-control"
-								value={updateProductData.image}
-								onChange={handleupdateProductDataChange}
-							/>
-						</div>
+					<div className="col-md-6">
+						<label for="inputEmail4" class="form-label">
+							Image URL
+						</label>
+						<input
+							type="text"
+							name="image"
+							className="form-control"
+							value={updateProductData.image}
+							onChange={handleupdateProductDataChange}
+						/>
+					</div>
 					<label className="form-label">Description</label>
 					<textarea
 						className="form-control"
@@ -196,7 +207,7 @@ const AdminEditProduct = () => {
 						</div>
 					</div>
 					<button
-						className="btn btn-danger w-50 my-3 "
+						className="btn btn-warning w-50 my-3 "
 						onClick={() => {
 							applyProductUpdate(id);
 						}}

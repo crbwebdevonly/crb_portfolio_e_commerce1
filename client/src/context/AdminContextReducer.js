@@ -93,6 +93,26 @@ export const AdminContextReducer = (state, action) => {
 				},
 			};
 		}
+          case "ADD_NEW_PRODUCT_SUCCESS": {
+			
+			return {
+				...state,
+				newProductData: {
+                         title: "",
+                         price: "",
+                         description: "",
+                         category: "",
+                         image: "",
+                         rating: "",
+                    },
+			};
+		}
+          case "DELETE_PRODUCT_SUCCESS": {
+			return {
+				...state,
+				editEnable: false,
+			};
+		}
 
 		default:
 			return state;

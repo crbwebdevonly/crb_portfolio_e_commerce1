@@ -80,6 +80,20 @@ const handleUpdateProduct = async (req, res) => {
 //============
 //============
 //============
+const handleDeleteProduct = async (req, res) => {
+	try {
+		const reply = await ProductModel.findByIdAndDelete(req.params.id);
+		if (!reply) {
+			return res.status(400).json({ msg: "delete product NOT found" });
+		}
+		res.status(200).json({ msg: "delete product success" });
+	} catch (error) {
+		res.status(500).json({ msg: "error deleting product", error });
+	}
+};
+//============
+//============
+//============
 //============
 //============
 //============
@@ -93,6 +107,7 @@ module.exports = {
 	handleGetOneProduct,
 	handleUpdateProduct,
 	handleAddNewProduct,
+	handleDeleteProduct,
 };
 //============
 //============

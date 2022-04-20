@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useReducer } from "react";
 import { createContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { myAxios } from "../myAxios";
 import { AdminContextReducer } from "./AdminContextReducer";
@@ -16,6 +17,9 @@ export const AdminContext = createContext();
 //============
 //============
 export const AdminContextProvider = ({ children }) => {
+	//============
+	//============
+	const navigate = useNavigate();
 	//============
 	//============
 	const initialState = {
@@ -42,7 +46,6 @@ export const AdminContextProvider = ({ children }) => {
 			image: "",
 			rating: "",
 		},
-		isValidNewProductData: false,
 		//============
 		//============
 	};
@@ -178,6 +181,7 @@ export const AdminContextProvider = ({ children }) => {
 		} catch (error) {
 			toast.error(error.message);
 			blinkError();
+			return;
 		}
 
 		// post data
@@ -186,12 +190,36 @@ export const AdminContextProvider = ({ children }) => {
 				"/api/products/add-new-product",
 				validData
 			);
-               toast.success("added new Product")
+			dispatch({ type: "ADD_NEW_PRODUCT_SUCCESS" });
+			toast.success("added new Product");
+			navigate("/admin/products");
 		} catch (error) {
 			toast.error(error.response);
 			blinkError();
 		}
 	};
+	//============
+	//============
+	const deleteProduct = async (id) => {
+		try {
+			const reply = await myAxios.delete(
+				`/api/products/delete-product/${id}`
+			);
+			dispatch({ type: "DELETE_PRODUCT_SUCCESS" });
+
+			toast.warning(" Product deleted");
+			navigate("/admin/products");
+		} catch (error) {
+			toast.error("error deleting");
+			blinkError();
+		}
+	};
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
 	//============
 	//============
 	//============
@@ -208,6 +236,7 @@ export const AdminContextProvider = ({ children }) => {
 		applyProductUpdate,
 		handleNewProductDataChange,
 		addNewProduct,
+		deleteProduct,
 	};
 	return (
 		<AdminContext.Provider value={contextValues}>
