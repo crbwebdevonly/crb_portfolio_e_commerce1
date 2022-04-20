@@ -130,6 +130,7 @@ export const CustomerContextProvider = ({ children }) => {
 	//============
 	//============
 	const placeOrder = async () => {
+		let orderData = {};
 		// validate
 		try {
 			if (state.cartItems < 1) {
@@ -139,7 +140,7 @@ export const CustomerContextProvider = ({ children }) => {
 				throw new Error("You must login");
 			}
 			const orderItemsID = state.cartItems.map((e) => e._id);
-			const orderData = {
+			orderData = {
 				customerID: user._id,
 				orderItemsID,
 				orderTotalAmount: state.totalAmount,
@@ -152,6 +153,13 @@ export const CustomerContextProvider = ({ children }) => {
 			return;
 		}
 		// place order
+
+		try {
+			const reply = await myAxios.post("/api/orders/createorder",orderData);
+		} catch (error) {
+			toast.error("error-placing order");
+			toast.error(error.response.msg);
+		}
 	};
 	//============
 	//============
