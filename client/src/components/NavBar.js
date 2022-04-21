@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { AuthContext } from "../context/AuthContext";
-import { CheckoutContext } from "../context/CheckoutContext";
+import { CustomerContext } from "../context/CustomerContext";
 import { myAxios } from "../myAxios";
 
 //============
@@ -15,7 +15,7 @@ const NavBar = () => {
 	//============
 	//============
 	const { totalQty, toggleShowMiniCart, resetCart } =
-		useContext(CheckoutContext);
+		useContext(CustomerContext);
 	//============
 	const { doLogout, user } = useContext(AuthContext);
 	//============

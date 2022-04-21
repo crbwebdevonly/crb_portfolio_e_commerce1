@@ -5,7 +5,6 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { AdminContext } from "../context/AdminContext";
-import { CheckoutContext } from "../context/CheckoutContext";
 
 const AdminProductItem = (props) => {
 	//============

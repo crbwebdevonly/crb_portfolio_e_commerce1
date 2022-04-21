@@ -2,8 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { useContext } from "react";
 
-import { CheckoutContext } from "../context/CheckoutContext";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import { CustomerContext } from "../context/CustomerContext";
 
 const CheckoutPage = () => {
 	//============
@@ -19,7 +20,18 @@ const CheckoutPage = () => {
 		removeItemWithIndex,
 		// toggleShowMiniCart,
 		resetCart,
-	} = useContext(CheckoutContext);
+		placeOrder,
+	} = useContext(CustomerContext);
+	//============
+	//============
+	const { user } = useContext(AuthContext);
+	//============
+	//============
+	//============
+	const handlePlaceOrder = () => {
+		console.log(cartItems);
+	};
+	//============
 	//============
 	//============
 	//============
@@ -41,7 +53,7 @@ const CheckoutPage = () => {
 	//============
 	return (
 		<StyledWrapper className="container">
-			<table class="table table-striped">
+			<table className="table table-striped">
 				<thead>
 					<tr>
 						<th scope="col">#</th>
@@ -52,14 +64,15 @@ const CheckoutPage = () => {
 				</thead>
 				<tbody>
 					{cartItems.map((e, i) => (
-						<tr>
+						<tr key={i}>
 							<th scope="row">{i + 1}</th>
 							<td>
 								<div className="desc-wrap">
 									<div className="title">
 										<h6>{e.title}</h6>
-										<p>Product ID: {e.id}</p>
+										<p>Product ID: {e._id}</p>
 									</div>
+									<img src={e.image} alt="" />
 									<div className="control-wrap">
 										<div
 											className="btn btn-warning"
@@ -113,14 +126,24 @@ const CheckoutPage = () => {
 						</div>
 					</div>
 					<div className="col-md">
-						<div
+						<button
 							className="btn btn-primary"
+							// disabled={cartItems<1}
+							onClick={placeOrder}
+						>
+							Place Order
+						</button>
+					</div>
+					<div className="col-md">
+						<button
+							className="btn btn-primary"
+							disabled={true}
 							onClick={() => {
 								navigate("/payment");
 							}}
 						>
 							Proceed to Payment
-						</div>
+						</button>
 					</div>
 				</div>
 			</div>
@@ -143,11 +166,22 @@ const StyledWrapper = styled.div`
 		align-items: flex-start;
 		justify-content: space-between;
 	}
+	.title {
+		max-width: 500px;
+	}
 	.control-wrap {
 		display: flex;
 	}
 	.total {
 		text-align: end;
 		font-size: 1.3rem;
+	}
+	p {
+		font-size: 0.7rem;
+	}
+	img {
+		width: 40px;
+		margin-left: auto;
+		margin-right: 20px;
 	}
 `;

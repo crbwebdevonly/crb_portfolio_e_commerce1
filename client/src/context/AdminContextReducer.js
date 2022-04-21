@@ -84,7 +84,7 @@ export const AdminContextReducer = (state, action) => {
 		}
 		case "NEW_PRODUCT_DATA_CHANGE": {
 			let { name, value } = action.payload;
-			
+
 			return {
 				...state,
 				newProductData: {
@@ -93,24 +93,41 @@ export const AdminContextReducer = (state, action) => {
 				},
 			};
 		}
-          case "ADD_NEW_PRODUCT_SUCCESS": {
-			
+		case "ADD_NEW_PRODUCT_SUCCESS": {
 			return {
 				...state,
 				newProductData: {
-                         title: "",
-                         price: "",
-                         description: "",
-                         category: "",
-                         image: "",
-                         rating: "",
-                    },
+					title: "",
+					price: "",
+					description: "",
+					category: "",
+					image: "",
+					rating: "",
+				},
 			};
 		}
-          case "DELETE_PRODUCT_SUCCESS": {
+		case "DELETE_PRODUCT_SUCCESS": {
 			return {
 				...state,
 				editEnable: false,
+			};
+		}
+
+		case "GET_ALL_ORDERS": {
+			return {
+				...state,
+				ordersList: action.payload,
+				loading: false,
+				error: false,
+			};
+		}
+		case "DELETE_ORDER_SUCCESS": {
+			return {
+				...state,
+				ordersList: state.ordersList.filter(
+					(e) => e._id !== action.payload
+				),
+				
 			};
 		}
 

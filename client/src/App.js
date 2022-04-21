@@ -11,7 +11,6 @@ import MiniCart from "./components/MiniCart";
 import NavBar from "./components/NavBar";
 import { AdminContextProvider } from "./context/AdminContext";
 import { AuthContext } from "./context/AuthContext";
-import { CheckoutContext } from "./context/CheckoutContext";
 import AdminPage from "./pages/AdminPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
 import CheckoutPage from "./pages/CheckoutPage";
@@ -29,13 +28,14 @@ import AdminAddNewUser from "./components/AdminAddNewUser";
 import AdminProductsPage from "./pages/AdminProductsPage";
 import AdminEditProduct from "./components/AdminEditProduct";
 import AdminAddNewProduct from "./components/AdminAddNewProduct";
+import { CustomerContext } from "./context/CustomerContext";
 //============
 //============
 
 function App() {
 	//============
 	//============
-	const { showMiniCart } = useContext(CheckoutContext);
+	const { showMiniCart } = useContext(CustomerContext);
 	//============
 	//============
 	const { user } = useContext(AuthContext);

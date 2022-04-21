@@ -1,19 +1,49 @@
 import React from "react";
+import { useEffect } from "react";
 import { useContext } from "react";
 import styled from "styled-components";
 import ProductItem from "../components/ProductItem";
-import { CheckoutContext } from "../context/CheckoutContext";
-import { fakeProducts } from "../fakeProducts";
+import { CustomerContext } from "../context/CustomerContext";
 
-const ProductsListPage = ({admin}) => {
-	// const { addItem } = useContext(CheckoutContext);
+const ProductsListPage = ({ admin }) => {
+	//============
+	const { loading, error, getAllProducts, productsList } =
+		useContext(CustomerContext);
+	//============
+	//============
+	useEffect(() => {
+		//   first
+		getAllProducts();
+		return () => {
+			//     second
+		};
+	}, []);
+
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	if (loading) return <div className="spinner-border mx-auto d-grid "></div>;
+	if (error)
+		//============
+		return (
+			<h5 className="alert alert-danger">
+				Error occured- getting all products
+			</h5>
+		);
+	//============
+	//============
 	return (
 		<StyledWrapper>
 			<div>ProductsListPage</div>
 			<div className="all-products-container ">
-				{fakeProducts.map((e, i) => (
+				{productsList.map((e, i) => (
 					<ProductItem key={i} {...e} />
-					
 				))}
 			</div>
 		</StyledWrapper>

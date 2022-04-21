@@ -82,6 +82,15 @@ export const CheckoutContextProvider = ({ children }) => {
 	//============
 	//============
 	//============
+	//============
+	//============
+     const placeOrder = ()=>{}
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
 	const contextValues = {
 		...state,
 		addItem,
