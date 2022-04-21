@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useContext } from "react";
 import styled from "styled-components";
 import ProductItem from "../components/ProductItem";
+import ProductsFilter from "../components/ProductsFilter";
 import { CustomerContext } from "../context/CustomerContext";
 
 const ProductsListPage = ({ admin }) => {
@@ -40,7 +41,7 @@ const ProductsListPage = ({ admin }) => {
 	//============
 	return (
 		<StyledWrapper>
-			<div>ProductsListPage</div>
+			<ProductsFilter />
 			<div className="all-products-container ">
 				{productsList.map((e, i) => (
 					<ProductItem key={i} {...e} />
@@ -53,9 +54,13 @@ const ProductsListPage = ({ admin }) => {
 export default ProductsListPage;
 
 const StyledWrapper = styled.div`
-	border: 1px solid blue;
+	/* border: 1px solid blue; */
 	margin: 5px 0;
+
+	display: flex;
+
 	.all-products-container {
+          /* flex:5; */
 		padding: 20px;
 		display: grid;
 		place-items: center;
