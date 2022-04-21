@@ -93,6 +93,35 @@ export const CustomerContextProvider = ({ children }) => {
 	};
 	//============
 	//============
+	const getProductsWithQuery = async (query) => {
+		console.log(query, "received");
+		let qstring = "/api/products/getproductswithquery?";
+		let q = qstring;
+		if (Object.entries(query).length < 1) return;
+		Object.entries(query).forEach((e) => {
+			if (e[1]) {
+				q += `${e[0]}=${e[1]}&`;
+			}
+		});
+		console.log(qstring);
+		console.log(q, "result");
+		console.log(qstring === q);
+		// return;
+		dispatch({ type: "FETCH_BEGIN" });
+
+		try {
+			const reply = await myAxios.get(q);
+			dispatch({ type: "GET_ALL_PRODUCTS", payload: reply.data });
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+			// console.log(error);
+		}
+	};
+	//============
+	//============
+	//============
+	//============
 	const setCurrentProduct = (id) => {
 		dispatch({ type: "FETCH_BEGIN" });
 		try {
@@ -105,9 +134,9 @@ export const CustomerContextProvider = ({ children }) => {
 			dispatch({ type: "FETCH_SUCCESS" });
 		} catch (error) {
 			dispatch({ type: "FETCH_ERROR" });
-               setTimeout(() => {
-                    navigate("/productslist")
-               }, 1000);
+			setTimeout(() => {
+				navigate("/productslist");
+			}, 1000);
 		}
 	};
 	//============
@@ -209,6 +238,7 @@ export const CustomerContextProvider = ({ children }) => {
 	const contextValues = {
 		...state,
 		getAllProducts,
+		getProductsWithQuery,
 		setCurrentProduct,
 		addItem,
 		addItemWithID,

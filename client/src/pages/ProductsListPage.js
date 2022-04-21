@@ -2,6 +2,7 @@ import React from "react";
 import { useEffect } from "react";
 import { useContext } from "react";
 import styled from "styled-components";
+import Paginator from "../components/Paginator";
 import ProductItem from "../components/ProductItem";
 import ProductsFilter from "../components/ProductsFilter";
 import { CustomerContext } from "../context/CustomerContext";
@@ -42,11 +43,13 @@ const ProductsListPage = ({ admin }) => {
 	return (
 		<StyledWrapper>
 			<ProductsFilter />
+			<Paginator />
 			<div className="all-products-container ">
 				{productsList.map((e, i) => (
 					<ProductItem key={i} {...e} />
 				))}
 			</div>
+			<Paginator />
 		</StyledWrapper>
 	);
 };
@@ -57,10 +60,13 @@ const StyledWrapper = styled.div`
 	/* border: 1px solid blue; */
 	margin: 5px 0;
 
-	display: flex;
+	/* display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center; */
 
 	.all-products-container {
-          /* flex:5; */
+		/* flex:5; */
 		padding: 20px;
 		display: grid;
 		place-items: center;
