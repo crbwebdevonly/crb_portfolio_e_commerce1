@@ -32,6 +32,13 @@ export const CustomerContextReducer = (state, action) => {
 	}
 	//============
 	//============
+     	//============
+	if (action.type === "SET_CURRENT_PRODUCT") {
+		return {
+			...state,
+			currentProduct: action.payload,
+		};
+	}
 	//============
 	//============
 	//============

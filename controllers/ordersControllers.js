@@ -38,7 +38,23 @@ const deleteOrder = async (req, res) => {
 //============
 //============
 //============
+const updateOrder = async (req, res) => {
+	try {
+		const reply = await OrderModel.findByIdAndUpdate(
+			req.params.id,
+			req.body,
+			{ new: true }
+		);
+		res.status(200).json(reply);
+	} catch (error) {
+		res.status(500).json({ msg: "update order failed", error });
+	}
+};
 //============
 //============
-module.exports = { getAllOrders, createOrder ,deleteOrder};
+//============
+//============
+//============
+//============
+module.exports = { getAllOrders, createOrder, deleteOrder ,updateOrder};
 //============

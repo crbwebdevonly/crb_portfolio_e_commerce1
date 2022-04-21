@@ -18,6 +18,7 @@ const initialState = {
 	//============
 	//============
 	productsList: [],
+	currentProduct: {},
 	//============
 	//============
 	cartItems: [],
@@ -92,6 +93,25 @@ export const CustomerContextProvider = ({ children }) => {
 	};
 	//============
 	//============
+	const setCurrentProduct = (id) => {
+		dispatch({ type: "FETCH_BEGIN" });
+		try {
+			const findProduct = state.productsList.find((e) => e._id === id);
+			if (!findProduct) {
+				throw new Error("Product NOT found");
+			}
+			dispatch({ type: "SET_CURRENT_PRODUCT", payload: findProduct });
+
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+               setTimeout(() => {
+                    navigate("/productslist")
+               }, 1000);
+		}
+	};
+	//============
+	//============
 	//============
 	//============
 	//============
@@ -147,8 +167,8 @@ export const CustomerContextProvider = ({ children }) => {
 				orderItemsID,
 				orderTotalAmount: state.totalAmount,
 				orderTotalQuantity: state.totalQty,
-                    stringifiedOrderItems:JSON.stringify(state.cartItems),
-                    stringifiedCustomer:JSON.stringify(user)
+				stringifiedOrderItems: JSON.stringify(state.cartItems),
+				stringifiedCustomer: JSON.stringify(user),
 			};
 			console.log(orderData);
 		} catch (error) {
@@ -175,7 +195,7 @@ export const CustomerContextProvider = ({ children }) => {
 	};
 	//============
 	//============
-    
+
 	//============
 	//============
 	//============
@@ -189,6 +209,7 @@ export const CustomerContextProvider = ({ children }) => {
 	const contextValues = {
 		...state,
 		getAllProducts,
+		setCurrentProduct,
 		addItem,
 		addItemWithID,
 		removeItemWithID,

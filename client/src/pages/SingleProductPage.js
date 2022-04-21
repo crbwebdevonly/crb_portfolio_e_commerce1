@@ -1,33 +1,50 @@
 import React from "react";
 import { useState } from "react";
+import { useContext } from "react";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { fakeProducts } from "../fakeProducts";
+import { CustomerContext } from "../context/CustomerContext";
 
 const SingleProductPage = () => {
 	//============
 	//============
 	const { productId } = useParams();
 	//============
-	const [error, setError] = useState(false);
-	const [product, setProduct] = useState({});
-	const { id, title, price, description, category, image, rating } = product;
+	// const [error, setError] = useState(false);
+	// const [product, setProduct] = useState({});
+	const {
+		error,
+		loading,
+		currentProduct,
+		setCurrentProduct,
+		addItemWithID,
+	} = useContext(CustomerContext);
+	const {
+		_id: id,
+		title,
+		price,
+		description,
+		category,
+		image,
+		rating,
+	} = currentProduct;
 
 	//============
 	//============
 	//============
 	useEffect(() => {
 		//   first
-		const fetchProduct = () => {
-			const item = fakeProducts.find(
-				(e) => e.id === Number(productId)
-			);
-			if (item) setProduct(item);
-			else setError(true);
-		};
-		//
-		fetchProduct();
+		// const fetchProduct = () => {
+		// 	const item = fakeProducts.find(
+		// 		(e) => e.id === Number(productId)
+		// 	);
+		// 	if (item) setProduct(item);
+		// 	else setError(true);
+		// };
+		// //
+		// fetchProduct();
+		setCurrentProduct(productId);
 		return () => {
 			//     second
 		};
@@ -35,7 +52,16 @@ const SingleProductPage = () => {
 
 	//============
 
-	console.log(product);
+	//============
+	//============
+	if (loading) return <div className="spinner-border mx-auto d-grid "></div>;
+	if (error)
+		//============
+		return (
+			<h5 className="alert alert-danger">
+				Error occured- getting product
+			</h5>
+		);
 	//============
 	//============
 	//============
@@ -60,7 +86,12 @@ const SingleProductPage = () => {
 				</div>
 				<div className="row align-items-center">
 					<div className="col-6">
-						<button className="btn btn-primary w-50 py-3 ">
+						<button
+							className="btn btn-primary w-50 py-3 "
+							onClick={() => {
+								addItemWithID(id);
+							}}
+						>
 							Buy
 						</button>
 					</div>
