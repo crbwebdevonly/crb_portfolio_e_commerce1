@@ -13,7 +13,7 @@ const AdminOrderItem = (props) => {
 	//============
 	const {
 		_id: id,
-          createdAt,
+		createdAt,
 		customerID,
 		status,
 		issue,
@@ -21,8 +21,50 @@ const AdminOrderItem = (props) => {
 		orderTotalAmount,
 		orderTotalQuantity,
 		stringifiedOrderItems,
-		stringifiedCustomer ,
+		stringifiedCustomer,
 	} = props;
+	//============
+	//============
+	//============
+	const [enableEdit, setEnableEdit] = useState(false);
+	const [orderStatus, setOrderStatus] = useState(status);
+	// const [statusClassName, setStatusClassName] = useState(
+	// 	getStatusClassName()
+	// );
+
+	//============
+	let statusClassName = getStatusClassName();
+	//============
+	//============
+	const handleStatusChange = (e) => {
+		setOrderStatus(e.target.value);
+	};
+	//============
+	//============
+	const handleApplyUpdate = () => {};
+	//============
+	//============
+	useEffect(() => {
+		//   first
+		if (!enableEdit) setOrderStatus(status);
+
+		return () => {
+			//     second
+		};
+	}, [enableEdit]);
+
+	//============
+	//============
+	useEffect(() => {
+		//   first
+		// setStatusClassName(getStatusClassName());
+
+		return () => {
+			//     second
+		};
+	}, [orderStatus]);
+
+	//============
 	//============
 	//============
 
@@ -32,12 +74,12 @@ const AdminOrderItem = (props) => {
 	//============
 	//============
 	function getStatusClassName() {
-		if (status === "processing") return "bg-warning";
-		if (status === "completed") return "bg-success";
-		if (status === "check-issue") return "bg-danger";
+		if (orderStatus === "processing") return "text-warning";
+		if (orderStatus === "completed") return "text-success";
+		if (orderStatus === "check-issue") return "text-danger";
 	}
 	//============
-	const statusClassName = getStatusClassName();
+
 	//============
 	//============
 
@@ -45,79 +87,182 @@ const AdminOrderItem = (props) => {
 	//============
 	return (
 		<StyledWrapper>
-			<Link to={`update-order/${id}`}>
-				<button
-					className="btn btn-danger"
-					onClick={() => {
-						deleteOrder(id);
-					}}
-				>
-					Delete
-				</button>
-				<div className="card p-2">
-					<div className="row my-0 px-1 align-items-center">
-						<div className="col card-header ">
-							OrderID: {id}
-						</div>
-						<div
-							className={
-								"col-3 card-header w-auto " +
-								statusClassName
-							}
-						>
-							Status: {status}
-						</div>
-					</div>
-					<div className=" card-text">Customer Email: {parsedCustomer.email}</div>
-					<div className="card-text">Customer ID:{customerID}</div>
-					<div className="card-text">Order Date:{createdAt}</div>
-					<hr />
-
-					<table className="table table-striped">
-						<thead>
-							<tr>
-								<th scope="col">#</th>
-								<th scope="col">Product</th>
-								<th scope="col">Price</th>
-							</tr>
-						</thead>
-						<tbody>
-							{parsedOrderItems.map((e, i) => (
-								<tr key={i}>
-									<th scope="row">{i + 1}</th>
-									<td>
-										<div className="desc-wrap d-flex">
-											<div className="title">
-												<h6>{e.title}</h6>
-												<p>
-													Product ID:{" "}
-													{e._id}
-												</p>
-											</div>
-											<img
-												src={e.image}
-												alt=""
-											/>
-										</div>
-									</td>
-									<td>
-										<h6>${e.price}</h6>
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
-
-					<div className="price-wrap">
-						<div className="">
-							Items Quantity {orderTotalQuantity}
-						</div>
-						<h5 className="card-title">
-							Total Amount: ${orderTotalAmount}
-						</h5>
-					</div>
+			<div className="card p-2">
+				<div className="input-group input-group-lg mb-0  ">
+					<span className="input-group-text fw-bold">
+						OrderID:
+					</span>
+					<input
+						type="text"
+						className="form-control"
+						disabled
+						value={id}
+					/>
 				</div>
-			</Link>
+				{/* <div className="col card-header ">
+							OrderID: {id}
+						</div> */}
+				<div className="row d-flex2 my-0 px-2 align-items-center">
+					{enableEdit && (
+						<>
+							<div className="col">
+								<button
+									className="btn btn-danger"
+									onClick={() => {
+										deleteOrder(id);
+									}}
+								>
+									Delete Order
+								</button>
+							</div>
+							<div className="col">
+								<button
+									className="btn btn-info"
+									onClick={() => {
+										setEnableEdit(false);
+									}}
+								>
+									Cancel Update
+								</button>
+							</div>
+							<div className="col">
+								<button
+									className="btn btn-warning"
+									onClick={() => {
+										// setEnableEdit(false);
+									}}
+								>
+									Apply Update
+								</button>
+							</div>
+						</>
+					)}
+					{!enableEdit && (
+						<div className="col">
+							<button
+								className="btn btn-warning"
+								onClick={() => {
+									setEnableEdit(true);
+								}}
+							>
+								Enable Update
+							</button>
+						</div>
+					)}
+					<div className="col-md-4 shadow7 border">
+						<label class="form-label ">Order Status</label>
+						<select
+							className={"form-select  " + statusClassName}
+							disabled={!enableEdit}
+							value={orderStatus}
+							onChange={handleStatusChange}
+						>
+							<option
+								className="text-warning"
+								value="processing"
+							>
+								processing
+							</option>
+							<option
+								className="text-success"
+								value="completed"
+							>
+								completed
+							</option>
+							<option
+								className="text-danger"
+								value="check-issue"
+							>
+								check-issue
+							</option>
+						</select>
+					</div>
+					{/* <select
+						className="col form-select  mb-0"
+						disabled={!enableEdit}
+					>
+						<option selected>Open this select menu</option>
+						<option value="1">One</option>
+						<option value="2">Two</option>
+						<option value="3">Three</option>
+					</select> */}
+				</div>
+				<div className="input-group input-group-sm mb-0  ">
+					<span className="input-group-text fw-bold">
+						Customer Email:
+					</span>
+					<input
+						type="text"
+						className="form-control"
+						disabled
+						value={parsedCustomer.email}
+					/>
+				</div>
+				<div className="input-group input-group-sm mb-0  ">
+					<span className="input-group-text fw-bold">
+						Customer ID:
+					</span>
+					<input
+						type="text"
+						className="form-control"
+						disabled
+						value={customerID}
+					/>
+				</div>
+
+				<div className="input-group input-group-sm mb-0  ">
+					<span className="input-group-text fw-bold">
+						Order Date:
+					</span>
+					<input
+						type="text"
+						className="form-control"
+						disabled
+						value={createdAt}
+					/>
+				</div>
+				<hr />
+
+				<table className="table table-striped">
+					<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">Product</th>
+							<th scope="col">Price</th>
+						</tr>
+					</thead>
+					<tbody>
+						{parsedOrderItems.map((e, i) => (
+							<tr key={i}>
+								<th scope="row">{i + 1}</th>
+								<td>
+									<div className="desc-wrap d-flex">
+										<div className="title">
+											<h6>{e.title}</h6>
+											<p>
+												Product ID: {e._id}
+											</p>
+										</div>
+										<img src={e.image} alt="" />
+									</div>
+								</td>
+								<td>
+									<h6>${e.price}</h6>
+								</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+
+				<div className="price-wrap">
+					<div className="">
+						Items Quantity {orderTotalQuantity}
+					</div>
+					<h5 className="card-title">
+						Total Amount: ${orderTotalAmount}
+					</h5>
+				</div>
+			</div>
 		</StyledWrapper>
 	);
 };
@@ -139,7 +284,8 @@ const StyledWrapper = styled.div`
 		margin-left: auto;
 	}
 	&:hover {
-		filter: brightness(0.9);
+		filter: brightness(0.98);
+		box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.3);
 	}
 	a {
 		text-decoration: none;

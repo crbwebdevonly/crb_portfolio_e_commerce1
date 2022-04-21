@@ -236,14 +236,17 @@ export const AdminContextProvider = ({ children }) => {
 	//============
 	//============
 	const deleteOrder = async (id) => {
+		dispatch({ type: "FETCH_BEGIN" });
+
 		try {
 			const reply = await myAxios.delete(
 				`/api/orders/deleteorder/${id}`
 			);
-			dispatch({ type: "DELETE_ORDER_SUCCESS" });
+			dispatch({ type: "DELETE_ORDER_SUCCESS" ,payload:id});
+			dispatch({ type: "FETCH_SUCCESS" });
+
 
 			toast.warning(" Order deleted");
-			// navigate("/admin/products");
 		} catch (error) {
 			toast.error("error deleting");
 			blinkError();

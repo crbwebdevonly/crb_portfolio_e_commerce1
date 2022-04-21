@@ -31,6 +31,14 @@ const AdminOrdersList = () => {
 		);
 	//============
 	//============
+	if (ordersList.length < 1)
+		return (
+			<>
+				<div className="spinner-border mx-auto d-grid "></div>
+				<h1 className="text-center">No orders To Display</h1>
+			</>
+		);
+	//============
 	//============
 	return (
 		<>
@@ -52,9 +60,9 @@ const StyledWrapper = styled.div`
 		display: grid;
 		place-items: center;
 		grid-template-columns: repeat(1, 1fr);
-          gap: 1.5rem;
+		gap: 1.5rem;
 
-		@media screen and (min-width:1050px) {
+		@media screen and (min-width: 1050px) {
 			/* grid-template-columns: repeat(2, 1fr); */
 		}
 		/* @media screen and (min-width: 1050px) {
