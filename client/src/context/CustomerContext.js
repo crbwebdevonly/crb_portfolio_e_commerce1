@@ -1,4 +1,5 @@
 import { useContext, useReducer } from "react";
+import { useState } from "react";
 import { useEffect } from "react";
 import { createContext } from "react";
 import { useNavigate } from "react-router-dom";
@@ -33,6 +34,9 @@ const initialState = {
 	filterQuery: initialFilterQuery,
 	//============
 	//============
+	paginatorData: { itemsPerPage: 10, currentPage: 1, hitsCount: null },
+	//============
+	//============
 	cartItems: [],
 	showMiniCart: false,
 	totalQty: 0,
@@ -54,6 +58,9 @@ export const CustomerContextProvider = ({ children }) => {
 	const [state, dispatch] = useReducer(CustomerContextReducer, initialState);
 	//============
 	//============
+	const [filterRefreshTrigger, setFilterRefreshTrigger] = useState(false);
+	//============
+	//============
 	const navigate = useNavigate();
 	//============
 	//============
@@ -70,6 +77,19 @@ export const CustomerContextProvider = ({ children }) => {
 
 	//============
 	//============
+	useEffect(() => {
+		//   refetch products upon paginator data changes
+		// and filter apply
+		getProductsWithQuery();
+
+		return () => {
+			//     second
+		};
+	}, [
+		state.paginatorData.itemsPerPage,
+		state.paginatorData.currentPage,
+		filterRefreshTrigger,
+	]);
 
 	//============
 	//============
@@ -113,7 +133,19 @@ export const CustomerContextProvider = ({ children }) => {
 	};
 	//============
 	//============
+	//============
+	//============
+	const handleApplyFilter = (e) => {
+		//
+		// change currentpage to 1.....page change trigers re-fetch
+		setCurrentPage(1);
+		// refresh trigger ??needed?? yes--when current page is already 1
+		setFilterRefreshTrigger((p) => !p);
+	};
+	//============
+	//============
 	const handleClearFilter = () => {
+		setCurrentPage(1);
 		dispatch({ type: "RESET_FILTER_QUERY", payload: initialFilterQuery });
 		getProductsWithQuery("clearFilter");
 	};
@@ -124,18 +156,35 @@ export const CustomerContextProvider = ({ children }) => {
 			arg === "clearFilter" ? initialFilterQuery : state.filterQuery;
 		console.log(query, "query");
 		const { search, minPrice, maxPrice, sort } = query;
-		let qstring = `/api/products/getproductswithquery?search=${search}&minPrice=${minPrice}&maxPrice=${maxPrice}&sort=${sort}`;
+		const { itemsPerPage, currentPage, hitsCount } = state.paginatorData;
+
+		let qstring = `/api/products/getproductswithquery?search=${search}&minPrice=${minPrice}&maxPrice=${maxPrice}&sort=${sort}&currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`;
 
 		dispatch({ type: "FETCH_BEGIN" });
 
 		try {
 			const reply = await myAxios.get(qstring);
-			dispatch({ type: "GET_ALL_PRODUCTS", payload: reply.data });
+			dispatch({
+				type: "GET_ALL_PRODUCTS_WITH_QUERY",
+				payload: reply.data,
+			});
 			dispatch({ type: "FETCH_SUCCESS" });
 		} catch (error) {
 			dispatch({ type: "FETCH_ERROR" });
 			// console.log(error);
 		}
+	};
+	//============
+	//============
+	const setItemsPerPage = (arg) => {
+		dispatch({ type: "SET_ITEMS_PER_PAGE", payload: arg });
+	};
+	//============
+	//============
+	//============
+	//============
+	const setCurrentPage = (arg) => {
+		dispatch({ type: "SET_CURRENT_PAGE", payload: arg });
 	};
 	//============
 	//============
@@ -258,9 +307,12 @@ export const CustomerContextProvider = ({ children }) => {
 		...state,
 		getAllProducts,
 		handleFilterQueryChange,
+		handleApplyFilter,
 		handleClearFilter,
 		getProductsWithQuery,
+		setItemsPerPage,
 		setCurrentProduct,
+		setCurrentPage,
 		addItem,
 		addItemWithID,
 		removeItemWithID,

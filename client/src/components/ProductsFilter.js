@@ -10,8 +10,7 @@ const ProductsFilter = () => {
 		handleFilterQueryChange,
 		filterQuery,
 		handleClearFilter,
-		getProductsWithQuery,
-		getAllProducts,
+		handleApplyFilter,
 	} = useContext(CustomerContext);
 	//============
 	const { search, minPrice, maxPrice, sort } = filterQuery;
@@ -109,7 +108,7 @@ const ProductsFilter = () => {
 						<div className="row justify-content-end g-1">
 							<button
 								className="btn   btn-info col-6 col-md-3"
-								onClick={getProductsWithQuery}
+								onClick={handleApplyFilter}
 							>
 								Apply Filter
 							</button>

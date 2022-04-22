@@ -32,6 +32,22 @@ export const CustomerContextReducer = (state, action) => {
 	}
 	//============
 	//============
+     //============
+	//============
+	if (action.type === "GET_ALL_PRODUCTS_WITH_QUERY") {
+		return {
+			...state,
+			productsList: action.payload.result,
+			loading: false,
+			error: false,
+               paginatorData: {
+				...state.paginatorData,
+				hitsCount: action.payload.hitsCount,
+			},
+		};
+	}
+	//============
+	//============
 	//============
 	if (action.type === "SET_CURRENT_PRODUCT") {
 		return {
@@ -84,6 +100,32 @@ export const CustomerContextReducer = (state, action) => {
 		return {
 			...state,
 			filterQuery: action.payload,
+		};
+	}
+	//============
+	//============
+	//============
+	//============
+	if (action.type === "SET_ITEMS_PER_PAGE") {
+		return {
+			...state,
+			paginatorData: {
+				...state.paginatorData,
+				itemsPerPage: action.payload,
+			},
+		};
+	}
+	//============
+	//============
+     //============
+	//============
+	if (action.type === "SET_CURRENT_PAGE") {
+		return {
+			...state,
+			paginatorData: {
+				...state.paginatorData,
+				currentPage: action.payload,
+			},
 		};
 	}
 	//============

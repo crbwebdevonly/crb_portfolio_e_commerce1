@@ -63,6 +63,10 @@ const handleGetProductsWithQuery = async (req, res) => {
 		queryObject.title = { $regex: search, $options: "i" };
 	}
 	console.log(queryObject, "q-obj");
+	//============
+	const hitsCount = await ProductModel.countDocuments(queryObject);
+	//============
+	//============
 	// use let for sorting!! and NO wait
 	let result = ProductModel.find(queryObject);
 	// use let for sorting!! and NO wait
@@ -81,9 +85,14 @@ const handleGetProductsWithQuery = async (req, res) => {
 	if (sort === "titleZA") {
 		result = result.sort({ title: -1 });
 	}
-
+	// paginate
+	const page = Number(currentPage) || 1;
+	const limit = Number(itemsPerPage) || 10;
+	const skip = (page - 1) * limit;
+	//============
+	result = result.skip(skip).limit(limit);
 	result = await result;
-	res.status(200).json(result);
+	res.status(200).json({ hitsCount, result });
 };
 //============
 //============

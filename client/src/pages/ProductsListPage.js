@@ -9,13 +9,19 @@ import { CustomerContext } from "../context/CustomerContext";
 
 const ProductsListPage = ({ admin }) => {
 	//============
-	const { loading, error, getAllProducts, productsList } =
-		useContext(CustomerContext);
+	const {
+		loading,
+		error,
+		getAllProducts,
+		productsList,
+		getProductsWithQuery,
+	} = useContext(CustomerContext);
 	//============
 	//============
 	useEffect(() => {
 		//   first
-		getAllProducts();
+		// getAllProducts();
+		getProductsWithQuery();
 		return () => {
 			//     second
 		};
@@ -49,7 +55,7 @@ const ProductsListPage = ({ admin }) => {
 					<ProductItem key={i} {...e} />
 				))}
 			</div>
-			<Paginator />
+			<Paginator bottom/>
 		</StyledWrapper>
 	);
 };

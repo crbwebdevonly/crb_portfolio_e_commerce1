@@ -1,18 +1,62 @@
 import React from "react";
+import { useState } from "react";
+import { useEffect } from "react";
+import { useContext } from "react";
+import { CustomerContext } from "../context/CustomerContext";
 
-const Paginator = () => {
+const Paginator = (props) => {
+	const { bottom } = props;
+	//============
+	//============
+	const { paginatorData, setItemsPerPage, setCurrentPage } =
+		useContext(CustomerContext);
+	//============
+	const { itemsPerPage, currentPage, hitsCount } = paginatorData;
+	//============
+	//============
+	// const [numPages, setNumPages] = useState(1);
+	const [pagesList, setPagesList] = useState([]);
+	//============
+	//============
+	//============
+	//============
+	useEffect(() => {
+		//   first
+		let pages = 1;
+		if (hitsCount) pages = Math.ceil(hitsCount / itemsPerPage);
+		setPagesList(Array.from({ length: pages }, (_, i) => i + 1));
+		return () => {
+			//     second
+		};
+	}, [hitsCount]);
+
+	//============
+	//============
+	if (!hitsCount) return <></>;
+	//============
+	//============
 	return (
 		<div className="container">
 			<div className="row justify-content-between">
 				<div className="col col-md-6">
 					<ul className="pagination pagination-sm">
-						<li
-							className="page-item active"
-							aria-current="page"
-						>
-							<span className="page-link">1</span>
-						</li>
-						<li className="page-item">
+						{pagesList.map((e, i) => (
+							<li
+								key={i}
+								className={
+									currentPage === e
+										? "page-item " + "active"
+										: "page-item "
+								}
+								role="button"
+								onClick={() => {
+									setCurrentPage(e);
+								}}
+							>
+								<span className="page-link">{e}</span>
+							</li>
+						))}
+						{/* <li className="page-item">
 							<a className="page-link" href="#">
 								2
 							</a>
@@ -21,25 +65,31 @@ const Paginator = () => {
 							<a className="page-link" href="#">
 								3
 							</a>
-						</li>
+						</li> */}
 					</ul>
 				</div>
-				<div className="col col-md-6">
-					<div className="input-group mb-0">
-						<label class="input-group-text">
-							Items per page
-						</label>
-						<select
-							className="form-select"
-							id="inputGroupSelect01"
-						>
-							<option selected>Choose...</option>
-							<option value="1">One</option>
-							<option value="2">Two</option>
-							<option value="3">Three</option>
-						</select>
+				{!bottom && (
+					<div className="col col-md-6">
+						<div className="input-group mb-0">
+							<label className="input-group-text">
+								Items per page
+							</label>
+							<select
+								className="form-select"
+								value={itemsPerPage}
+								onChange={(e) => {
+									setItemsPerPage(
+										Number(e.target.value)
+									);
+								}}
+							>
+								<option value="5">5</option>
+								<option value="10">10</option>
+								<option value="15">15</option>
+							</select>
+						</div>
 					</div>
-				</div>
+				)}
 			</div>
 		</div>
 	);
