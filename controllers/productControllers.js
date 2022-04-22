@@ -41,7 +41,7 @@ const handleGetAllProducts = async (req, res) => {
 //============
 const handleGetProductsWithQuery = async (req, res) => {
 	console.log(req.query);
-	let { search, minPrice, maxPrice, itemsPerPage, sorting, currentPage } =
+	let { search, minPrice, maxPrice, itemsPerPage, sort, currentPage } =
 		req.query;
 	// build query object---maybe not use try catch!!!!???
 	minPrice = Number(minPrice) || 0;
@@ -54,7 +54,7 @@ const handleGetProductsWithQuery = async (req, res) => {
 		if (minPrice > maxPrice || minPrice === maxPrice) {
 			minPrice = 0;
 		}
-         
+
 		queryObject.price = { $gt: minPrice, $lt: maxPrice };
 	} else if (!minPrice && maxPrice) {
 		queryObject.price = { $lt: maxPrice };
@@ -63,19 +63,26 @@ const handleGetProductsWithQuery = async (req, res) => {
 		queryObject.title = { $regex: search, $options: "i" };
 	}
 	console.log(queryObject, "q-obj");
-	// use let for sorting!!
-	let result = await ProductModel.find(queryObject);
-	// try {
-	// 	if (search) {
-	// 		result = await ProductModel.find({
-	// 			title: { $regex: search ,$options: "i"},
-	// 		});
-	// 	}
-	// 	res.status(200).json(result);
-	// } catch (error) {
-	// 	res.status(500).json({ msg: "error getting all products", error });
-	// }
+	// use let for sorting!! and NO wait
+	let result = ProductModel.find(queryObject);
+	// use let for sorting!! and NO wait
 
+	if (sort === "priceLow") {
+		result = result.sort({ price: 1 });
+		// result = result.sort("price");
+	}
+	if (sort === "priceHigh") {
+		result = result.sort({ price: -1 });
+		// result = result.sort("-price");
+	}
+	if (sort === "titleAZ") {
+		result = result.sort({ title: 1 });
+	}
+	if (sort === "titleZA") {
+		result = result.sort({ title: -1 });
+	}
+
+	result = await result;
 	res.status(200).json(result);
 };
 //============

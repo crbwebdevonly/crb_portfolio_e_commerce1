@@ -109,23 +109,23 @@ export const CustomerContextProvider = ({ children }) => {
 	const handleFilterQueryChange = (e) => {
 		const name = e.target.name;
 		let value = e.target.value;
-		if (name === "minPrice") value = Number(value);
-		if (name === "maxPrice") value = Number(value);
 		dispatch({ type: "FILTER_QUERY_CHANGE", payload: { name, value } });
-		// setQuery((p) => ({ ...p, [name]: value }));
 	};
 	//============
 	//============
 	const handleClearFilter = () => {
 		dispatch({ type: "RESET_FILTER_QUERY", payload: initialFilterQuery });
+		getProductsWithQuery("clearFilter");
 	};
 	//============
 	//============
-	const getProductsWithQuery = async () => {
-		const query = state.filterQuery;
-		const { search, minPrice, maxPrice } = query;
-		let qstring = `/api/products/getproductswithquery?search=${search}&minPrice=${minPrice}&maxPrice=${maxPrice}`;
-		
+	const getProductsWithQuery = async (arg) => {
+		const query =
+			arg === "clearFilter" ? initialFilterQuery : state.filterQuery;
+		console.log(query, "query");
+		const { search, minPrice, maxPrice, sort } = query;
+		let qstring = `/api/products/getproductswithquery?search=${search}&minPrice=${minPrice}&maxPrice=${maxPrice}&sort=${sort}`;
+
 		dispatch({ type: "FETCH_BEGIN" });
 
 		try {

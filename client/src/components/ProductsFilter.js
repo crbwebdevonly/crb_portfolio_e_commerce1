@@ -16,30 +16,7 @@ const ProductsFilter = () => {
 	//============
 	const { search, minPrice, maxPrice, sort } = filterQuery;
 	//============
-	// const initialQuery = {
-	// 	search: "",
-	// 	minPrice: 0,
-	// 	maxPrice: 0,
-	// 	sort: "priceLow",
-	// };
-	// const [query, setQuery] = useState(initialQuery);
-	//============
-	//============
 
-	//============
-	//============
-	//============
-	//============
-	// const handleFilterQueryChange = (e) => {
-	// 	const name = e.target.name;
-	// 	let value = e.target.value;
-	// 	if (name === "minPrice") value = Number(value);
-	// 	if (name === "maxPrice") value = Number(value);
-	// 	setQuery((p) => ({ ...p, [name]: value }));
-	// };
-	//============
-	// console.log(query);
-	//============
 	//============
 
 	//============

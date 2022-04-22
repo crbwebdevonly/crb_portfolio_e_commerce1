@@ -44,12 +44,46 @@ export const CustomerContextReducer = (state, action) => {
 	//============
 	//============
 	if (action.type === "FILTER_QUERY_CHANGE") {
+		let { name, value } = action.payload;
+		if (name === "minPrice" || name === "maxPrice") value = Number(value);
+		if (name === "minPrice") {
+			if (value >= state.filterQuery.maxPrice) {
+				return {
+					...state,
+					filterQuery: {
+						...state.filterQuery,
+						[name]: value,
+						maxPrice: 0,
+					},
+				};
+			}
+		}
+		if (name === "maxPrice") {
+			if (value <= state.filterQuery.minPrice) {
+				return {
+					...state,
+					filterQuery: {
+						...state.filterQuery,
+						[name]: value,
+						minPrice: 0,
+					},
+				};
+			}
+		}
 		return {
 			...state,
 			filterQuery: {
 				...state.filterQuery,
-				[action.payload.name]: action.payload.value,
+				[name]: value,
 			},
+		};
+	}
+	//============
+	//============
+	if (action.type === "RESET_FILTER_QUERY") {
+		return {
+			...state,
+			filterQuery: action.payload,
 		};
 	}
 	//============
