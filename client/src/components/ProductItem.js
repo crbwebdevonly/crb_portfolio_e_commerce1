@@ -67,7 +67,7 @@ const ProductItem = (props) => {
 					</div>
 					<h5 className="card-title">${price}</h5>
 					{showAddedtoCart && (
-						<div class="alert alert-success m-0">
+						<div className="alert alert-success m-0">
 							Added to Cart
 						</div>
 					)}

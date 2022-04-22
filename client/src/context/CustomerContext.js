@@ -154,7 +154,6 @@ export const CustomerContextProvider = ({ children }) => {
 	const getProductsWithQuery = async (arg) => {
 		const query =
 			arg === "clearFilter" ? initialFilterQuery : state.filterQuery;
-		console.log(query, "query");
 		const { search, minPrice, maxPrice, sort } = query;
 		const { itemsPerPage, currentPage, hitsCount } = state.paginatorData;
 
@@ -178,6 +177,8 @@ export const CustomerContextProvider = ({ children }) => {
 	//============
 	const setItemsPerPage = (arg) => {
 		dispatch({ type: "SET_ITEMS_PER_PAGE", payload: arg });
+          // must also change current page to 1
+          setCurrentPage(1)
 	};
 	//============
 	//============
@@ -267,7 +268,6 @@ export const CustomerContextProvider = ({ children }) => {
 				stringifiedOrderItems: JSON.stringify(state.cartItems),
 				stringifiedCustomer: JSON.stringify(user),
 			};
-			console.log(orderData);
 		} catch (error) {
 			toast.error(error.message);
 			return;

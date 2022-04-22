@@ -15,13 +15,18 @@ const ProductsListPage = ({ admin }) => {
 		getAllProducts,
 		productsList,
 		getProductsWithQuery,
+		handleClearFilter,
 	} = useContext(CustomerContext);
 	//============
 	//============
 	useEffect(() => {
 		//   first
-		// getAllProducts();
-		getProductsWithQuery();
+		// must reset filters/pagination
+		// fetch will auto run beacuse of that
+		handleClearFilter();
+		// or do clear fetch
+		// getProductsWithQuery("clear");
+		// getProductsWithQuery();
 		return () => {
 			//     second
 		};
@@ -55,7 +60,7 @@ const ProductsListPage = ({ admin }) => {
 					<ProductItem key={i} {...e} />
 				))}
 			</div>
-			<Paginator bottom/>
+			<Paginator bottom />
 		</StyledWrapper>
 	);
 };
