@@ -44,14 +44,17 @@ const handleGetProductsWithQuery = async (req, res) => {
 	let { search, minPrice, maxPrice, itemsPerPage, sorting, currentPage } =
 		req.query;
 	// build query object---maybe not use try catch!!!!???
+	minPrice = Number(minPrice) || 0;
+	maxPrice = Number(maxPrice) || 0;
+
 	const queryObject = {};
 	if (minPrice && !maxPrice) {
 		queryObject.price = { $gt: minPrice };
 	} else if (minPrice && maxPrice) {
-		if (minPrice > maxPrice) {
-			// delete queryObject.minPrice;
+		if (minPrice > maxPrice || minPrice === maxPrice) {
 			minPrice = 0;
 		}
+         
 		queryObject.price = { $gt: minPrice, $lt: maxPrice };
 	} else if (!minPrice && maxPrice) {
 		queryObject.price = { $lt: maxPrice };

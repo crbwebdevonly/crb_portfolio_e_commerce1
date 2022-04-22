@@ -32,7 +32,7 @@ export const CustomerContextReducer = (state, action) => {
 	}
 	//============
 	//============
-     	//============
+	//============
 	if (action.type === "SET_CURRENT_PRODUCT") {
 		return {
 			...state,
@@ -40,6 +40,18 @@ export const CustomerContextReducer = (state, action) => {
 		};
 	}
 	//============
+	//============
+	//============
+	//============
+	if (action.type === "FILTER_QUERY_CHANGE") {
+		return {
+			...state,
+			filterQuery: {
+				...state.filterQuery,
+				[action.payload.name]: action.payload.value,
+			},
+		};
+	}
 	//============
 	//============
 	//============
@@ -93,7 +105,7 @@ export const CustomerContextReducer = (state, action) => {
 			amt += e.price;
 		});
 		totalAmount = Number(amt.toFixed(2));
-          
+
 		return { ...state, cartItems, totalQty, totalAmount };
 	}
 	if (action.type === "TOGGLE_MINI_CART") {
@@ -103,8 +115,6 @@ export const CustomerContextReducer = (state, action) => {
 		return { ...state, cartItems: [], totalQty: 0, totalAmount: 0 };
 	}
 	if (action.type === "ORDER_SUBMIT_SUCCESS") {
-          return { ...state, cartItems: [], totalQty: 0, totalAmount: 0 };
-     }
-     
-     else return state;
+		return { ...state, cartItems: [], totalQty: 0, totalAmount: 0 };
+	} else return state;
 };

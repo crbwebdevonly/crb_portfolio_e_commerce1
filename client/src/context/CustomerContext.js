@@ -12,6 +12,15 @@ import { CustomerContextReducer } from "./CustomerContextReducer";
 export const CustomerContext = createContext();
 //============
 //============
+const initialFilterQuery = {
+	search: "",
+	minPrice: 0,
+	maxPrice: 0,
+	sort: "priceLow",
+};
+//============
+//============
+//============
 const initialState = {
 	loading: false,
 	error: false,
@@ -19,6 +28,9 @@ const initialState = {
 	//============
 	productsList: [],
 	currentProduct: {},
+	//============
+	//============
+	filterQuery: initialFilterQuery,
 	//============
 	//============
 	cartItems: [],
@@ -93,24 +105,31 @@ export const CustomerContextProvider = ({ children }) => {
 	};
 	//============
 	//============
-	const getProductsWithQuery = async (query) => {
-		console.log(query, "received");
-		let qstring = "/api/products/getproductswithquery?";
-		let q = qstring;
-		if (Object.entries(query).length < 1) return;
-		Object.entries(query).forEach((e) => {
-			if (e[1]) {
-				q += `${e[0]}=${e[1]}&`;
-			}
-		});
-		console.log(qstring);
-		console.log(q, "result");
-		console.log(qstring === q);
-		// return;
+	//============
+	const handleFilterQueryChange = (e) => {
+		const name = e.target.name;
+		let value = e.target.value;
+		if (name === "minPrice") value = Number(value);
+		if (name === "maxPrice") value = Number(value);
+		dispatch({ type: "FILTER_QUERY_CHANGE", payload: { name, value } });
+		// setQuery((p) => ({ ...p, [name]: value }));
+	};
+	//============
+	//============
+	const handleClearFilter = () => {
+		dispatch({ type: "RESET_FILTER_QUERY", payload: initialFilterQuery });
+	};
+	//============
+	//============
+	const getProductsWithQuery = async () => {
+		const query = state.filterQuery;
+		const { search, minPrice, maxPrice } = query;
+		let qstring = `/api/products/getproductswithquery?search=${search}&minPrice=${minPrice}&maxPrice=${maxPrice}`;
+		
 		dispatch({ type: "FETCH_BEGIN" });
 
 		try {
-			const reply = await myAxios.get(q);
+			const reply = await myAxios.get(qstring);
 			dispatch({ type: "GET_ALL_PRODUCTS", payload: reply.data });
 			dispatch({ type: "FETCH_SUCCESS" });
 		} catch (error) {
@@ -238,6 +257,8 @@ export const CustomerContextProvider = ({ children }) => {
 	const contextValues = {
 		...state,
 		getAllProducts,
+		handleFilterQueryChange,
+		handleClearFilter,
 		getProductsWithQuery,
 		setCurrentProduct,
 		addItem,
