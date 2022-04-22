@@ -1,4 +1,5 @@
 import { useContext, useReducer } from "react";
+import { useState } from "react";
 import { useEffect } from "react";
 import { createContext } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,12 +13,28 @@ import { CustomerContextReducer } from "./CustomerContextReducer";
 export const CustomerContext = createContext();
 //============
 //============
+const initialFilterQuery = {
+	search: "",
+	minPrice: 0,
+	maxPrice: 0,
+	sort: "priceLow",
+};
+//============
+//============
+//============
 const initialState = {
 	loading: false,
 	error: false,
 	//============
 	//============
 	productsList: [],
+	currentProduct: {},
+	//============
+	//============
+	filterQuery: initialFilterQuery,
+	//============
+	//============
+	paginatorData: { itemsPerPage: 10, currentPage: 1, hitsCount: null },
 	//============
 	//============
 	cartItems: [],
@@ -41,6 +58,9 @@ export const CustomerContextProvider = ({ children }) => {
 	const [state, dispatch] = useReducer(CustomerContextReducer, initialState);
 	//============
 	//============
+	const [filterRefreshTrigger, setFilterRefreshTrigger] = useState(false);
+	//============
+	//============
 	const navigate = useNavigate();
 	//============
 	//============
@@ -57,6 +77,19 @@ export const CustomerContextProvider = ({ children }) => {
 
 	//============
 	//============
+	useEffect(() => {
+		//   refetch products upon paginator data changes
+		// and filter apply
+		getProductsWithQuery();
+
+		return () => {
+			//     second
+		};
+	}, [
+		state.paginatorData.itemsPerPage,
+		state.paginatorData.currentPage,
+		filterRefreshTrigger,
+	]);
 
 	//============
 	//============
@@ -88,6 +121,90 @@ export const CustomerContextProvider = ({ children }) => {
 		} catch (error) {
 			dispatch({ type: "FETCH_ERROR" });
 			// console.log(error);
+		}
+	};
+	//============
+	//============
+	//============
+	const handleFilterQueryChange = (e) => {
+		const name = e.target.name;
+		let value = e.target.value;
+		dispatch({ type: "FILTER_QUERY_CHANGE", payload: { name, value } });
+	};
+	//============
+	//============
+	//============
+	//============
+	const handleApplyFilter = (e) => {
+		//
+		// change currentpage to 1.....page change trigers re-fetch
+		setCurrentPage(1);
+		// refresh trigger ??needed?? yes--when current page is already 1
+		setFilterRefreshTrigger((p) => !p);
+	};
+	//============
+	//============
+	const handleClearFilter = () => {
+		setCurrentPage(1);
+		dispatch({ type: "RESET_FILTER_QUERY", payload: initialFilterQuery });
+		getProductsWithQuery("clearFilter");
+	};
+	//============
+	//============
+	const getProductsWithQuery = async (arg) => {
+		const query =
+			arg === "clearFilter" ? initialFilterQuery : state.filterQuery;
+		console.log(query, "query");
+		const { search, minPrice, maxPrice, sort } = query;
+		const { itemsPerPage, currentPage, hitsCount } = state.paginatorData;
+
+		let qstring = `/api/products/getproductswithquery?search=${search}&minPrice=${minPrice}&maxPrice=${maxPrice}&sort=${sort}&currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`;
+
+		dispatch({ type: "FETCH_BEGIN" });
+
+		try {
+			const reply = await myAxios.get(qstring);
+			dispatch({
+				type: "GET_ALL_PRODUCTS_WITH_QUERY",
+				payload: reply.data,
+			});
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+			// console.log(error);
+		}
+	};
+	//============
+	//============
+	const setItemsPerPage = (arg) => {
+		dispatch({ type: "SET_ITEMS_PER_PAGE", payload: arg });
+	};
+	//============
+	//============
+	//============
+	//============
+	const setCurrentPage = (arg) => {
+		dispatch({ type: "SET_CURRENT_PAGE", payload: arg });
+	};
+	//============
+	//============
+	//============
+	//============
+	const setCurrentProduct = (id) => {
+		dispatch({ type: "FETCH_BEGIN" });
+		try {
+			const findProduct = state.productsList.find((e) => e._id === id);
+			if (!findProduct) {
+				throw new Error("Product NOT found");
+			}
+			dispatch({ type: "SET_CURRENT_PRODUCT", payload: findProduct });
+
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+			setTimeout(() => {
+				navigate("/productslist");
+			}, 1000);
 		}
 	};
 	//============
@@ -147,8 +264,8 @@ export const CustomerContextProvider = ({ children }) => {
 				orderItemsID,
 				orderTotalAmount: state.totalAmount,
 				orderTotalQuantity: state.totalQty,
-                    stringifiedOrderItems:JSON.stringify(state.cartItems),
-                    stringifiedCustomer:JSON.stringify(user)
+				stringifiedOrderItems: JSON.stringify(state.cartItems),
+				stringifiedCustomer: JSON.stringify(user),
 			};
 			console.log(orderData);
 		} catch (error) {
@@ -175,7 +292,7 @@ export const CustomerContextProvider = ({ children }) => {
 	};
 	//============
 	//============
-    
+
 	//============
 	//============
 	//============
@@ -189,6 +306,13 @@ export const CustomerContextProvider = ({ children }) => {
 	const contextValues = {
 		...state,
 		getAllProducts,
+		handleFilterQueryChange,
+		handleApplyFilter,
+		handleClearFilter,
+		getProductsWithQuery,
+		setItemsPerPage,
+		setCurrentProduct,
+		setCurrentPage,
 		addItem,
 		addItemWithID,
 		removeItemWithID,

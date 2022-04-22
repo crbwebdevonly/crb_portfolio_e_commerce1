@@ -127,7 +127,16 @@ export const AdminContextReducer = (state, action) => {
 				ordersList: state.ordersList.filter(
 					(e) => e._id !== action.payload
 				),
-				
+			};
+		}
+		case "UPDATE_ORDER_SUCCESS": {
+			let updatedList = state.ordersList.map((e) => {
+				if (e._id === action.payload._id) return action.payload;
+				return e;
+			});
+			return {
+				...state,
+				ordersList: updatedList,
 			};
 		}
 

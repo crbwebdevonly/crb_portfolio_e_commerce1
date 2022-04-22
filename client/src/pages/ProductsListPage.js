@@ -2,18 +2,26 @@ import React from "react";
 import { useEffect } from "react";
 import { useContext } from "react";
 import styled from "styled-components";
+import Paginator from "../components/Paginator";
 import ProductItem from "../components/ProductItem";
+import ProductsFilter from "../components/ProductsFilter";
 import { CustomerContext } from "../context/CustomerContext";
 
 const ProductsListPage = ({ admin }) => {
 	//============
-	const { loading, error, getAllProducts, productsList } =
-		useContext(CustomerContext);
+	const {
+		loading,
+		error,
+		getAllProducts,
+		productsList,
+		getProductsWithQuery,
+	} = useContext(CustomerContext);
 	//============
 	//============
 	useEffect(() => {
 		//   first
-		getAllProducts();
+		// getAllProducts();
+		getProductsWithQuery();
 		return () => {
 			//     second
 		};
@@ -40,12 +48,14 @@ const ProductsListPage = ({ admin }) => {
 	//============
 	return (
 		<StyledWrapper>
-			<div>ProductsListPage</div>
+			<ProductsFilter />
+			<Paginator />
 			<div className="all-products-container ">
 				{productsList.map((e, i) => (
 					<ProductItem key={i} {...e} />
 				))}
 			</div>
+			<Paginator bottom/>
 		</StyledWrapper>
 	);
 };
@@ -53,9 +63,16 @@ const ProductsListPage = ({ admin }) => {
 export default ProductsListPage;
 
 const StyledWrapper = styled.div`
-	border: 1px solid blue;
+	/* border: 1px solid blue; */
 	margin: 5px 0;
+
+	/* display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center; */
+
 	.all-products-container {
+		/* flex:5; */
 		padding: 20px;
 		display: grid;
 		place-items: center;

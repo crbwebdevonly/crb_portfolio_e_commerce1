@@ -9,7 +9,7 @@ import { AdminContext } from "../context/AdminContext";
 const AdminOrderItem = (props) => {
 	//============
 	//============
-	const { deleteOrder } = useContext(AdminContext);
+	const { deleteOrder, updateOrder } = useContext(AdminContext);
 	//============
 	const {
 		_id: id,
@@ -129,7 +129,9 @@ const AdminOrderItem = (props) => {
 								<button
 									className="btn btn-warning"
 									onClick={() => {
-										// setEnableEdit(false);
+										updateOrder(id, {
+											status: orderStatus,
+										});
 									}}
 								>
 									Apply Update
@@ -150,7 +152,9 @@ const AdminOrderItem = (props) => {
 						</div>
 					)}
 					<div className="col-md-4 shadow7 border">
-						<label class="form-label ">Order Status</label>
+						<label className="form-label ">
+							Order Status
+						</label>
 						<select
 							className={"form-select  " + statusClassName}
 							disabled={!enableEdit}

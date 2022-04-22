@@ -39,6 +39,65 @@ const handleGetAllProducts = async (req, res) => {
 //============
 //============
 //============
+const handleGetProductsWithQuery = async (req, res) => {
+	console.log(req.query);
+	let { search, minPrice, maxPrice, itemsPerPage, sort, currentPage } =
+		req.query;
+	// build query object---maybe not use try catch!!!!???
+	minPrice = Number(minPrice) || 0;
+	maxPrice = Number(maxPrice) || 0;
+
+	const queryObject = {};
+	if (minPrice && !maxPrice) {
+		queryObject.price = { $gt: minPrice };
+	} else if (minPrice && maxPrice) {
+		if (minPrice > maxPrice || minPrice === maxPrice) {
+			minPrice = 0;
+		}
+
+		queryObject.price = { $gt: minPrice, $lt: maxPrice };
+	} else if (!minPrice && maxPrice) {
+		queryObject.price = { $lt: maxPrice };
+	}
+	if (search) {
+		queryObject.title = { $regex: search, $options: "i" };
+	}
+	console.log(queryObject, "q-obj");
+	//============
+	const hitsCount = await ProductModel.countDocuments(queryObject);
+	//============
+	//============
+	// use let for sorting!! and NO wait
+	let result = ProductModel.find(queryObject);
+	// use let for sorting!! and NO wait
+
+	if (sort === "priceLow") {
+		result = result.sort({ price: 1 });
+		// result = result.sort("price");
+	}
+	if (sort === "priceHigh") {
+		result = result.sort({ price: -1 });
+		// result = result.sort("-price");
+	}
+	if (sort === "titleAZ") {
+		result = result.sort({ title: 1 });
+	}
+	if (sort === "titleZA") {
+		result = result.sort({ title: -1 });
+	}
+	// paginate
+	const page = Number(currentPage) || 1;
+	const limit = Number(itemsPerPage) || 10;
+	const skip = (page - 1) * limit;
+	//============
+	result = result.skip(skip).limit(limit);
+	result = await result;
+	res.status(200).json({ hitsCount, result });
+};
+//============
+//============
+//============
+//============
 const handleGetOneProduct = async (req, res) => {
 	try {
 		const reply = await ProductModel.findById(req.params.id);
@@ -104,6 +163,7 @@ const handleDeleteProduct = async (req, res) => {
 module.exports = {
 	handleProductsSeed,
 	handleGetAllProducts,
+	handleGetProductsWithQuery,
 	handleGetOneProduct,
 	handleUpdateProduct,
 	handleAddNewProduct,

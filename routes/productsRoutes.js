@@ -6,6 +6,7 @@ const {
 	handleUpdateProduct,
 	handleAddNewProduct,
      handleDeleteProduct,
+     handleGetProductsWithQuery,
 } = require("../controllers/productControllers");
 const productsRouter = express.Router();
 //============
@@ -20,6 +21,7 @@ productsRouter.post("/seed-products", handleProductsSeed);
 productsRouter.post("/add-new-product", handleAddNewProduct);
 //============
 productsRouter.get("/getallproducts", handleGetAllProducts);
+productsRouter.get("/getproductswithquery", handleGetProductsWithQuery);
 //============
 productsRouter.get("/getoneproduct/:id", handleGetOneProduct);
 //============

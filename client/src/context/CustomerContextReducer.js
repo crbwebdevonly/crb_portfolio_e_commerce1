@@ -32,7 +32,102 @@ export const CustomerContextReducer = (state, action) => {
 	}
 	//============
 	//============
+     //============
 	//============
+	if (action.type === "GET_ALL_PRODUCTS_WITH_QUERY") {
+		return {
+			...state,
+			productsList: action.payload.result,
+			loading: false,
+			error: false,
+               paginatorData: {
+				...state.paginatorData,
+				hitsCount: action.payload.hitsCount,
+			},
+		};
+	}
+	//============
+	//============
+	//============
+	if (action.type === "SET_CURRENT_PRODUCT") {
+		return {
+			...state,
+			currentProduct: action.payload,
+		};
+	}
+	//============
+	//============
+	//============
+	//============
+	if (action.type === "FILTER_QUERY_CHANGE") {
+		let { name, value } = action.payload;
+		if (name === "minPrice" || name === "maxPrice") value = Number(value);
+		if (name === "minPrice") {
+			if (value >= state.filterQuery.maxPrice) {
+				return {
+					...state,
+					filterQuery: {
+						...state.filterQuery,
+						[name]: value,
+						maxPrice: 0,
+					},
+				};
+			}
+		}
+		if (name === "maxPrice") {
+			if (value <= state.filterQuery.minPrice) {
+				return {
+					...state,
+					filterQuery: {
+						...state.filterQuery,
+						[name]: value,
+						minPrice: 0,
+					},
+				};
+			}
+		}
+		return {
+			...state,
+			filterQuery: {
+				...state.filterQuery,
+				[name]: value,
+			},
+		};
+	}
+	//============
+	//============
+	if (action.type === "RESET_FILTER_QUERY") {
+		return {
+			...state,
+			filterQuery: action.payload,
+		};
+	}
+	//============
+	//============
+	//============
+	//============
+	if (action.type === "SET_ITEMS_PER_PAGE") {
+		return {
+			...state,
+			paginatorData: {
+				...state.paginatorData,
+				itemsPerPage: action.payload,
+			},
+		};
+	}
+	//============
+	//============
+     //============
+	//============
+	if (action.type === "SET_CURRENT_PAGE") {
+		return {
+			...state,
+			paginatorData: {
+				...state.paginatorData,
+				currentPage: action.payload,
+			},
+		};
+	}
 	//============
 	//============
 	//============
@@ -86,7 +181,7 @@ export const CustomerContextReducer = (state, action) => {
 			amt += e.price;
 		});
 		totalAmount = Number(amt.toFixed(2));
-          
+
 		return { ...state, cartItems, totalQty, totalAmount };
 	}
 	if (action.type === "TOGGLE_MINI_CART") {
@@ -96,8 +191,6 @@ export const CustomerContextReducer = (state, action) => {
 		return { ...state, cartItems: [], totalQty: 0, totalAmount: 0 };
 	}
 	if (action.type === "ORDER_SUBMIT_SUCCESS") {
-          return { ...state, cartItems: [], totalQty: 0, totalAmount: 0 };
-     }
-     
-     else return state;
+		return { ...state, cartItems: [], totalQty: 0, totalAmount: 0 };
+	} else return state;
 };
