@@ -68,7 +68,13 @@ function App() {
 
 	const AuthAdminRedirect = ({ children }) => {
 		if (user?.isAdmin) return { ...children };
-		else return <Navigate to="/login-register" />;
+		// else return <Navigate to="/login-register" />;
+		else
+			return (
+				<div className="alert alert-warning text-center">
+					You must login as Admin
+				</div>
+			);
 	};
 	//============
 	//============
@@ -126,8 +132,14 @@ function App() {
 					</Route>
 					<Route path="products" element={<AdminProductsPage />}>
 						<Route index element={<AdminProductsList />} />
-                              <Route path="edit-product/:productId" element={<AdminEditProduct/>}/>
-                              <Route path="add-new-product" element={<AdminAddNewProduct/>}/>
+						<Route
+							path="edit-product/:productId"
+							element={<AdminEditProduct />}
+						/>
+						<Route
+							path="add-new-product"
+							element={<AdminAddNewProduct />}
+						/>
 					</Route>
 					<Route path="orders" element={<AdminOrdersList />} />
 				</Route>

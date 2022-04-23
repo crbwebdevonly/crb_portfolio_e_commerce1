@@ -63,7 +63,7 @@ const NavBar = () => {
 	//============
 	//============
 	return (
-		<StyledWrapper>
+		<StyledWrapper className="containerNO">
 			<nav className="navbar navbar-expand-md navbar-light bg-light ">
 				<div className="container-fluid">
 					<div className="navbar-brand" onClick={testFetch}>
@@ -124,14 +124,16 @@ const NavBar = () => {
 								</Link>
 							</li>
 
-							<li className="nav-item">
-								<Link
-									className="nav-link active"
-									to={"/admin"}
-								>
-									Admin
-								</Link>
-							</li>
+							{user?.isAdmin && (
+								<li className="nav-item">
+									<Link
+										className="nav-link active"
+										to={"/admin"}
+									>
+										Admin
+									</Link>
+								</li>
+							)}
 							{user ? (
 								<>
 									<li
