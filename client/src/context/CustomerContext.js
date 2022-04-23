@@ -81,19 +81,23 @@ export const CustomerContextProvider = ({ children }) => {
 
 	//============
 	//============
-	useEffect(() => {
-		//   refetch products upon paginator data changes
-		// and filter apply
-		getProductsWithQuery();
+	// useEffect(() => {
+	// 	//   refetch products upon paginator data changes
+	// 	// and filter apply
+	// 	getProductsWithQuery();
+	//      // issue=> this is being triggered at app start into homepage
+	//      // which is causing inifinite loop
+	//      // make it so it doesn't run on homepage load
+	//      // solution may be to move this useeffect into ptoductspage component
 
-		return () => {
-			//     second
-		};
-	}, [
-		state.paginatorData.itemsPerPage,
-		state.paginatorData.currentPage,
-		filterRefreshTrigger,
-	]);
+	// 	return () => {
+	// 		//     second
+	// 	};
+	// }, [
+	// 	state.paginatorData.itemsPerPage,
+	// 	state.paginatorData.currentPage,
+	// 	filterRefreshTrigger,
+	// ]);
 
 	//============
 	//============
@@ -114,12 +118,25 @@ export const CustomerContextProvider = ({ children }) => {
 	//============
 	//============
 	//============
-	const getSliderDataID = async () => {
+	const getSliderDataID_v2 = async () => {
+		// get list of all ids and choose 5 at random...then set sliderData
 		dispatch({ type: "FETCH_BEGIN" });
 
 		try {
 			const reply = await myAxios.get("/api/products/getsliderdataid");
-			dispatch({ type: "GET_SLIDER_DATA_ID", payload: reply.data });
+               // 
+			const total = reply.data.length;
+			let randSet = new Set();
+			while (randSet.size < 5) {
+				let n = Math.floor(Math.random() * total);
+				randSet.add(n);
+			}
+			const arrayID = [];
+			randSet.forEach((e) => arrayID.push(reply.data[e]));
+               // 
+			const reply2 = await myAxios.post("/api/products/getsliderproducts",arrayID);
+
+			dispatch({ type: "GET_SLIDER_PRODUCTS", payload: reply2.data });
 			dispatch({ type: "FETCH_SUCCESS" });
 		} catch (error) {
 			dispatch({ type: "FETCH_ERROR" });
@@ -127,18 +144,19 @@ export const CustomerContextProvider = ({ children }) => {
 	};
 	//============
 	//============
-     	//============
+	//============
 	//============
 	const getSliderProducts = async (arrayID) => {
-		dispatch({ type: "FETCH_BEGIN" });
-
-		try {
-			const reply = await myAxios.get("/api/products/getsliderproducts");
-			dispatch({ type: "GET_SLIDER_DATA_ID", payload: reply.data });
-			dispatch({ type: "FETCH_SUCCESS" });
-		} catch (error) {
-			dispatch({ type: "FETCH_ERROR" });
-		}
+		// dispatch({ type: "FETCH_BEGIN" });
+		// try {
+		// 	const reply = await myAxios.get(
+		// 		"/api/products/getsliderproducts"
+		// 	);
+		// 	dispatch({ type: "GET_SLIDER_DATA_ID", payload: reply.data });
+		// 	dispatch({ type: "FETCH_SUCCESS" });
+		// } catch (error) {
+		// 	dispatch({ type: "FETCH_ERROR" });
+		// }
 	};
 	//============
 	//============
@@ -346,8 +364,10 @@ export const CustomerContextProvider = ({ children }) => {
 	//============
 	const contextValues = {
 		...state,
+
+		filterRefreshTrigger,
 		getAllProducts,
-		getSliderDataID,
+		getSliderDataID_v2,
 		handleFilterQueryChange,
 		handleApplyFilter,
 		handleClearFilter,

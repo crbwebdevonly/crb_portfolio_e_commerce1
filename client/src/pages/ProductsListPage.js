@@ -12,11 +12,16 @@ const ProductsListPage = ({ admin }) => {
 	const {
 		loading,
 		error,
+          filterRefreshTrigger,
 		getAllProducts,
 		productsList,
 		getProductsWithQuery,
 		handleClearFilter,
+		paginatorData,
 	} = useContext(CustomerContext);
+	//============
+	//============
+	const { itemsPerPage, currentPage } = paginatorData;
 	//============
 	//============
 	useEffect(() => {
@@ -34,6 +39,14 @@ const ProductsListPage = ({ admin }) => {
 
 	//============
 	//============
+	useEffect(() => {
+		//   refetch on page change
+		getProductsWithQuery();
+		return () => {
+			//     second
+		};
+	}, [itemsPerPage, currentPage,filterRefreshTrigger]);
+
 	//============
 	//============
 	//============

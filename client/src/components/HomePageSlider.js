@@ -8,30 +8,14 @@ import { Link } from "react-router-dom";
 import { CustomerContext } from "../context/CustomerContext";
 import { useState } from "react";
 
-const HomePageSlider = () => {
+const HomePageSlider = (props) => {
 	//============
+	console.log(props);
 	//============
-	//============
-	const { loading, error,  getSliderDataID,sliderData } =
-		useContext(CustomerContext);
-	//============
-	//============
-	//============
-	//============
-	useEffect(() => {
-		//   get all products and use 5 at random
-          // getAllProducts()
-          getSliderDataID()
 
-		return () => {
-			//     second
-		};
-	}, []);
 	//============
 	//============
-	//============
-	//============
-	//============
+
 	//============
 	//============
 	return (

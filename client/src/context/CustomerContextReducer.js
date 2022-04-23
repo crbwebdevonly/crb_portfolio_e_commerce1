@@ -38,22 +38,22 @@ export const CustomerContextReducer = (state, action) => {
 	//============
 	//============
 	//============
-	if (action.type === "GET_SLIDER_DATA_ID") {
-		return {
-			...state,
-			sliderData: {
-				...state.sliderData,
-				allProductsID: action.payload,
-			},
-			loading: false,
-			error: false,
-		};
-	}
+	// if (action.type === "GET_SLIDER_DATA_ID") {
+	// 	return {
+	// 		...state,
+	// 		sliderData: {
+	// 			...state.sliderData,
+	// 			allProductsID: action.payload,
+	// 		},
+	// 		loading: false,
+	// 		error: false,
+	// 	};
+	// }
 	//============
 	//============
 	//============
 	//============
-	if (action.type === "GET_SLIDER_DATA") {
+	if (action.type === "GET_SLIDER_PRODUCTS") {
 		return {
 			...state,
 			sliderData: action.payload,

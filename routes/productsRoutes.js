@@ -24,7 +24,7 @@ productsRouter.post("/add-new-product", handleAddNewProduct);
 //============
 productsRouter.get("/getallproducts", handleGetAllProducts);
 productsRouter.get("/getsliderdataid", handleGetSliderDataID);
-productsRouter.get("/getsliderproducts", handleGetSliderProducts);
+productsRouter.post("/getsliderproducts", handleGetSliderProducts);
 productsRouter.get("/getproductswithquery", handleGetProductsWithQuery);
 //============
 productsRouter.get("/getoneproduct/:id", handleGetOneProduct);

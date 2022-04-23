@@ -44,7 +44,14 @@ const handleGetAllProducts = async (req, res) => {
 const handleGetSliderDataID = async (req, res) => {
 	// send 5 random products--title,id,price
 	const hitsCount = await ProductModel.countDocuments();
-	let result = ProductModel.find();
+	let query = ProductModel.find();
+     query.select("_id ")
+     query.exec((error,result)=>{
+          if(error) {
+               	return res.status(500).json({ msg: "error getting slider dataID", error });
+               }
+               else 	res.status(200).json(result);
+     })
 
 	// try {
 	// 	const allProducts = await ProductModel.find();
@@ -58,16 +65,13 @@ const handleGetSliderDataID = async (req, res) => {
 //============
 //============
 const handleGetSliderProducts = async (req, res) => {
-	// send 5 random products--title,id,price
-	const hitsCount = await ProductModel.countDocuments();
-	let result = ProductModel.find();
-
-	// try {
-	// 	const allProducts = await ProductModel.find();
-	// 	res.status(200).json(allProducts);
-	// } catch (error) {
-	// 	res.status(500).json({ msg: "error getting all products", error });
-	// }
+     
+     try {
+          const result = await ProductModel.find().where('_id').in(req.body).exec();
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(500).json({ msg: "error getting slide products", error });
+	}
 };
 //============
 //============
