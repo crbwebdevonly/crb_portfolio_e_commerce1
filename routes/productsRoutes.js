@@ -7,6 +7,8 @@ const {
 	handleAddNewProduct,
      handleDeleteProduct,
      handleGetProductsWithQuery,
+     handleGetSliderDataID,
+     handleGetSliderProducts,
 } = require("../controllers/productControllers");
 const productsRouter = express.Router();
 //============
@@ -21,6 +23,8 @@ productsRouter.post("/seed-products", handleProductsSeed);
 productsRouter.post("/add-new-product", handleAddNewProduct);
 //============
 productsRouter.get("/getallproducts", handleGetAllProducts);
+productsRouter.get("/getsliderdataid", handleGetSliderDataID);
+productsRouter.get("/getsliderproducts", handleGetSliderProducts);
 productsRouter.get("/getproductswithquery", handleGetProductsWithQuery);
 //============
 productsRouter.get("/getoneproduct/:id", handleGetOneProduct);

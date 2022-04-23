@@ -2,6 +2,7 @@
 //============
 //============
 import { createContext, useReducer } from "react";
+import { useNavigate } from "react-router-dom";
 import { myAxios } from "../myAxios";
 import { AuthContextReducer } from "./AuthContextReducer";
 
@@ -20,6 +21,7 @@ export const AuthContextProvider = ({ children }) => {
 	//============
 	const [state, dispatch] = useReducer(AuthContextReducer, initialState);
 	//============
+	const navigate = useNavigate();
 
 	//============
 	//============
@@ -37,6 +39,7 @@ export const AuthContextProvider = ({ children }) => {
 	//============
 	const doLogout = (user) => {
 		dispatch({ type: "DO_LOGOUT" });
+		navigate("/");
 	};
 	//============
 	//============
@@ -59,7 +62,7 @@ export const AuthContextProvider = ({ children }) => {
 	};
 	//============
 	//============
-     //============
+	//============
 	//============
 	// const doCreateNewUser = async (newUser) => {
 	// 	try {

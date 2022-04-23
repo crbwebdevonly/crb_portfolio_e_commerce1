@@ -22,6 +22,10 @@ export const CustomerContextReducer = (state, action) => {
 	let { cartItems, showMiniCart, totalQty, totalAmount } = state;
 	//============
 	//============
+	//============
+	//============
+	//============
+	//============
 	if (action.type === "GET_ALL_PRODUCTS") {
 		return {
 			...state,
@@ -32,7 +36,34 @@ export const CustomerContextReducer = (state, action) => {
 	}
 	//============
 	//============
-     //============
+	//============
+	//============
+	if (action.type === "GET_SLIDER_DATA_ID") {
+		return {
+			...state,
+			sliderData: {
+				...state.sliderData,
+				allProductsID: action.payload,
+			},
+			loading: false,
+			error: false,
+		};
+	}
+	//============
+	//============
+	//============
+	//============
+	if (action.type === "GET_SLIDER_DATA") {
+		return {
+			...state,
+			sliderData: action.payload,
+			loading: false,
+			error: false,
+		};
+	}
+	//============
+	//============
+	//============
 	//============
 	if (action.type === "GET_ALL_PRODUCTS_WITH_QUERY") {
 		return {
@@ -40,7 +71,7 @@ export const CustomerContextReducer = (state, action) => {
 			productsList: action.payload.result,
 			loading: false,
 			error: false,
-               paginatorData: {
+			paginatorData: {
 				...state.paginatorData,
 				hitsCount: action.payload.hitsCount,
 			},
@@ -117,7 +148,7 @@ export const CustomerContextReducer = (state, action) => {
 	}
 	//============
 	//============
-     //============
+	//============
 	//============
 	if (action.type === "SET_CURRENT_PAGE") {
 		return {

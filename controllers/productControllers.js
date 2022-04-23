@@ -39,6 +39,41 @@ const handleGetAllProducts = async (req, res) => {
 //============
 //============
 //============
+//============
+//============
+const handleGetSliderDataID = async (req, res) => {
+	// send 5 random products--title,id,price
+	const hitsCount = await ProductModel.countDocuments();
+	let result = ProductModel.find();
+
+	// try {
+	// 	const allProducts = await ProductModel.find();
+	// 	res.status(200).json(allProducts);
+	// } catch (error) {
+	// 	res.status(500).json({ msg: "error getting all products", error });
+	// }
+};
+//============
+//============
+//============
+//============
+const handleGetSliderProducts = async (req, res) => {
+	// send 5 random products--title,id,price
+	const hitsCount = await ProductModel.countDocuments();
+	let result = ProductModel.find();
+
+	// try {
+	// 	const allProducts = await ProductModel.find();
+	// 	res.status(200).json(allProducts);
+	// } catch (error) {
+	// 	res.status(500).json({ msg: "error getting all products", error });
+	// }
+};
+//============
+//============
+//============
+//============
+//============
 const handleGetProductsWithQuery = async (req, res) => {
 	console.log(req.query);
 	let { search, minPrice, maxPrice, itemsPerPage, sort, currentPage } =
@@ -163,6 +198,8 @@ const handleDeleteProduct = async (req, res) => {
 module.exports = {
 	handleProductsSeed,
 	handleGetAllProducts,
+	handleGetSliderDataID,
+	handleGetSliderProducts,
 	handleGetProductsWithQuery,
 	handleGetOneProduct,
 	handleUpdateProduct,

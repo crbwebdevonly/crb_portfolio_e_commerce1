@@ -27,6 +27,10 @@ const initialState = {
 	error: false,
 	//============
 	//============
+	sliderData: { allProductsID: [], sliderProducts: [] },
+	//============
+	//============
+	//============
 	productsList: [],
 	currentProduct: {},
 	//============
@@ -110,6 +114,37 @@ export const CustomerContextProvider = ({ children }) => {
 	//============
 	//============
 	//============
+	const getSliderDataID = async () => {
+		dispatch({ type: "FETCH_BEGIN" });
+
+		try {
+			const reply = await myAxios.get("/api/products/getsliderdataid");
+			dispatch({ type: "GET_SLIDER_DATA_ID", payload: reply.data });
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+		}
+	};
+	//============
+	//============
+     	//============
+	//============
+	const getSliderProducts = async (arrayID) => {
+		dispatch({ type: "FETCH_BEGIN" });
+
+		try {
+			const reply = await myAxios.get("/api/products/getsliderproducts");
+			dispatch({ type: "GET_SLIDER_DATA_ID", payload: reply.data });
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+		}
+	};
+	//============
+	//============
+	//============
+	//============
+	//============
 	//============
 	const getAllProducts = async () => {
 		dispatch({ type: "FETCH_BEGIN" });
@@ -177,8 +212,8 @@ export const CustomerContextProvider = ({ children }) => {
 	//============
 	const setItemsPerPage = (arg) => {
 		dispatch({ type: "SET_ITEMS_PER_PAGE", payload: arg });
-          // must also change current page to 1
-          setCurrentPage(1)
+		// must also change current page to 1
+		setCurrentPage(1);
 	};
 	//============
 	//============
@@ -223,6 +258,7 @@ export const CustomerContextProvider = ({ children }) => {
 	const addItemWithID = (id) => {
 		console.log("add-dispatch-id", id);
 		dispatch({ type: "ADD_ITEM_WITH_ID", payload: id });
+		toast.success("Item added to cart");
 	};
 	//============
 	//============
@@ -270,6 +306,11 @@ export const CustomerContextProvider = ({ children }) => {
 			};
 		} catch (error) {
 			toast.error(error.message);
+			if (!user) {
+				setTimeout(() => {
+					navigate("login-register");
+				}, 1500);
+			}
 			return;
 		}
 		// place order
@@ -306,6 +347,7 @@ export const CustomerContextProvider = ({ children }) => {
 	const contextValues = {
 		...state,
 		getAllProducts,
+		getSliderDataID,
 		handleFilterQueryChange,
 		handleApplyFilter,
 		handleClearFilter,

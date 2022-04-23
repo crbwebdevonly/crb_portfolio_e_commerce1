@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { CustomerContext } from "../context/CustomerContext";
+import { useEffect } from "react";
 
 const CheckoutPage = () => {
 	//============
@@ -31,6 +32,23 @@ const CheckoutPage = () => {
 	const handlePlaceOrder = () => {
 		console.log(cartItems);
 	};
+	//============
+	//============
+	//============
+	//============
+	useEffect(() => {
+		//  redirect to products if empty
+		if (cartItems < 1) {
+			setTimeout(() => {
+				navigate("/productslist");
+			}, 2000);
+		}
+
+		return () => {
+			//     second
+		};
+	}, [cartItems]);
+
 	//============
 	//============
 	//============
