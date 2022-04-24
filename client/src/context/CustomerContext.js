@@ -290,7 +290,12 @@ export const CustomerContextProvider = ({ children }) => {
 				payload: findProduct,
 			});
 			dispatch({ type: "FETCH_SUCCESS" });
-		} else dispatch({ type: "FETCH_ERROR" });
+		} else {
+			dispatch({ type: "FETCH_ERROR" });
+			setTimeout(() => {
+				navigate("/productslist");
+			}, 2000);
+		}
 	};
 	//============
 	//============
@@ -446,7 +451,7 @@ export const CustomerContextProvider = ({ children }) => {
 		getProductsWithQuery,
 		setItemsPerPage,
 		// setCurrentProduct,
-          setCurrentProduct_v2,
+		setCurrentProduct_v2,
 		setCurrentPage,
 		// addItem,
 		// addItemWithID,

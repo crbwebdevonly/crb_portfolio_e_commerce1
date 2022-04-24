@@ -22,7 +22,7 @@ const HomePageSlider = (props) => {
 	return (
 		<StyledWrapper>
 			<Carousel>
-				{sliderProductsList.map((e,i) => (
+				{sliderProductsList.map((e, i) => (
 					<Carousel.Item key={i}>
 						<Link to={`product-item/${e._id}`}>
 							<img
@@ -31,7 +31,7 @@ const HomePageSlider = (props) => {
 								src={e.image}
 								alt="First slide"
 							/>
-							<Carousel.Caption className="caption text-secondary">
+							<Carousel.Caption className="caption text-muted">
 								<h3>{e.title}</h3>
 								{/* <p>
 									Nulla vitae elit libero, a pharetra
@@ -78,11 +78,24 @@ const HomePageSlider = (props) => {
 
 export default HomePageSlider;
 const StyledWrapper = styled.div`
+	/* background-color: rgba(50, 50, 50, 0.05); */
 	img {
 		height: 400px;
 		object-fit: contain;
 	}
-     .caption{
-          background-color: rgba(0,0,0,0.05);
-     }
+	.caption {
+		background-color: rgba(0, 0, 0, 0.1);
+		border-radius: 1rem;
+	}
+	h3 {
+		color: rgba(0, 0, 0, 0.9);
+	}
+	a {
+		span {
+			color: red;
+			background-color: black;
+			padding: 15px;
+			border-radius: 50%;
+		}
+	}
 `;
