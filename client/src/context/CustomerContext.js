@@ -27,7 +27,7 @@ const initialState = {
 	error: false,
 	//============
 	//============
-	sliderData: { allProductsID: [], sliderProducts: [] },
+	sliderProductsList: [],
 	//============
 	//============
 	//============
@@ -102,6 +102,15 @@ export const CustomerContextProvider = ({ children }) => {
 	//============
 	//============
 	//============
+	const findProductItem = (id) => {
+		let findItem = state.sliderProductsList.find((e) => e._id === id);
+		if (!findItem) {
+			findItem = state.productsList.find((e) => e._id === id);
+		}
+		return findItem;
+	};
+	//============
+	//============
 	//============
 	//============
 	const delyedClearError = () => {
@@ -124,7 +133,7 @@ export const CustomerContextProvider = ({ children }) => {
 
 		try {
 			const reply = await myAxios.get("/api/products/getsliderdataid");
-               // 
+			//
 			const total = reply.data.length;
 			let randSet = new Set();
 			while (randSet.size < 5) {
@@ -133,8 +142,11 @@ export const CustomerContextProvider = ({ children }) => {
 			}
 			const arrayID = [];
 			randSet.forEach((e) => arrayID.push(reply.data[e]));
-               // 
-			const reply2 = await myAxios.post("/api/products/getsliderproducts",arrayID);
+			//
+			const reply2 = await myAxios.post(
+				"/api/products/getsliderproducts",
+				arrayID
+			);
 
 			dispatch({ type: "GET_SLIDER_PRODUCTS", payload: reply2.data });
 			dispatch({ type: "FETCH_SUCCESS" });
@@ -244,14 +256,17 @@ export const CustomerContextProvider = ({ children }) => {
 	//============
 	//============
 	//============
-	const setCurrentProduct = (id) => {
+	const setCurrentProduct = async (id) => {
 		dispatch({ type: "FETCH_BEGIN" });
 		try {
-			const findProduct = state.productsList.find((e) => e._id === id);
-			if (!findProduct) {
+			const reply = await myAxios.get(
+				`/api/products/getoneproduct/${id}`
+			);
+			if (!reply) {
 				throw new Error("Product NOT found");
 			}
-			dispatch({ type: "SET_CURRENT_PRODUCT", payload: findProduct });
+
+			dispatch({ type: "SET_CURRENT_PRODUCT", payload: reply.data });
 
 			dispatch({ type: "FETCH_SUCCESS" });
 		} catch (error) {
@@ -265,19 +280,76 @@ export const CustomerContextProvider = ({ children }) => {
 	//============
 	//============
 	//============
-	//============
-	const addItem = (item) => {
-		console.log("add-dispatch");
-
-		dispatch({ type: "ADD_ITEM", payload: item });
+	const setCurrentProduct_v2 = (id) => {
+		// no fetch
+		dispatch({ type: "FETCH_BEGIN" });
+		const findProduct = findProductItem(id);
+		if (findProduct) {
+			dispatch({
+				type: "SET_CURRENT_PRODUCT_V2",
+				payload: findProduct,
+			});
+			dispatch({ type: "FETCH_SUCCESS" });
+		} else dispatch({ type: "FETCH_ERROR" });
 	};
 	//============
 	//============
-	const addItemWithID = (id) => {
-		console.log("add-dispatch-id", id);
-		dispatch({ type: "ADD_ITEM_WITH_ID", payload: id });
+	//============
+	// //============
+	// //============
+	// const addItem = (item) => {
+	// 	console.log("add-dispatch");
+
+	// 	dispatch({ type: "ADD_ITEM", payload: item });
+	// };
+	// //============
+	// //============
+	// const addToCart_with_ID_v1_use_on_product_item = (id) => {
+	// 	dispatch({ type: "ADD_TO_CART_WITH_ID_V1", payload: id });
+	// 	toast.success("Item added to cart");
+	// };
+	// //============
+	// //============
+	// //============
+	// //============
+	const addToCart_with_ID_v3 = (id) => {
+		// search both productsList and sliderProductsList
+		// no fetch
+		dispatch({ type: "ADD_TO_CART_WITH_ID_V3", payload: id });
 		toast.success("Item added to cart");
 	};
+	//============
+	//============
+
+	// //============
+	// //============
+	// const addToCart_with_fetch_v2 = async (id) => {
+	// 	dispatch({ type: "FETCH_BEGIN" });
+	// 	try {
+	// 		const reply = await myAxios.get(
+	// 			`/api/products/getoneproduct/${id}`
+	// 		);
+	// 		if (!reply) {
+	// 			throw new Error("error adding to cart-Product NOT found");
+	// 		}
+
+	// 		dispatch({
+	// 			type: "ADD_TO_CART_WITH_FETCH_V2",
+	// 			payload: reply.data,
+	// 		});
+
+	// 		dispatch({ type: "FETCH_SUCCESS" });
+	// 	} catch (error) {
+	// 		dispatch({ type: "FETCH_ERROR" });
+	// 		setTimeout(() => {
+	// 			navigate("/productslist");
+	// 		}, 1000);
+	// 	}
+	// };
+	// //============
+	// //============
+	//============
+	//============
 	//============
 	//============
 	const removeItemWithID = (id) => {
@@ -373,10 +445,16 @@ export const CustomerContextProvider = ({ children }) => {
 		handleClearFilter,
 		getProductsWithQuery,
 		setItemsPerPage,
-		setCurrentProduct,
+		// setCurrentProduct,
+          setCurrentProduct_v2,
 		setCurrentPage,
-		addItem,
-		addItemWithID,
+		// addItem,
+		// addItemWithID,
+		// addToCart_v2,
+		// addToCart_with_ID_v1_use_on_product_item,
+		// addToCart_with_fetch_v2,
+		addToCart_with_ID_v3,
+
 		removeItemWithID,
 		removeItemWithIndex,
 		toggleShowMiniCart,

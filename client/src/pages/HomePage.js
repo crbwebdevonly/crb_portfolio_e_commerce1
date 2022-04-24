@@ -15,10 +15,9 @@ const HomePage = () => {
 	//============
 	//============
 	//============
-	const { loading, error, getSliderDataID_v2, sliderData } =
+	const { loading, error, getSliderDataID_v2, sliderProductsList } =
 		useContext(CustomerContext);
 	//============
-	const { allProductsID, sliderProducts } = sliderData;
 	//============
 	//============
 	//============
@@ -34,26 +33,7 @@ const HomePage = () => {
 	}, []);
 	//============
 	//============
-	useEffect(() => {
-		// if (loading || error) return;
-		// const total = allProductsID.length;
-
-		// let randSet = new Set();
-		// // console.log(randSet, randSet.size, "myset-init");
-		// if (total > 5) {
-		// 	while (randSet.size < 5) {
-		// 		let n = Math.floor(Math.random() * total);
-		// 		randSet.add(n);
-		// 		// console.log(randSet, "myset-loop");
-		// 	}
-		// }
-		// console.log(randSet, randSet.size, "myset-init");
-
-		return () => {
-			//     second
-		};
-	}, [allProductsID]);
-
+	
 	//============
 	//============
 	//============
@@ -74,7 +54,7 @@ const HomePage = () => {
 	return (
 		<div className="container">
 			<HomePageHero />
-			<HomePageSlider {...sliderData} />
+			<HomePageSlider sliderProductsList={sliderProductsList} />
 		</div>
 	);
 };

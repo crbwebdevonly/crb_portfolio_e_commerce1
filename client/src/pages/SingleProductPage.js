@@ -17,8 +17,8 @@ const SingleProductPage = () => {
 		error,
 		loading,
 		currentProduct,
-		setCurrentProduct,
-		addItemWithID,
+          setCurrentProduct_v2,
+          addToCart_with_ID_v3,
 	} = useContext(CustomerContext);
 	const {
 		_id: id,
@@ -44,7 +44,7 @@ const SingleProductPage = () => {
 		// };
 		// //
 		// fetchProduct();
-		setCurrentProduct(productId);
+		setCurrentProduct_v2(productId);
 		return () => {
 			//     second
 		};
@@ -89,7 +89,7 @@ const SingleProductPage = () => {
 						<button
 							className="btn btn-primary w-50 py-3 "
 							onClick={() => {
-								addItemWithID(id);
+								addToCart_with_ID_v3(id);
 							}}
 						>
 							Buy

@@ -9,7 +9,7 @@ import { CustomerContext } from "../context/CustomerContext";
 const ProductItem = (props) => {
 	//============
 	//============
-	const { addItemWithID } = useContext(CustomerContext);
+	const { addToCart_with_ID_v3, } = useContext(CustomerContext);
 	//============
 	//============
 	const {
@@ -60,7 +60,7 @@ const ProductItem = (props) => {
 						className="btn btn-primary"
 						onClick={() => {
 							setshowAddedtoCart(true);
-							addItemWithID(id);
+							addToCart_with_ID_v3(id);
 						}}
 					>
 						Add to Cart

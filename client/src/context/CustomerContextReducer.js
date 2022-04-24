@@ -56,7 +56,7 @@ export const CustomerContextReducer = (state, action) => {
 	if (action.type === "GET_SLIDER_PRODUCTS") {
 		return {
 			...state,
-			sliderData: action.payload,
+			sliderProductsList: action.payload,
 			loading: false,
 			error: false,
 		};
@@ -81,6 +81,17 @@ export const CustomerContextReducer = (state, action) => {
 	//============
 	//============
 	if (action.type === "SET_CURRENT_PRODUCT") {
+		return {
+			...state,
+			currentProduct: action.payload,
+		};
+	}
+	//============
+	//============
+     //============
+	//============
+	//============
+	if (action.type === "SET_CURRENT_PRODUCT_V2") {
 		return {
 			...state,
 			currentProduct: action.payload,
@@ -176,7 +187,7 @@ export const CustomerContextReducer = (state, action) => {
 	}
 	//============
 	//============
-	if (action.type === "ADD_ITEM_WITH_ID") {
+	if (action.type === "ADD_TO_CART_WITH_ID_V1") {
 		const addItem = state.productsList.find(
 			(e) => e._id === action.payload
 		);
@@ -189,6 +200,45 @@ export const CustomerContextReducer = (state, action) => {
 		totalAmount = Number(amt.toFixed(2));
 		return { ...state, cartItems, totalQty, totalAmount };
 	}
+	//============
+	//============
+	//============
+	//============
+	if (action.type === "ADD_TO_CART_WITH_ID_V3") {
+		let addItem = state.sliderProductsList.find(
+			(e) => e._id === action.payload
+		);
+		if (!addItem) {
+			addItem = state.productsList.find(
+				(e) => e._id === action.payload
+			);
+		}
+		cartItems = [...cartItems, addItem];
+		totalQty = cartItems.length;
+		let amt = 0;
+		totalAmount = cartItems.forEach((e) => {
+			amt += e.price;
+		});
+		totalAmount = Number(amt.toFixed(2));
+		return { ...state, cartItems, totalQty, totalAmount };
+	}
+	//============
+	//============
+	//============
+	//============
+	if (action.type === "ADD_TO_CART_WITH_FETCH_V2") {
+		cartItems = [...cartItems, action.payload];
+		totalQty = cartItems.length;
+		let amt = 0;
+		totalAmount = cartItems.forEach((e) => {
+			amt += e.price;
+		});
+		totalAmount = Number(amt.toFixed(2));
+		return { ...state, cartItems, totalQty, totalAmount };
+	}
+	//============
+	//============
+	//============
 	//============
 	//============
 	if (action.type === "REMOVE_ITEM_WITH_ID") {
