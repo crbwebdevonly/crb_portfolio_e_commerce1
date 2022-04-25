@@ -66,6 +66,10 @@ export const CustomerContextReducer = (state, action) => {
 	//============
 	//============
 	if (action.type === "GET_ALL_PRODUCTS_WITH_QUERY") {
+          const {result} = action.payload
+          // if(result.length<1){
+
+          // }
 		return {
 			...state,
 			productsList: action.payload.result,

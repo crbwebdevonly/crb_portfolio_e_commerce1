@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Paginator from "../components/Paginator";
 import ProductItem from "../components/ProductItem";
@@ -12,7 +13,7 @@ const ProductsListPage = ({ admin }) => {
 	const {
 		loading,
 		error,
-          filterRefreshTrigger,
+		filterRefreshTrigger,
 		getAllProducts,
 		productsList,
 		getProductsWithQuery,
@@ -22,6 +23,11 @@ const ProductsListPage = ({ admin }) => {
 	//============
 	//============
 	const { itemsPerPage, currentPage } = paginatorData;
+	//============
+	//============
+	const navigate = useNavigate();
+	//============
+	//============
 	//============
 	//============
 	useEffect(() => {
@@ -45,10 +51,24 @@ const ProductsListPage = ({ admin }) => {
 		return () => {
 			//     second
 		};
-	}, [itemsPerPage, currentPage,filterRefreshTrigger]);
+	}, [itemsPerPage, currentPage, filterRefreshTrigger]);
 
 	//============
 	//============
+	//============
+	//============
+	useEffect(() => {
+		//   redirect-if search results-is zero
+		if (loading || error) return;
+		if (productsList.length < 1) {
+			setTimeout(() => {
+				handleClearFilter();
+			}, 2000);
+		}
+		return () => {
+			//     second
+		};
+	}, [productsList]);
 	//============
 	//============
 	//============
@@ -60,6 +80,14 @@ const ProductsListPage = ({ admin }) => {
 		return (
 			<h5 className="alert alert-danger">
 				Error occured- getting all products
+			</h5>
+		);
+	//============
+	//============
+	if (productsList.length < 1)
+		return (
+			<h5 className="alert alert-info">
+				No product matching your search parameters
 			</h5>
 		);
 	//============
