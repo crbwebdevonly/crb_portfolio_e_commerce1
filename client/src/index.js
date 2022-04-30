@@ -7,6 +7,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter } from "react-router-dom";
 import { AuthContextProvider } from "./context/AuthContext";
 import { CustomerContextProvider } from "./context/CustomerContext";
+import { AdminContextProvider } from "./context/AdminContext";
 
 // ReactDOM.render(
 // 	<React.StrictMode>
@@ -22,11 +23,13 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
 	<React.StrictMode>
 		<BrowserRouter>
-			<AuthContextProvider>
-				<CustomerContextProvider>
-					<App />
-				</CustomerContextProvider>
-			</AuthContextProvider>
+			<AdminContextProvider>
+				<AuthContextProvider>
+					<CustomerContextProvider>
+						<App />
+					</CustomerContextProvider>
+				</AuthContextProvider>
+			</AdminContextProvider>
 		</BrowserRouter>
 	</React.StrictMode>
 );

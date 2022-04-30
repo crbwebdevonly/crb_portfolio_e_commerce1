@@ -1,4 +1,5 @@
 import { useContext, useReducer } from "react";
+import { useMemo } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { createContext } from "react";
@@ -204,16 +205,53 @@ export const CustomerContextProvider = ({ children }) => {
 		//
 		// change currentpage to 1.....page change trigers re-fetch
 		setCurrentPage(1);
+		// refetch products
+		getProductsWithQuery();
 		// refresh trigger ??needed?? yes--when current page is already 1
-		setFilterRefreshTrigger((p) => !p);
+		// setFilterRefreshTrigger((p) => !p);
 	};
 	//============
 	//============
 	const handleClearFilter = () => {
 		setCurrentPage(1);
 		dispatch({ type: "RESET_FILTER_QUERY", payload: initialFilterQuery });
-		getProductsWithQuery("clearFilter");
+		// getProductsWithQuery("clearFilter");
+		return;
 	};
+	//============
+	//============
+	//============
+	//============
+	//============
+	const handleClearFilter_v2 = async () => {
+		// must get products with cleared filter
+		// set current page to 1
+		const query = initialFilterQuery;
+		const { search, minPrice, maxPrice, sort } = query;
+		const { itemsPerPage, currentPage, hitsCount } = state.paginatorData;
+
+		let qstring = `/api/products/getproductswithquery?search=${search}&minPrice=${minPrice}&maxPrice=${maxPrice}&sort=${sort}&currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`;
+
+		dispatch({ type: "FETCH_BEGIN" });
+
+		try {
+			const reply = await myAxios.get(qstring);
+			//
+			dispatch({
+				type: "RESET_FILTER_QUERY_V2",
+				payload: { filterQuery:initialFilterQuery, productsList: reply.data },
+			});
+
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+			// console.log(error);
+		}
+	};
+	//============
+	//============
+	//============
+	//============
 	//============
 	//============
 	const getProductsWithQuery = async (arg) => {
@@ -437,17 +475,78 @@ export const CustomerContextProvider = ({ children }) => {
 	//============
 	//============
 	//============
+     const contextValues999 = useMemo(() => ({
+          ...state,
+
+		filterRefreshTrigger,
+		// setFilterRefreshTrigger,
+		getAllProducts,
+		getSliderDataID_v2,
+		handleFilterQueryChange,
+		handleApplyFilter,
+		handleClearFilter,
+		handleClearFilter_v2,
+		getProductsWithQuery,
+		setItemsPerPage,
+		// setCurrentProduct,
+		setCurrentProduct_v2,
+		setCurrentPage,
+		// addItem,
+		// addItemWithID,
+		// addToCart_v2,
+		// addToCart_with_ID_v1_use_on_product_item,
+		// addToCart_with_fetch_v2,
+		addToCart_with_ID_v3,
+
+		removeItemWithID,
+		removeItemWithIndex,
+		toggleShowMiniCart,
+		resetCart,
+		placeOrder,
+        }), [
+          //    ...state,
+
+		filterRefreshTrigger,
+		// setFilterRefreshTrigger,
+		getAllProducts,
+		getSliderDataID_v2,
+		handleFilterQueryChange,
+		handleApplyFilter,
+		handleClearFilter,
+		handleClearFilter_v2,
+		getProductsWithQuery,
+		setItemsPerPage,
+		// setCurrentProduct,
+		setCurrentProduct_v2,
+		setCurrentPage,
+		// addItem,
+		// addItemWithID,
+		// addToCart_v2,
+		// addToCart_with_ID_v1_use_on_product_item,
+		// addToCart_with_fetch_v2,
+		addToCart_with_ID_v3,
+
+		removeItemWithID,
+		removeItemWithIndex,
+		toggleShowMiniCart,
+		resetCart,
+		placeOrder])
+	//============
+	//============
+     
 	//============
 	//============
 	const contextValues = {
 		...state,
 
 		filterRefreshTrigger,
+		// setFilterRefreshTrigger,
 		getAllProducts,
 		getSliderDataID_v2,
 		handleFilterQueryChange,
 		handleApplyFilter,
 		handleClearFilter,
+		handleClearFilter_v2,
 		getProductsWithQuery,
 		setItemsPerPage,
 		// setCurrentProduct,

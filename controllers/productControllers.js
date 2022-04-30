@@ -119,10 +119,16 @@ const handleGetProductsWithQuery = async (req, res) => {
 		// result = result.sort("-price");
 	}
 	if (sort === "titleAZ") {
-		result = result.sort({ title: 1 });
+		result = result.sort({ title: 1 })
 	}
 	if (sort === "titleZA") {
 		result = result.sort({ title: -1 });
+	}
+     if (sort === "new") {
+		result = result.sort({ createdAt: -1 });
+	}
+     if (sort === "old") {
+		result = result.sort({ createdAt: 1 })
 	}
 	// paginate
 	const page = Number(currentPage) || 1;

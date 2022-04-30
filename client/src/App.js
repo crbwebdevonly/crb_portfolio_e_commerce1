@@ -109,9 +109,9 @@ function App() {
 					path="/admin"
 					element={
 						<AuthAdminRedirect>
-							<AdminContextProvider>
+							{/* <AdminContextProvider> */}
 								<AdminPage />
-							</AdminContextProvider>
+							{/* </AdminContextProvider> */}
 						</AuthAdminRedirect>
 					}
 				>
@@ -132,6 +132,7 @@ function App() {
 					</Route>
 					<Route path="products" element={<AdminProductsPage />}>
 						<Route index element={<AdminProductsList />} />
+						{/* <Route index element={<ProductsListPage />} /> */}
 						<Route
 							path="edit-product/:productId"
 							element={<AdminEditProduct />}

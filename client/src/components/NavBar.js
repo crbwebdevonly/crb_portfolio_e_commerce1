@@ -201,9 +201,14 @@ const StyledWrapper = styled.div`
 	li {
 		cursor: pointer;
 		transition: all 0.2s ease-in-out;
+
 		&:hover {
 			opacity: 0.6;
-			transform: scale(0.8);
+		}
+		@media screen and (min-width: 800px) {
+			&:hover {
+				transform: scale(0.9);
+			}
 		}
 	}
 

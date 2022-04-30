@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import AdminProductItem from "../components/AdminProductItem";
 import Paginator from "../components/Paginator";
 import ProductItem from "../components/ProductItem";
 import ProductsFilter from "../components/ProductsFilter";
@@ -17,12 +18,23 @@ const ProductsListPage = ({ admin }) => {
 		getAllProducts,
 		productsList,
 		getProductsWithQuery,
-		handleClearFilter,
 		paginatorData,
+		handleFilterQueryChange,
+		filterQuery,
+		handleClearFilter,
+		handleApplyFilter,
 	} = useContext(CustomerContext);
 	//============
 	//============
 	const { itemsPerPage, currentPage } = paginatorData;
+	//============
+	//============
+	const productsFilterPassProps = {
+		handleFilterQueryChange,
+		filterQuery,
+		handleClearFilter,
+		handleApplyFilter,
+	};
 	//============
 	//============
 	const navigate = useNavigate();
@@ -94,12 +106,16 @@ const ProductsListPage = ({ admin }) => {
 	//============
 	return (
 		<StyledWrapper>
-			<ProductsFilter />
+			<ProductsFilter {...productsFilterPassProps} />
 			<Paginator />
 			<div className="all-products-container ">
-				{productsList.map((e, i) => (
-					<ProductItem key={i} {...e} />
-				))}
+				{productsList.map((e, i) =>
+					admin ? (
+						<AdminProductItem key={i} {...e} />
+					) : (
+						<ProductItem key={i} {...e} />
+					)
+				)}
 			</div>
 			<Paginator bottom />
 		</StyledWrapper>

@@ -66,10 +66,10 @@ export const CustomerContextReducer = (state, action) => {
 	//============
 	//============
 	if (action.type === "GET_ALL_PRODUCTS_WITH_QUERY") {
-          const {result} = action.payload
-          // if(result.length<1){
+		const { result } = action.payload;
+		// if(result.length<1){
 
-          // }
+		// }
 		return {
 			...state,
 			productsList: action.payload.result,
@@ -92,7 +92,7 @@ export const CustomerContextReducer = (state, action) => {
 	}
 	//============
 	//============
-     //============
+	//============
 	//============
 	//============
 	if (action.type === "SET_CURRENT_PRODUCT_V2") {
@@ -148,6 +148,24 @@ export const CustomerContextReducer = (state, action) => {
 			filterQuery: action.payload,
 		};
 	}
+	//============
+	//============
+	//============
+	//============
+	//============
+	if (action.type === "RESET_FILTER_QUERY_V2") {
+		console.log("v2", action.payload);
+		const { filterQuery, productsList } = action.payload;
+		// const { filterQuery, productsList } = action.payload;
+		return {
+			...state,
+			filterQuery,
+			productsList:productsList.result,
+		};
+	}
+	//============
+	//============
+	//============
 	//============
 	//============
 	//============

@@ -10,8 +10,32 @@ import { AuthContextReducer } from "./AuthContextReducer";
 export const AuthContext = createContext();
 //============
 //============
+//============
+const getUserFromLocalStorage = () => {
+	const user = localStorage.getItem("crb-portfolio-EcommerceApp-user");
+	return JSON.parse(user);
+};
+//============
+//============
+const setUserInLocalStorage = (user) => {
+	const setUser = localStorage.setItem(
+		"crb-portfolio-EcommerceApp-user",
+		JSON.stringify(user)
+	);
+	return user;
+};
+//============
+//============
+//============
+//============
+const removeUserFromLocalStorage = () => {
+	const user = localStorage.removeItem("crb-portfolio-EcommerceApp-user");
+};
+//============
+//============
+//============
 const initialState = {
-	user: null,
+	user: getUserFromLocalStorage() || null,
 	error: false,
 };
 //============
@@ -30,6 +54,7 @@ export const AuthContextProvider = ({ children }) => {
 		try {
 			const reply = await myAxios.post("/api/auth/login", user);
 			dispatch({ type: "LOGIN_SUCCESS", payload: reply.data.user });
+			setUserInLocalStorage(reply.data.user);
 		} catch (error) {
 			dispatch({ type: "LOGIN_FAIL" });
 			setError();
@@ -39,6 +64,8 @@ export const AuthContextProvider = ({ children }) => {
 	//============
 	const doLogout = (user) => {
 		dispatch({ type: "DO_LOGOUT" });
+		removeUserFromLocalStorage();
+
 		navigate("/");
 	};
 	//============

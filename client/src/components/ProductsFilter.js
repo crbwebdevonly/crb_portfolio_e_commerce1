@@ -1,21 +1,37 @@
 import React, { useContext } from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 import styled from "styled-components";
 import { CustomerContext } from "../context/CustomerContext";
 
-const ProductsFilter = () => {
+const ProductsFilter = (props) => {
 	//============
+	// console.log(props);
 	//============
 	const {
 		handleFilterQueryChange,
 		filterQuery,
 		handleClearFilter,
 		handleApplyFilter,
-	} = useContext(CustomerContext);
+	} = props;
+	// useContext(CustomerContext);
 	//============
 	const { search, minPrice, maxPrice, sort } = filterQuery;
 	//============
 
+	//============
+	//============
+	useEffect(() => {
+		//   first
+		// handleClearFilter();
+		return () => {
+			//     second
+		};
+	}, []);
+
+	//============
+	//============
+	//============
 	//============
 
 	//============
@@ -102,6 +118,12 @@ const ProductsFilter = () => {
 									</option>
 									<option value="titleZA">
 										Name Z-A
+									</option>
+									<option value="new">
+										New First
+									</option>
+									<option value="old">
+										Old First
 									</option>
 								</select>
 							</div>
