@@ -2,37 +2,51 @@ import React, { useContext } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import styled from "styled-components";
-import { CustomerContext } from "../context/CustomerContext";
+import {
+	CustomerContext,
+	useCustomerContext,
+} from "../context/CustomerContext";
+import { useFilterContext } from "../context/FilterContext";
 
 const ProductsFilter = (props) => {
+	//============
+	//============
+	const filterContext = useFilterContext();
+	//============
+	console.log(filterContext);
+	//============
 	//============
 	// console.log(props);
 	//============
 	const {
+		search,
+		minPrice,
+		maxPrice,
+		sort,
 		handleFilterQueryChange,
-		filterQuery,
+		// filterQuery,
 		handleClearFilter,
-		handleApplyFilter,
-	} = props;
+	} = filterContext;
+	// props;
 	// useContext(CustomerContext);
 	//============
-	const { search, minPrice, maxPrice, sort } = filterQuery;
+	// const { search, minPrice, maxPrice, sort } = filterQuery;
 	//============
 
 	//============
 	//============
-	useEffect(() => {
-		//   first
-		// handleClearFilter();
-		return () => {
-			//     second
-		};
-	}, []);
-
+	const { getProductsWithQuery_v2 } = useCustomerContext();
 	//============
 	//============
 	//============
 	//============
+	//============
+	//============
+	//============
+	//============
+	const handleApplyFilter = () => {
+		getProductsWithQuery_v2({ search, minPrice, maxPrice, sort });
+	};
 
 	//============
 	//============

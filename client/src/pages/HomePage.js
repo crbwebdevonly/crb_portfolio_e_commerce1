@@ -1,9 +1,8 @@
 import React from "react";
 import { useEffect } from "react";
-import { useContext } from "react";
 import HomePageHero from "../components/HomePageHero";
 import HomePageSlider from "../components/HomePageSlider";
-import { CustomerContext } from "../context/CustomerContext";
+import { useAppContext } from "../context/AppContext";
 
 const HomePage = () => {
 	//============
@@ -15,17 +14,22 @@ const HomePage = () => {
 	//============
 	//============
 	//============
-	const { loading, error, getSliderDataID_v2, sliderProductsList } =
-		useContext(CustomerContext);
+	const { loading, error, getSliderProducts, sliderProductsList } =
+		useAppContext();
+
 	//============
+
 	//============
+
 	//============
 	//============
 	useEffect(() => {
 		//   get all products and use 5 at random
 		// getAllProducts()
 
-		getSliderDataID_v2();
+		// getSliderDataID_v2();
+		// getsliderproducts()
+		getSliderProducts();
 
 		return () => {
 			//     second
@@ -33,7 +37,7 @@ const HomePage = () => {
 	}, []);
 	//============
 	//============
-	
+
 	//============
 	//============
 	//============

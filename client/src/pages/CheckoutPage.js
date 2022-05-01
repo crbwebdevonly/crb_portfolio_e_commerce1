@@ -1,11 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import { useContext } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { CustomerContext } from "../context/CustomerContext";
 import { useEffect } from "react";
+import { useAppContext } from "../context/AppContext";
 
 const CheckoutPage = () => {
 	//============
@@ -14,18 +13,16 @@ const CheckoutPage = () => {
 	//============
 	//============
 	const {
+		user,
 		cartItems,
-		// showMiniCart,
 		totalQty,
 		totalAmount,
-		removeItemWithIndex,
-		// toggleShowMiniCart,
+		removeItemFromCartWithIndex,
 		resetCart,
 		placeOrder,
-	} = useContext(CustomerContext);
+	} = useAppContext();
 	//============
 	//============
-	const { user } = useContext(AuthContext);
 	//============
 	//============
 	//============
@@ -95,7 +92,7 @@ const CheckoutPage = () => {
 										<div
 											className="btn btn-warning"
 											onClick={() => {
-												removeItemWithIndex(
+												removeItemFromCartWithIndex(
 													i
 												);
 											}}

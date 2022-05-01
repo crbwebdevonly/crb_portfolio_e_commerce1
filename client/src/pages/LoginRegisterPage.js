@@ -1,9 +1,8 @@
 import React from "react";
 import { useEffect } from "react";
-import { useContext } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import { useAppContext } from "../context/AppContext";
 
 const LoginRegisterPage = () => {
 	//============
@@ -13,7 +12,9 @@ const LoginRegisterPage = () => {
 	//============
 	const nav = useNavigate();
 	//============
-	const { user, doLogin, doRegister, error } = useContext(AuthContext);
+	// const { user, doLogin, doRegister, error } = useContext(AuthContext);
+	const { user, doLogin, doRegister, error } = useAppContext()
+     
 
 	//============
 	const [isLoginMode, setIsLoginMode] = useState(true);

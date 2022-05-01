@@ -15,16 +15,16 @@ import Paginator from "./Paginator";
 import { CustomerContext } from "../context/CustomerContext";
 import { useState } from "react";
 import { useRef } from "react";
+import { useFilterContext } from "../context/FilterContext";
 
 const AdminProductsList = () => {
 	//============
 	//============
-	// const {
-	// 	//  getAllProducts,
-	// 	// productsList,
-	// 	// loading,
-	// 	// error,
-	// } = useContext(AdminContext);
+	const { handleClearFilter } = useFilterContext();
+	//============
+	//============
+	// const { getAllProducts, productsList, loading, error } =
+	// useContext(AdminContext);
 	//============
 	//============
 	const firstRef = useRef(true);
@@ -37,28 +37,28 @@ const AdminProductsList = () => {
 		// filterRefreshTrigger,
 		// setFilterRefreshTrigger,
 		// getAllProducts,
-		// productsList,
-		getProductsWithQuery,
-		handleFilterQueryChange,
-		filterQuery,
+		productsList,
+		// getProductsWithQuery,
+		// handleFilterQueryChange,
+		// filterQuery,
 
-		handleClearFilter,
-		handleClearFilter_v2,
-		handleApplyFilter,
+		// handleClearFilter,
+		// handleClearFilter_v2,
+		// handleApplyFilter,
 
-		paginatorData,
+		// paginatorData,
 	} = useContext(CustomerContext);
 	//============
 	//============
-	const productsFilterPassProps = {
-		handleFilterQueryChange,
-		filterQuery,
-		// handleClearFilter,
-		handleApplyFilter,
-	};
+	// const productsFilterPassProps = {
+	// 	handleFilterQueryChange,
+	// 	filterQuery,
+	// 	// handleClearFilter,
+	// 	handleApplyFilter,
+	// };
 	//============
 	//============
-	const { itemsPerPage, currentPage } = paginatorData;
+	// const { itemsPerPage, currentPage } = paginatorData;
 
 	//============
 	//============
@@ -85,26 +85,11 @@ const AdminProductsList = () => {
 	};
 	//============
 	//============
+	
+
 	//============
-	useEffect(() => {
-		//   first
-		console.log("1",firstRef.current);
-		if (loading) return;
-		// getAllProducts();
-		// handleClearFilter();
-		if (firstRef) {
-			console.log("2",firstRef.current);
-			handleClearFilter_v2();
-			firstRef.current = false;
-		}
-		return;
+	//============
 
-		// getProductsWithQuery();
-
-		return () => {
-			//     second
-		};
-	}, [handleClearFilter_v2, loading]);
 
 	//============
 	//============
@@ -136,19 +121,19 @@ const AdminProductsList = () => {
 				Seed Products
 			</button> */}
 
-				{/* <ProductsFilter {...productsFilterPassProps} /> */}
-				<Paginator />
+				<ProductsFilter />
+				{/* <Paginator /> */}
 				<Link to="add-new-product">
 					<button className="btn btn-info">
 						Add New Product
 					</button>
 				</Link>
-				{/* <div className="all-products-container ">
+				<div className="all-products-container ">
 					{productsList.map((e, i) => (
 						<AdminProductItem key={i} {...e} />
 					))}
-				</div> */}
-				<Paginator bottom />
+				</div>
+				{/* <Paginator bottom /> */}
 			</StyledWrapper>
 		</>
 	);

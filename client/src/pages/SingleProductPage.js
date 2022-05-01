@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import { useAppContext } from "../context/AppContext";
 import { CustomerContext } from "../context/CustomerContext";
 
 const SingleProductPage = () => {
@@ -17,9 +18,9 @@ const SingleProductPage = () => {
 		error,
 		loading,
 		currentProduct,
-          setCurrentProduct_v2,
-          addToCart_with_ID_v3,
-	} = useContext(CustomerContext);
+          setCurrentProduct,
+          addToCart_with_ID,
+	} = useAppContext()
 	const {
 		_id: id,
 		title,
@@ -44,7 +45,7 @@ const SingleProductPage = () => {
 		// };
 		// //
 		// fetchProduct();
-		setCurrentProduct_v2(productId);
+		setCurrentProduct(productId);
 		return () => {
 			//     second
 		};
@@ -89,7 +90,7 @@ const SingleProductPage = () => {
 						<button
 							className="btn btn-primary w-50 py-3 "
 							onClick={() => {
-								addToCart_with_ID_v3(id);
+								addToCart_with_ID(id);
 							}}
 						>
 							Buy

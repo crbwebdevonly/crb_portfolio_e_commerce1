@@ -45,13 +45,14 @@ const handleGetSliderDataID = async (req, res) => {
 	// send 5 random products--title,id,price
 	const hitsCount = await ProductModel.countDocuments();
 	let query = ProductModel.find();
-     query.select("_id ")
-     query.exec((error,result)=>{
-          if(error) {
-               	return res.status(500).json({ msg: "error getting slider dataID", error });
-               }
-               else 	res.status(200).json(result);
-     })
+	query.select("_id ");
+	query.exec((error, result) => {
+		if (error) {
+			return res
+				.status(500)
+				.json({ msg: "error getting slider dataID", error });
+		} else res.status(200).json(result);
+	});
 
 	// try {
 	// 	const allProducts = await ProductModel.find();
@@ -65,9 +66,11 @@ const handleGetSliderDataID = async (req, res) => {
 //============
 //============
 const handleGetSliderProducts = async (req, res) => {
-     
-     try {
-          const result = await ProductModel.find().where('_id').in(req.body).exec();
+	try {
+		const result = await ProductModel.find()
+			.where("_id")
+			.in(req.body)
+			.exec();
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(500).json({ msg: "error getting slide products", error });
@@ -103,7 +106,7 @@ const handleGetProductsWithQuery = async (req, res) => {
 	}
 	console.log(queryObject, "q-obj");
 	//============
-	const hitsCount = await ProductModel.countDocuments(queryObject);
+	const totalHitsCount = await ProductModel.countDocuments(queryObject);
 	//============
 	//============
 	// use let for sorting!! and NO wait
@@ -119,16 +122,16 @@ const handleGetProductsWithQuery = async (req, res) => {
 		// result = result.sort("-price");
 	}
 	if (sort === "titleAZ") {
-		result = result.sort({ title: 1 })
+		result = result.sort({ title: 1 });
 	}
 	if (sort === "titleZA") {
 		result = result.sort({ title: -1 });
 	}
-     if (sort === "new") {
+	if (sort === "new") {
 		result = result.sort({ createdAt: -1 });
 	}
-     if (sort === "old") {
-		result = result.sort({ createdAt: 1 })
+	if (sort === "old") {
+		result = result.sort({ createdAt: 1 });
 	}
 	// paginate
 	const page = Number(currentPage) || 1;
@@ -137,7 +140,7 @@ const handleGetProductsWithQuery = async (req, res) => {
 	//============
 	result = result.skip(skip).limit(limit);
 	result = await result;
-	res.status(200).json({ hitsCount, result });
+	res.status(200).json({ totalHitsCount, productsList: result });
 };
 //============
 //============

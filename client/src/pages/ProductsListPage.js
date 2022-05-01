@@ -7,6 +7,7 @@ import AdminProductItem from "../components/AdminProductItem";
 import Paginator from "../components/Paginator";
 import ProductItem from "../components/ProductItem";
 import ProductsFilter from "../components/ProductsFilter";
+import { useAppContext } from "../context/AppContext";
 import { CustomerContext } from "../context/CustomerContext";
 
 const ProductsListPage = ({ admin }) => {
@@ -14,16 +15,15 @@ const ProductsListPage = ({ admin }) => {
 	const {
 		loading,
 		error,
-		filterRefreshTrigger,
-		getAllProducts,
 		productsList,
-		getProductsWithQuery,
+		getCurrentPageProductsListWithQuery,
 		paginatorData,
 		handleFilterQueryChange,
-		filterQuery,
+		filter,
 		handleClearFilter,
 		handleApplyFilter,
-	} = useContext(CustomerContext);
+		addToCart_with_ID,
+	} = useAppContext();
 	//============
 	//============
 	const { itemsPerPage, currentPage } = paginatorData;
@@ -31,7 +31,7 @@ const ProductsListPage = ({ admin }) => {
 	//============
 	const productsFilterPassProps = {
 		handleFilterQueryChange,
-		filterQuery,
+		filter,
 		handleClearFilter,
 		handleApplyFilter,
 	};
@@ -46,7 +46,7 @@ const ProductsListPage = ({ admin }) => {
 		//   first
 		// must reset filters/pagination
 		// fetch will auto run beacuse of that
-		handleClearFilter();
+		// handleClearFilter();
 		// or do clear fetch
 		// getProductsWithQuery("clear");
 		// getProductsWithQuery();
@@ -59,11 +59,12 @@ const ProductsListPage = ({ admin }) => {
 	//============
 	useEffect(() => {
 		//   refetch on page change
-		getProductsWithQuery();
+		// getProductsWithQuery();
+		getCurrentPageProductsListWithQuery();
 		return () => {
 			//     second
 		};
-	}, [itemsPerPage, currentPage, filterRefreshTrigger]);
+	}, [itemsPerPage, currentPage]);
 
 	//============
 	//============
@@ -71,12 +72,12 @@ const ProductsListPage = ({ admin }) => {
 	//============
 	useEffect(() => {
 		//   redirect-if search results-is zero
-		if (loading || error) return;
-		if (productsList.length < 1) {
-			setTimeout(() => {
-				handleClearFilter();
-			}, 2000);
-		}
+		// if (loading || error) return;
+		// if (productsList.length < 1) {
+		// 	setTimeout(() => {
+		// 		handleClearFilter();
+		// 	}, 2000);
+		// }
 		return () => {
 			//     second
 		};
@@ -86,6 +87,7 @@ const ProductsListPage = ({ admin }) => {
 	//============
 	//============
 	//============
+	// return <div className="spinner-border mx-auto d-grid "></div>;
 	if (loading) return <div className="spinner-border mx-auto d-grid "></div>;
 	if (error)
 		//============
@@ -109,12 +111,15 @@ const ProductsListPage = ({ admin }) => {
 			<ProductsFilter {...productsFilterPassProps} />
 			<Paginator />
 			<div className="all-products-container ">
-				{productsList.map((e, i) =>
-					admin ? (
-						<AdminProductItem key={i} {...e} />
-					) : (
+				{productsList.map(
+					(e, i) => (
 						<ProductItem key={i} {...e} />
 					)
+					// admin ? (
+					// 	<AdminProductItem key={i} {...e} />
+					// ) : (
+					// 	<ProductItem key={i} {...e} />
+					// )
 				)}
 			</div>
 			<Paginator bottom />

@@ -239,7 +239,10 @@ export const CustomerContextProvider = ({ children }) => {
 			//
 			dispatch({
 				type: "RESET_FILTER_QUERY_V2",
-				payload: { filterQuery:initialFilterQuery, productsList: reply.data },
+				payload: {
+					filterQuery: initialFilterQuery,
+					productsList: reply.data,
+				},
 			});
 
 			dispatch({ type: "FETCH_SUCCESS" });
@@ -276,6 +279,39 @@ export const CustomerContextProvider = ({ children }) => {
 			// console.log(error);
 		}
 	};
+	//============
+	//============
+	//============
+	//============
+	const getProductsWithQuery_v2 = async (filterQuery) => {
+		const { search, minPrice, maxPrice, sort } = filterQuery;
+		console.log(filterQuery);
+		// return;
+		const { itemsPerPage, currentPage, hitsCount } = state.paginatorData;
+
+		let qstring = `/api/products/getproductswithquery?search=${search}&minPrice=${minPrice}&maxPrice=${maxPrice}&sort=${sort}&currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`;
+
+		dispatch({ type: "FETCH_BEGIN" });
+
+		try {
+			const reply = await myAxios.get(qstring);
+			dispatch({
+				type: "GET_ALL_PRODUCTS_WITH_QUERY",
+				payload: reply.data,
+			});
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+			// console.log(error);
+		}
+	};
+	//============
+	//============
+
+	//============
+	//============
+	//============
+	//============
 	//============
 	//============
 	const setItemsPerPage = (arg) => {
@@ -475,65 +511,70 @@ export const CustomerContextProvider = ({ children }) => {
 	//============
 	//============
 	//============
-     const contextValues999 = useMemo(() => ({
-          ...state,
+	const contextValues999 = useMemo(
+		() => ({
+			...state,
 
-		filterRefreshTrigger,
-		// setFilterRefreshTrigger,
-		getAllProducts,
-		getSliderDataID_v2,
-		handleFilterQueryChange,
-		handleApplyFilter,
-		handleClearFilter,
-		handleClearFilter_v2,
-		getProductsWithQuery,
-		setItemsPerPage,
-		// setCurrentProduct,
-		setCurrentProduct_v2,
-		setCurrentPage,
-		// addItem,
-		// addItemWithID,
-		// addToCart_v2,
-		// addToCart_with_ID_v1_use_on_product_item,
-		// addToCart_with_fetch_v2,
-		addToCart_with_ID_v3,
+			filterRefreshTrigger,
+			// setFilterRefreshTrigger,
+			getAllProducts,
+			getSliderDataID_v2,
+			handleFilterQueryChange,
+			handleApplyFilter,
+			handleClearFilter,
+			handleClearFilter_v2,
+			getProductsWithQuery,
+			setItemsPerPage,
+			// setCurrentProduct,
+			setCurrentProduct_v2,
+			setCurrentPage,
+			// addItem,
+			// addItemWithID,
+			// addToCart_v2,
+			// addToCart_with_ID_v1_use_on_product_item,
+			// addToCart_with_fetch_v2,
+			addToCart_with_ID_v3,
 
-		removeItemWithID,
-		removeItemWithIndex,
-		toggleShowMiniCart,
-		resetCart,
-		placeOrder,
-        }), [
-          //    ...state,
+			removeItemWithID,
+			removeItemWithIndex,
+			toggleShowMiniCart,
+			resetCart,
+			placeOrder,
+		}),
+		[
+			//    ...state,
 
-		filterRefreshTrigger,
-		// setFilterRefreshTrigger,
-		getAllProducts,
-		getSliderDataID_v2,
-		handleFilterQueryChange,
-		handleApplyFilter,
-		handleClearFilter,
-		handleClearFilter_v2,
-		getProductsWithQuery,
-		setItemsPerPage,
-		// setCurrentProduct,
-		setCurrentProduct_v2,
-		setCurrentPage,
-		// addItem,
-		// addItemWithID,
-		// addToCart_v2,
-		// addToCart_with_ID_v1_use_on_product_item,
-		// addToCart_with_fetch_v2,
-		addToCart_with_ID_v3,
+			filterRefreshTrigger,
+			// setFilterRefreshTrigger,
+			getAllProducts,
+			getSliderDataID_v2,
+			handleFilterQueryChange,
+			handleApplyFilter,
+			handleClearFilter,
+			handleClearFilter_v2,
+			getProductsWithQuery,
+			getProductsWithQuery_v2,
+			setItemsPerPage,
+			// setCurrentProduct,
+			setCurrentProduct_v2,
+			setCurrentPage,
+			// addItem,
+			// addItemWithID,
+			// addToCart_v2,
+			// addToCart_with_ID_v1_use_on_product_item,
+			// addToCart_with_fetch_v2,
+			addToCart_with_ID_v3,
 
-		removeItemWithID,
-		removeItemWithIndex,
-		toggleShowMiniCart,
-		resetCart,
-		placeOrder])
+			removeItemWithID,
+			removeItemWithIndex,
+			toggleShowMiniCart,
+			resetCart,
+			placeOrder,
+		]
+	);
 	//============
 	//============
-     
+
 	//============
 	//============
 	const contextValues = {
@@ -548,6 +589,7 @@ export const CustomerContextProvider = ({ children }) => {
 		handleClearFilter,
 		handleClearFilter_v2,
 		getProductsWithQuery,
+		getProductsWithQuery_v2,
 		setItemsPerPage,
 		// setCurrentProduct,
 		setCurrentProduct_v2,
@@ -576,6 +618,13 @@ export const CustomerContextProvider = ({ children }) => {
 //============
 //============
 //============
+export const useCustomerContext = () => {
+	const context = useContext(CustomerContext);
+	if (context === undefined) {
+		throw new Error("Customer context error");
+	}
+	return context;
+};
 //============
 //============
 //============

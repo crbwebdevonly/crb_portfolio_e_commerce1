@@ -10,7 +10,6 @@ import DeleteMe from "./components/DeleteMe";
 import MiniCart from "./components/MiniCart";
 import NavBar from "./components/NavBar";
 import { AdminContextProvider } from "./context/AdminContext";
-import { AuthContext } from "./context/AuthContext";
 import AdminPage from "./pages/AdminPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
 import CheckoutPage from "./pages/CheckoutPage";
@@ -28,21 +27,21 @@ import AdminAddNewUser from "./components/AdminAddNewUser";
 import AdminProductsPage from "./pages/AdminProductsPage";
 import AdminEditProduct from "./components/AdminEditProduct";
 import AdminAddNewProduct from "./components/AdminAddNewProduct";
-import { CustomerContext } from "./context/CustomerContext";
+import { useAppContext } from "./context/AppContext";
 //============
 //============
 
 function App() {
 	//============
 	//============
-	const { showMiniCart } = useContext(CustomerContext);
 	//============
 	//============
-	const { user } = useContext(AuthContext);
+	const { user,showMiniCart } =  useAppContext()
 	//============
 	// console.log(user, "app user");
 	//============
 	//============
+    
 	//============
 	//============
 	useEffect(() => {

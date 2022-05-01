@@ -8,6 +8,8 @@ import { BrowserRouter } from "react-router-dom";
 import { AuthContextProvider } from "./context/AuthContext";
 import { CustomerContextProvider } from "./context/CustomerContext";
 import { AdminContextProvider } from "./context/AdminContext";
+import { FilterContextProvider } from "./context/FilterContext";
+import { AppContextProvider } from "./context/AppContext";
 
 // ReactDOM.render(
 // 	<React.StrictMode>
@@ -23,13 +25,17 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
 	<React.StrictMode>
 		<BrowserRouter>
-			<AdminContextProvider>
-				<AuthContextProvider>
-					<CustomerContextProvider>
-						<App />
-					</CustomerContextProvider>
-				</AuthContextProvider>
-			</AdminContextProvider>
+			<FilterContextProvider>
+				<AdminContextProvider>
+					<AuthContextProvider>
+						<CustomerContextProvider>
+							<AppContextProvider>
+								<App />
+							</AppContextProvider>
+						</CustomerContextProvider>
+					</AuthContextProvider>
+				</AdminContextProvider>
+			</FilterContextProvider>
 		</BrowserRouter>
 	</React.StrictMode>
 );
