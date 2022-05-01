@@ -106,7 +106,7 @@ function App() {
 					path="/product-item/:productId"
 					element={<SingleProductPage />}
 				/>
-				<Route path="/testpage" element={<TestPage />} />
+				{/* <Route path="/testpage" element={<TestPage />} /> */}
 				<Route
 					path="/admin"
 					element={

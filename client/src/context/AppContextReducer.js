@@ -44,7 +44,7 @@ export const AppContextReducer = (state, action) => {
 			if (name === "minPrice" || name === "maxPrice")
 				value = Number(value);
 			if (name === "minPrice") {
-				if (value >= state.filterQuery.maxPrice) {
+				if (value >= state.filter.maxPrice) {
 					return {
 						...state,
 						filter: {

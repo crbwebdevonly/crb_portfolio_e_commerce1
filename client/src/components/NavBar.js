@@ -121,14 +121,14 @@ const NavBar = () => {
 									Checkout
 								</Link>
 							</li>
-                                   <li className="nav-item">
+                                   {/* <li className="nav-item">
 								<Link
 									className="nav-link active"
 									to={"/testpage"}
 								>
 									testpage
 								</Link>
-							</li>
+							</li> */}
 
 							{user?.isAdmin && (
 								<li className="nav-item">

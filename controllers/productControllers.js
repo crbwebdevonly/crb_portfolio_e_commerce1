@@ -82,7 +82,7 @@ const handleGetSliderProducts = async (req, res) => {
 //============
 //============
 const handleGetProductsWithQuery = async (req, res) => {
-	console.log(req.query);
+	// console.log(req.query);
 	let { search, minPrice, maxPrice, itemsPerPage, sort, currentPage } =
 		req.query;
 	// build query object---maybe not use try catch!!!!???
@@ -104,7 +104,7 @@ const handleGetProductsWithQuery = async (req, res) => {
 	if (search) {
 		queryObject.title = { $regex: search, $options: "i" };
 	}
-	console.log(queryObject, "q-obj");
+	// console.log(queryObject, "q-obj");
 	//============
 	const totalHitsCount = await ProductModel.countDocuments(queryObject);
 	//============

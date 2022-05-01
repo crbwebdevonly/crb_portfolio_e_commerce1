@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useContext, useReducer } from "react";
 import { createContext } from "react";
 import { useNavigate } from "react-router-dom";
@@ -185,8 +186,35 @@ export const AppContextProvider = ({ children }) => {
 	};
 	//============
 	//============
-	const handleClearFilter = () => {
+	const ClearFilter = () => {
 		dispatch({ type: "RESET_FILTER", payload: initialFilter });
+	};
+	//============
+	//============
+	const ClearFilter_on_dismount = () => {
+		ClearFilter();
+	};
+	//============
+	//============
+	const ClearFilter_and_reFetch_products = () => {
+		ClearFilter();
+		// must re-fetch products-with-initial-filter-query
+		getCurrentPageProductsListWithQuery("initial");
+	};
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	const handleApplyFilter = () => {
+		//
+		//must change currentpage to 1.
+		// refetch-occurs from useeffect on page
+		// refetch products if page is already 1
+		if (state.paginatorData.currentPage === 1)
+			getCurrentPageProductsListWithQuery();
+		else setCurrentPage(1);
 	};
 	//============
 	//============
@@ -195,6 +223,7 @@ export const AppContextProvider = ({ children }) => {
 	const setItemsPerPage = (arg) => {
 		dispatch({ type: "SET_ITEMS_PER_PAGE", payload: arg });
 		// must also change current page to 1??
+		setCurrentPage(1);
 	};
 	//============
 	//============
@@ -238,11 +267,11 @@ export const AppContextProvider = ({ children }) => {
 	};
 	//============
 	//============
-	//============
-	//============
+	// //============
+	// //============
 	const getCurrentPageProductsListWithQuery = async (filterQuery) => {
-		const { search, minPrice, maxPrice, sort } = state.filter;
-		// console.log(filterQuery);
+		const { search, minPrice, maxPrice, sort } =
+			filterQuery === "initial" ? initialFilter : state.filter;
 
 		const { itemsPerPage, currentPage } = state.paginatorData;
 
@@ -259,11 +288,42 @@ export const AppContextProvider = ({ children }) => {
 			dispatch({ type: "FETCH_SUCCESS" });
 		} catch (error) {
 			dispatch({ type: "FETCH_ERROR" });
-			// console.log(error);
 		}
 	};
+	// //============
+	// //============
+	const load_Initial_Products_and_clear_filter = () => {
+		ClearFilter();
+		getCurrentPageProductsListWithQuery();
+	};
+	// //============
+	// //============
+	// //============
+	// 	//============
+	// const getCurrentPageProductsListWithQuery = useCallback( async (filterQuery) => {
+	// 	const { search, minPrice, maxPrice, sort } = state.filter;
+	// 	// console.log(filterQuery);
+
+	// 	const { itemsPerPage, currentPage } = state.paginatorData;
+
+	// 	let qstring = `/api/products/getproductswithquery?search=${search}&minPrice=${minPrice}&maxPrice=${maxPrice}&sort=${sort}&currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`;
+
+	// 	dispatch({ type: "FETCH_BEGIN" });
+
+	// 	try {
+	// 		const reply = await myAxios.get(qstring);
+	// 		dispatch({
+	// 			type: "GET_CURRENT_PAGE_PRODUCTS_LIST_AND_HITS_COUNT_WITH_QUERY",
+	// 			payload: reply.data,
+	// 		});
+	// 		dispatch({ type: "FETCH_SUCCESS" });
+	// 	} catch (error) {
+	// 		dispatch({ type: "FETCH_ERROR" });
+	// 		// console.log(error);
+	// 	}
+	// },[state.filter, state.paginatorData]);
 	//============
-	//============
+	// //============
 	//============
 	//============
 	const setCurrentProduct = (id) => {
@@ -573,7 +633,9 @@ export const AppContextProvider = ({ children }) => {
 		doRegister,
 		//============filter
 		handleFilterChange,
-		handleClearFilter,
+		ClearFilter_on_dismount,
+		ClearFilter_and_reFetch_products,
+		handleApplyFilter,
 		//============paginator
 		setItemsPerPage,
 		setCurrentPage,
@@ -581,6 +643,7 @@ export const AppContextProvider = ({ children }) => {
 		getSliderProducts,
 		getCurrentPageProductsListWithQuery,
 		setCurrentProduct,
+		load_Initial_Products_and_clear_filter,
 		//============cart
 		addToCart_with_ID,
 		removeItemFromCartWithIndex,

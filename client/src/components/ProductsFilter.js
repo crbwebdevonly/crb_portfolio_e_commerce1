@@ -8,8 +8,10 @@ const ProductsFilter = (props) => {
 	//============
 	const {
 		filter,
-		handleFilterQueryChange,
-		handleClearFilter,
+		handleFilterChange: handleFilterQueryChange,
+		ClearFilter_on_dismount,
+		ClearFilter_and_reFetch_products,
+		handleApplyFilter,
 		getCurrentPageProductsListWithQuery,
 	} = useAppContext();
 	//============
@@ -19,10 +21,10 @@ const ProductsFilter = (props) => {
 	//============
 	//============
 	//============
-	const handleApplyFilter = () => {
-		getCurrentPageProductsListWithQuery();
-		// getProductsWithQuery_v2({ search, minPrice, maxPrice, sort });
-	};
+	// const handleApplyFilter = () => {
+	// 	// getCurrentPageProductsListWithQuery();
+	// 	// getProductsWithQuery_v2({ search, minPrice, maxPrice, sort });
+	// };
 
 	//============
 	//============
@@ -136,7 +138,9 @@ const ProductsFilter = (props) => {
 							</button>
 							<button
 								className="btn      btn-secondary col-6 col-md-3"
-								onClick={handleClearFilter}
+								onClick={
+									ClearFilter_and_reFetch_products
+								}
 							>
 								Clear Filter
 							</button>

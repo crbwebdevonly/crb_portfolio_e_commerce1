@@ -18,47 +18,44 @@ import { useAppContext } from "../context/AppContext";
 const AdminProductsList = () => {
 	//============
 	//============
-	const { loading, error, productsList, handleClearFilter } =
-		useAppContext();
+	const {
+		loading,
+		error,
+		productsList,
+		paginatorData,
+		setCurrentPage,
+		ClearFilter_on_dismount,
+		ClearFilter_and_reFetch_products,
+		getCurrentPageProductsListWithQuery,
+	} = useAppContext();
+	//============
+	const { itemsPerPage, currentPage } = paginatorData;
 	//============
 	//============
-	// const { getAllProducts, productsList, loading, error } =
-	// useContext(AdminContext);
+	//============
+	useEffect(() => {
+		return () => {
+			//     clear filter on this page dismount
+			//  so that next time the page is loaded ....
+			// the initial load will load with cleared filter
+			console.log("clear filter- ADMIN products page");
+			ClearFilter_on_dismount();
+			setCurrentPage(1);
+		};
+	}, []);
 	//============
 	//============
-	const firstRef = useRef(true);
 	//============
 	//============
-	//============
-	// const {
-	// 	loading,
-	// 	error,
-	// 	// filterRefreshTrigger,
-	// 	// setFilterRefreshTrigger,
-	// 	// getAllProducts,
-	// 	productsList,
-	// 	// getProductsWithQuery,
-	// 	// handleFilterQueryChange,
-	// 	// filterQuery,
+	useEffect(() => {
+		//   first
+		getCurrentPageProductsListWithQuery();
+		return () => {
+			//     second
+		};
+	}, [itemsPerPage, currentPage]);
 
-	// 	// handleClearFilter,
-	// 	// handleClearFilter_v2,
-	// 	// handleApplyFilter,
-
-	// 	// paginatorData,
-	// } = useContext(CustomerContext);
 	//============
-	//============
-	// const productsFilterPassProps = {
-	// 	handleFilterQueryChange,
-	// 	filterQuery,
-	// 	// handleClearFilter,
-	// 	handleApplyFilter,
-	// };
-	//============
-	//============
-	// const { itemsPerPage, currentPage } = paginatorData;
-
 	//============
 	//============
 	//============
@@ -119,7 +116,7 @@ const AdminProductsList = () => {
 			</button> */}
 
 				<ProductsFilter />
-				{/* <Paginator /> */}
+				<Paginator />
 				<Link to="add-new-product">
 					<button className="btn btn-info">
 						Add New Product
@@ -130,7 +127,7 @@ const AdminProductsList = () => {
 						<AdminProductItem key={i} {...e} />
 					))}
 				</div>
-				{/* <Paginator bottom /> */}
+				<Paginator bottom />
 			</StyledWrapper>
 		</>
 	);

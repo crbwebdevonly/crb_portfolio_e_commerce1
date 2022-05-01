@@ -15,10 +15,12 @@ const ProductsListPage = ({ admin }) => {
 		error,
 		productsList,
 		getCurrentPageProductsListWithQuery,
+		setCurrentPage,
 		paginatorData,
 		handleFilterQueryChange,
 		filter,
-		handleClearFilter,
+		ClearFilter_on_dismount,
+		ClearFilter_and_reFetch_products,
 		handleApplyFilter,
 		addToCart_with_ID,
 	} = useAppContext();
@@ -33,15 +35,15 @@ const ProductsListPage = ({ admin }) => {
 	//============
 	//============
 	useEffect(() => {
-		//   first
-		// must reset filters/pagination
-		// fetch will auto run beacuse of that
-		// handleClearFilter();
-		// or do clear fetch
-		// getProductsWithQuery("clear");
-		// getProductsWithQuery();
+		// must set page to 1
+		setCurrentPage(1);
 		return () => {
-			//     second
+			//     clear filter on this page dismount
+			//  so that next time the page is loaded ....
+			// the initial load will load with cleared filter
+			console.log("clear filter-products page");
+			ClearFilter_on_dismount();
+			setCurrentPage(1);
 		};
 	}, []);
 
@@ -98,7 +100,7 @@ const ProductsListPage = ({ admin }) => {
 	//============
 	return (
 		<StyledWrapper>
-			<ProductsFilter  />
+			<ProductsFilter />
 			<Paginator />
 			<div className="all-products-container ">
 				{productsList.map(
