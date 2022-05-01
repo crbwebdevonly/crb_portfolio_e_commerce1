@@ -1,17 +1,19 @@
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useContext } from "react";
-import { CustomerContext } from "../context/CustomerContext";
+import { useAppContext } from "../context/AppContext";
 
 const Paginator = (props) => {
 	const { bottom } = props;
 	//============
 	//============
-	const { paginatorData, setItemsPerPage, setCurrentPage } =
-		useContext(CustomerContext);
+	const { paginatorData, setItemsPerPage, setCurrentPage } = useAppContext();
 	//============
-	const { itemsPerPage, currentPage, hitsCount } = paginatorData;
+	const {
+		itemsPerPage,
+		currentPage,
+		totalHitsCount: hitsCount,
+	} = paginatorData;
 	//============
 	//============
 	// const [numPages, setNumPages] = useState(1);

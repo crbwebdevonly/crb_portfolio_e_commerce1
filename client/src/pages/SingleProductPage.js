@@ -1,10 +1,9 @@
 import React from "react";
 import { useState } from "react";
-import { useContext } from "react";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { CustomerContext } from "../context/CustomerContext";
+import { useAppContext } from "../context/AppContext";
 
 const SingleProductPage = () => {
 	//============
@@ -17,9 +16,9 @@ const SingleProductPage = () => {
 		error,
 		loading,
 		currentProduct,
-		setCurrentProduct,
-		addItemWithID,
-	} = useContext(CustomerContext);
+          setCurrentProduct,
+          addToCart_with_ID,
+	} = useAppContext()
 	const {
 		_id: id,
 		title,
@@ -89,7 +88,7 @@ const SingleProductPage = () => {
 						<button
 							className="btn btn-primary w-50 py-3 "
 							onClick={() => {
-								addItemWithID(id);
+								addToCart_with_ID(id);
 							}}
 						>
 							Buy

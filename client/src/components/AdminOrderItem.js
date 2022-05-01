@@ -1,16 +1,14 @@
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useContext } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { AdminContext } from "../context/AdminContext";
+import { useAppContext } from "../context/AppContext";
 
 const AdminOrderItem = (props) => {
 	//============
 	//============
-	const { deleteOrder, updateOrder } = useContext(AdminContext);
-	//============
+	const { deleteOrder, updateOrder } = useAppContext()
 	const {
 		_id: id,
 		createdAt,

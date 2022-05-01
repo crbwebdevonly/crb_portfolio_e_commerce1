@@ -1,23 +1,40 @@
-import React, { useContext } from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 import styled from "styled-components";
-import { CustomerContext } from "../context/CustomerContext";
+import { useAppContext } from "../context/AppContext";
 
-const ProductsFilter = () => {
+const ProductsFilter = (props) => {
 	//============
 	//============
 	const {
-		handleFilterQueryChange,
-		filterQuery,
-		handleClearFilter,
+		filter,
+		handleFilterChange: handleFilterQueryChange,
+		ClearFilter_on_dismount,
+		ClearFilter_and_reFetch_products,
 		handleApplyFilter,
-	} = useContext(CustomerContext);
+		getCurrentPageProductsListWithQuery,
+	} = useAppContext();
 	//============
-	const { search, minPrice, maxPrice, sort } = filterQuery;
 	//============
+	const { search, minPrice, maxPrice, sort } = filter;
 
 	//============
+	//============
+	//============
+	// const handleApplyFilter = () => {
+	// 	// getCurrentPageProductsListWithQuery();
+	// 	// getProductsWithQuery_v2({ search, minPrice, maxPrice, sort });
+	// };
 
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
 	//============
 	//============
 	return (
@@ -76,6 +93,7 @@ const ProductsFilter = () => {
 									<option value="100">100</option>
 									<option value="200">200</option>
 									<option value="500">500</option>
+									<option value="700">700</option>
 								</select>
 							</div>
 						</div>
@@ -102,6 +120,12 @@ const ProductsFilter = () => {
 									<option value="titleZA">
 										Name Z-A
 									</option>
+									<option value="new">
+										New First
+									</option>
+									<option value="old">
+										Old First
+									</option>
 								</select>
 							</div>
 						</div>
@@ -114,7 +138,9 @@ const ProductsFilter = () => {
 							</button>
 							<button
 								className="btn      btn-secondary col-6 col-md-3"
-								onClick={handleClearFilter}
+								onClick={
+									ClearFilter_and_reFetch_products
+								}
 							>
 								Clear Filter
 							</button>

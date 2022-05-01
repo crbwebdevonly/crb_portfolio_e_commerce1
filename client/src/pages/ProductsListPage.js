@@ -1,46 +1,85 @@
 import React from "react";
 import { useEffect } from "react";
-import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import AdminProductItem from "../components/AdminProductItem";
 import Paginator from "../components/Paginator";
 import ProductItem from "../components/ProductItem";
 import ProductsFilter from "../components/ProductsFilter";
-import { CustomerContext } from "../context/CustomerContext";
+import { useAppContext } from "../context/AppContext";
 
 const ProductsListPage = ({ admin }) => {
 	//============
 	const {
 		loading,
 		error,
-		getAllProducts,
 		productsList,
-		getProductsWithQuery,
-		handleClearFilter,
-	} = useContext(CustomerContext);
+		getCurrentPageProductsListWithQuery,
+		setCurrentPage,
+		paginatorData,
+		handleFilterQueryChange,
+		filter,
+		ClearFilter_on_dismount,
+		ClearFilter_and_reFetch_products,
+		handleApplyFilter,
+		addToCart_with_ID,
+	} = useAppContext();
+	//============
+	//============
+	const { itemsPerPage, currentPage } = paginatorData;
+	//============
+	//============
+	const navigate = useNavigate();
+	//============
+	//============
 	//============
 	//============
 	useEffect(() => {
-		//   first
-		// must reset filters/pagination
-		// fetch will auto run beacuse of that
-		handleClearFilter();
-		// or do clear fetch
-		// getProductsWithQuery("clear");
-		// getProductsWithQuery();
+		// must set page to 1
+		setCurrentPage(1);
 		return () => {
-			//     second
+			//     clear filter on this page dismount
+			//  so that next time the page is loaded ....
+			// the initial load will load with cleared filter
+			console.log("clear filter-products page");
+			ClearFilter_on_dismount();
+			setCurrentPage(1);
 		};
 	}, []);
 
 	//============
 	//============
+	useEffect(() => {
+		//   refetch on page change
+		// getProductsWithQuery();
+		getCurrentPageProductsListWithQuery();
+		return () => {
+			//     second
+		};
+	}, [itemsPerPage, currentPage]);
+
+	//============
+	//============
+	//============
+	//============
+	useEffect(() => {
+		//   redirect-if search results-is zero
+		// if (loading || error) return;
+		// if (productsList.length < 1) {
+		// 	setTimeout(() => {
+		// 		handleClearFilter();
+		// 	}, 2000);
+		// }
+		return () => {
+			//     second
+		};
+	}, [productsList]);
 	//============
 	//============
 	//============
 	//============
 	//============
-	//============
-	//============
+	// return <div className="spinner-border mx-auto d-grid "></div>;
 	if (loading) return <div className="spinner-border mx-auto d-grid "></div>;
 	if (error)
 		//============
@@ -51,14 +90,29 @@ const ProductsListPage = ({ admin }) => {
 		);
 	//============
 	//============
+	if (productsList.length < 1)
+		return (
+			<h5 className="alert alert-info">
+				No product matching your search parameters
+			</h5>
+		);
+	//============
+	//============
 	return (
 		<StyledWrapper>
 			<ProductsFilter />
 			<Paginator />
 			<div className="all-products-container ">
-				{productsList.map((e, i) => (
-					<ProductItem key={i} {...e} />
-				))}
+				{productsList.map(
+					(e, i) => (
+						<ProductItem key={i} {...e} />
+					)
+					// admin ? (
+					// 	<AdminProductItem key={i} {...e} />
+					// ) : (
+					// 	<ProductItem key={i} {...e} />
+					// )
+				)}
 			</div>
 			<Paginator bottom />
 		</StyledWrapper>

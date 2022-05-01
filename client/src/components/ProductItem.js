@@ -1,15 +1,14 @@
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useContext } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { CustomerContext } from "../context/CustomerContext";
+import { useAppContext } from "../context/AppContext";
 
 const ProductItem = (props) => {
 	//============
 	//============
-	const { addItemWithID } = useContext(CustomerContext);
+	const {  addToCart_with_ID  } = useAppContext()
 	//============
 	//============
 	const {
@@ -60,7 +59,7 @@ const ProductItem = (props) => {
 						className="btn btn-primary"
 						onClick={() => {
 							setshowAddedtoCart(true);
-							addItemWithID(id);
+							addToCart_with_ID(id);
 						}}
 					>
 						Add to Cart

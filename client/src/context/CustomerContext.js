@@ -1,4 +1,5 @@
 import { useContext, useReducer } from "react";
+import { useMemo } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { createContext } from "react";
@@ -25,6 +26,10 @@ const initialFilterQuery = {
 const initialState = {
 	loading: false,
 	error: false,
+	//============
+	//============
+	sliderProductsList: [],
+	//============
 	//============
 	//============
 	productsList: [],
@@ -77,21 +82,34 @@ export const CustomerContextProvider = ({ children }) => {
 
 	//============
 	//============
-	useEffect(() => {
-		//   refetch products upon paginator data changes
-		// and filter apply
-		getProductsWithQuery();
+	// useEffect(() => {
+	// 	//   refetch products upon paginator data changes
+	// 	// and filter apply
+	// 	getProductsWithQuery();
+	//      // issue=> this is being triggered at app start into homepage
+	//      // which is causing inifinite loop
+	//      // make it so it doesn't run on homepage load
+	//      // solution may be to move this useeffect into ptoductspage component
 
-		return () => {
-			//     second
-		};
-	}, [
-		state.paginatorData.itemsPerPage,
-		state.paginatorData.currentPage,
-		filterRefreshTrigger,
-	]);
+	// 	return () => {
+	// 		//     second
+	// 	};
+	// }, [
+	// 	state.paginatorData.itemsPerPage,
+	// 	state.paginatorData.currentPage,
+	// 	filterRefreshTrigger,
+	// ]);
 
 	//============
+	//============
+	//============
+	const findProductItem = (id) => {
+		let findItem = state.sliderProductsList.find((e) => e._id === id);
+		if (!findItem) {
+			findItem = state.productsList.find((e) => e._id === id);
+		}
+		return findItem;
+	};
 	//============
 	//============
 	//============
@@ -107,6 +125,54 @@ export const CustomerContextProvider = ({ children }) => {
 		dispatch({ type: "FETCH_ERROR" });
 		delyedClearError();
 	};
+	//============
+	//============
+	//============
+	const getSliderDataID_v2 = async () => {
+		// get list of all ids and choose 5 at random...then set sliderData
+		dispatch({ type: "FETCH_BEGIN" });
+
+		try {
+			const reply = await myAxios.get("/api/products/getsliderdataid");
+			//
+			const total = reply.data.length;
+			let randSet = new Set();
+			while (randSet.size < 5) {
+				let n = Math.floor(Math.random() * total);
+				randSet.add(n);
+			}
+			const arrayID = [];
+			randSet.forEach((e) => arrayID.push(reply.data[e]));
+			//
+			const reply2 = await myAxios.post(
+				"/api/products/getsliderproducts",
+				arrayID
+			);
+
+			dispatch({ type: "GET_SLIDER_PRODUCTS", payload: reply2.data });
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+		}
+	};
+	//============
+	//============
+	//============
+	//============
+	const getSliderProducts = async (arrayID) => {
+		// dispatch({ type: "FETCH_BEGIN" });
+		// try {
+		// 	const reply = await myAxios.get(
+		// 		"/api/products/getsliderproducts"
+		// 	);
+		// 	dispatch({ type: "GET_SLIDER_DATA_ID", payload: reply.data });
+		// 	dispatch({ type: "FETCH_SUCCESS" });
+		// } catch (error) {
+		// 	dispatch({ type: "FETCH_ERROR" });
+		// }
+	};
+	//============
+	//============
 	//============
 	//============
 	//============
@@ -139,16 +205,56 @@ export const CustomerContextProvider = ({ children }) => {
 		//
 		// change currentpage to 1.....page change trigers re-fetch
 		setCurrentPage(1);
+		// refetch products
+		getProductsWithQuery();
 		// refresh trigger ??needed?? yes--when current page is already 1
-		setFilterRefreshTrigger((p) => !p);
+		// setFilterRefreshTrigger((p) => !p);
 	};
 	//============
 	//============
 	const handleClearFilter = () => {
 		setCurrentPage(1);
 		dispatch({ type: "RESET_FILTER_QUERY", payload: initialFilterQuery });
-		getProductsWithQuery("clearFilter");
+		// getProductsWithQuery("clearFilter");
+		return;
 	};
+	//============
+	//============
+	//============
+	//============
+	//============
+	const handleClearFilter_v2 = async () => {
+		// must get products with cleared filter
+		// set current page to 1
+		const query = initialFilterQuery;
+		const { search, minPrice, maxPrice, sort } = query;
+		const { itemsPerPage, currentPage, hitsCount } = state.paginatorData;
+
+		let qstring = `/api/products/getproductswithquery?search=${search}&minPrice=${minPrice}&maxPrice=${maxPrice}&sort=${sort}&currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`;
+
+		dispatch({ type: "FETCH_BEGIN" });
+
+		try {
+			const reply = await myAxios.get(qstring);
+			//
+			dispatch({
+				type: "RESET_FILTER_QUERY_V2",
+				payload: {
+					filterQuery: initialFilterQuery,
+					productsList: reply.data,
+				},
+			});
+
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+			// console.log(error);
+		}
+	};
+	//============
+	//============
+	//============
+	//============
 	//============
 	//============
 	const getProductsWithQuery = async (arg) => {
@@ -175,10 +281,43 @@ export const CustomerContextProvider = ({ children }) => {
 	};
 	//============
 	//============
+	//============
+	//============
+	const getProductsWithQuery_v2 = async (filterQuery) => {
+		const { search, minPrice, maxPrice, sort } = filterQuery;
+		console.log(filterQuery);
+		// return;
+		const { itemsPerPage, currentPage, hitsCount } = state.paginatorData;
+
+		let qstring = `/api/products/getproductswithquery?search=${search}&minPrice=${minPrice}&maxPrice=${maxPrice}&sort=${sort}&currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`;
+
+		dispatch({ type: "FETCH_BEGIN" });
+
+		try {
+			const reply = await myAxios.get(qstring);
+			dispatch({
+				type: "GET_ALL_PRODUCTS_WITH_QUERY",
+				payload: reply.data,
+			});
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+			// console.log(error);
+		}
+	};
+	//============
+	//============
+
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
 	const setItemsPerPage = (arg) => {
 		dispatch({ type: "SET_ITEMS_PER_PAGE", payload: arg });
-          // must also change current page to 1
-          setCurrentPage(1)
+		// must also change current page to 1
+		setCurrentPage(1);
 	};
 	//============
 	//============
@@ -191,14 +330,17 @@ export const CustomerContextProvider = ({ children }) => {
 	//============
 	//============
 	//============
-	const setCurrentProduct = (id) => {
+	const setCurrentProduct = async (id) => {
 		dispatch({ type: "FETCH_BEGIN" });
 		try {
-			const findProduct = state.productsList.find((e) => e._id === id);
-			if (!findProduct) {
+			const reply = await myAxios.get(
+				`/api/products/getoneproduct/${id}`
+			);
+			if (!reply) {
 				throw new Error("Product NOT found");
 			}
-			dispatch({ type: "SET_CURRENT_PRODUCT", payload: findProduct });
+
+			dispatch({ type: "SET_CURRENT_PRODUCT", payload: reply.data });
 
 			dispatch({ type: "FETCH_SUCCESS" });
 		} catch (error) {
@@ -212,18 +354,81 @@ export const CustomerContextProvider = ({ children }) => {
 	//============
 	//============
 	//============
+	const setCurrentProduct_v2 = (id) => {
+		// no fetch
+		dispatch({ type: "FETCH_BEGIN" });
+		const findProduct = findProductItem(id);
+		if (findProduct) {
+			dispatch({
+				type: "SET_CURRENT_PRODUCT_V2",
+				payload: findProduct,
+			});
+			dispatch({ type: "FETCH_SUCCESS" });
+		} else {
+			dispatch({ type: "FETCH_ERROR" });
+			setTimeout(() => {
+				navigate("/productslist");
+			}, 2000);
+		}
+	};
 	//============
-	const addItem = (item) => {
-		console.log("add-dispatch");
+	//============
+	//============
+	// //============
+	// //============
+	// const addItem = (item) => {
+	// 	console.log("add-dispatch");
 
-		dispatch({ type: "ADD_ITEM", payload: item });
+	// 	dispatch({ type: "ADD_ITEM", payload: item });
+	// };
+	// //============
+	// //============
+	// const addToCart_with_ID_v1_use_on_product_item = (id) => {
+	// 	dispatch({ type: "ADD_TO_CART_WITH_ID_V1", payload: id });
+	// 	toast.success("Item added to cart");
+	// };
+	// //============
+	// //============
+	// //============
+	// //============
+	const addToCart_with_ID_v3 = (id) => {
+		// search both productsList and sliderProductsList
+		// no fetch
+		dispatch({ type: "ADD_TO_CART_WITH_ID_V3", payload: id });
+		toast.success("Item added to cart");
 	};
 	//============
 	//============
-	const addItemWithID = (id) => {
-		console.log("add-dispatch-id", id);
-		dispatch({ type: "ADD_ITEM_WITH_ID", payload: id });
-	};
+
+	// //============
+	// //============
+	// const addToCart_with_fetch_v2 = async (id) => {
+	// 	dispatch({ type: "FETCH_BEGIN" });
+	// 	try {
+	// 		const reply = await myAxios.get(
+	// 			`/api/products/getoneproduct/${id}`
+	// 		);
+	// 		if (!reply) {
+	// 			throw new Error("error adding to cart-Product NOT found");
+	// 		}
+
+	// 		dispatch({
+	// 			type: "ADD_TO_CART_WITH_FETCH_V2",
+	// 			payload: reply.data,
+	// 		});
+
+	// 		dispatch({ type: "FETCH_SUCCESS" });
+	// 	} catch (error) {
+	// 		dispatch({ type: "FETCH_ERROR" });
+	// 		setTimeout(() => {
+	// 			navigate("/productslist");
+	// 		}, 1000);
+	// 	}
+	// };
+	// //============
+	// //============
+	//============
+	//============
 	//============
 	//============
 	const removeItemWithID = (id) => {
@@ -270,6 +475,11 @@ export const CustomerContextProvider = ({ children }) => {
 			};
 		} catch (error) {
 			toast.error(error.message);
+			if (!user) {
+				setTimeout(() => {
+					navigate("login-register");
+				}, 1500);
+			}
 			return;
 		}
 		// place order
@@ -301,20 +511,96 @@ export const CustomerContextProvider = ({ children }) => {
 	//============
 	//============
 	//============
+	const contextValues999 = useMemo(
+		() => ({
+			...state,
+
+			filterRefreshTrigger,
+			// setFilterRefreshTrigger,
+			getAllProducts,
+			getSliderDataID_v2,
+			handleFilterQueryChange,
+			handleApplyFilter,
+			handleClearFilter,
+			handleClearFilter_v2,
+			getProductsWithQuery,
+			setItemsPerPage,
+			// setCurrentProduct,
+			setCurrentProduct_v2,
+			setCurrentPage,
+			// addItem,
+			// addItemWithID,
+			// addToCart_v2,
+			// addToCart_with_ID_v1_use_on_product_item,
+			// addToCart_with_fetch_v2,
+			addToCart_with_ID_v3,
+
+			removeItemWithID,
+			removeItemWithIndex,
+			toggleShowMiniCart,
+			resetCart,
+			placeOrder,
+		}),
+		[
+			//    ...state,
+
+			filterRefreshTrigger,
+			// setFilterRefreshTrigger,
+			getAllProducts,
+			getSliderDataID_v2,
+			handleFilterQueryChange,
+			handleApplyFilter,
+			handleClearFilter,
+			handleClearFilter_v2,
+			getProductsWithQuery,
+			getProductsWithQuery_v2,
+			setItemsPerPage,
+			// setCurrentProduct,
+			setCurrentProduct_v2,
+			setCurrentPage,
+			// addItem,
+			// addItemWithID,
+			// addToCart_v2,
+			// addToCart_with_ID_v1_use_on_product_item,
+			// addToCart_with_fetch_v2,
+			addToCart_with_ID_v3,
+
+			removeItemWithID,
+			removeItemWithIndex,
+			toggleShowMiniCart,
+			resetCart,
+			placeOrder,
+		]
+	);
+	//============
+	//============
+
 	//============
 	//============
 	const contextValues = {
 		...state,
+
+		filterRefreshTrigger,
+		// setFilterRefreshTrigger,
 		getAllProducts,
+		getSliderDataID_v2,
 		handleFilterQueryChange,
 		handleApplyFilter,
 		handleClearFilter,
+		handleClearFilter_v2,
 		getProductsWithQuery,
+		getProductsWithQuery_v2,
 		setItemsPerPage,
-		setCurrentProduct,
+		// setCurrentProduct,
+		setCurrentProduct_v2,
 		setCurrentPage,
-		addItem,
-		addItemWithID,
+		// addItem,
+		// addItemWithID,
+		// addToCart_v2,
+		// addToCart_with_ID_v1_use_on_product_item,
+		// addToCart_with_fetch_v2,
+		addToCart_with_ID_v3,
+
 		removeItemWithID,
 		removeItemWithIndex,
 		toggleShowMiniCart,
@@ -332,6 +618,13 @@ export const CustomerContextProvider = ({ children }) => {
 //============
 //============
 //============
+export const useCustomerContext = () => {
+	const context = useContext(CustomerContext);
+	if (context === undefined) {
+		throw new Error("Customer context error");
+	}
+	return context;
+};
 //============
 //============
 //============

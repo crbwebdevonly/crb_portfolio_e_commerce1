@@ -22,6 +22,10 @@ export const CustomerContextReducer = (state, action) => {
 	let { cartItems, showMiniCart, totalQty, totalAmount } = state;
 	//============
 	//============
+	//============
+	//============
+	//============
+	//============
 	if (action.type === "GET_ALL_PRODUCTS") {
 		return {
 			...state,
@@ -32,15 +36,46 @@ export const CustomerContextReducer = (state, action) => {
 	}
 	//============
 	//============
-     //============
+	//============
+	//============
+	// if (action.type === "GET_SLIDER_DATA_ID") {
+	// 	return {
+	// 		...state,
+	// 		sliderData: {
+	// 			...state.sliderData,
+	// 			allProductsID: action.payload,
+	// 		},
+	// 		loading: false,
+	// 		error: false,
+	// 	};
+	// }
+	//============
+	//============
+	//============
+	//============
+	if (action.type === "GET_SLIDER_PRODUCTS") {
+		return {
+			...state,
+			sliderProductsList: action.payload,
+			loading: false,
+			error: false,
+		};
+	}
+	//============
+	//============
+	//============
 	//============
 	if (action.type === "GET_ALL_PRODUCTS_WITH_QUERY") {
+		const { result } = action.payload;
+		// if(result.length<1){
+
+		// }
 		return {
 			...state,
 			productsList: action.payload.result,
 			loading: false,
 			error: false,
-               paginatorData: {
+			paginatorData: {
 				...state.paginatorData,
 				hitsCount: action.payload.hitsCount,
 			},
@@ -50,6 +85,17 @@ export const CustomerContextReducer = (state, action) => {
 	//============
 	//============
 	if (action.type === "SET_CURRENT_PRODUCT") {
+		return {
+			...state,
+			currentProduct: action.payload,
+		};
+	}
+	//============
+	//============
+	//============
+	//============
+	//============
+	if (action.type === "SET_CURRENT_PRODUCT_V2") {
 		return {
 			...state,
 			currentProduct: action.payload,
@@ -106,6 +152,24 @@ export const CustomerContextReducer = (state, action) => {
 	//============
 	//============
 	//============
+	//============
+	if (action.type === "RESET_FILTER_QUERY_V2") {
+		console.log("v2", action.payload);
+		const { filterQuery, productsList } = action.payload;
+		// const { filterQuery, productsList } = action.payload;
+		return {
+			...state,
+			filterQuery,
+			productsList:productsList.result,
+		};
+	}
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
 	if (action.type === "SET_ITEMS_PER_PAGE") {
 		return {
 			...state,
@@ -117,7 +181,7 @@ export const CustomerContextReducer = (state, action) => {
 	}
 	//============
 	//============
-     //============
+	//============
 	//============
 	if (action.type === "SET_CURRENT_PAGE") {
 		return {
@@ -145,7 +209,7 @@ export const CustomerContextReducer = (state, action) => {
 	}
 	//============
 	//============
-	if (action.type === "ADD_ITEM_WITH_ID") {
+	if (action.type === "ADD_TO_CART_WITH_ID_V1") {
 		const addItem = state.productsList.find(
 			(e) => e._id === action.payload
 		);
@@ -158,6 +222,45 @@ export const CustomerContextReducer = (state, action) => {
 		totalAmount = Number(amt.toFixed(2));
 		return { ...state, cartItems, totalQty, totalAmount };
 	}
+	//============
+	//============
+	//============
+	//============
+	if (action.type === "ADD_TO_CART_WITH_ID_V3") {
+		let addItem = state.sliderProductsList.find(
+			(e) => e._id === action.payload
+		);
+		if (!addItem) {
+			addItem = state.productsList.find(
+				(e) => e._id === action.payload
+			);
+		}
+		cartItems = [...cartItems, addItem];
+		totalQty = cartItems.length;
+		let amt = 0;
+		totalAmount = cartItems.forEach((e) => {
+			amt += e.price;
+		});
+		totalAmount = Number(amt.toFixed(2));
+		return { ...state, cartItems, totalQty, totalAmount };
+	}
+	//============
+	//============
+	//============
+	//============
+	if (action.type === "ADD_TO_CART_WITH_FETCH_V2") {
+		cartItems = [...cartItems, action.payload];
+		totalQty = cartItems.length;
+		let amt = 0;
+		totalAmount = cartItems.forEach((e) => {
+			amt += e.price;
+		});
+		totalAmount = Number(amt.toFixed(2));
+		return { ...state, cartItems, totalQty, totalAmount };
+	}
+	//============
+	//============
+	//============
 	//============
 	//============
 	if (action.type === "REMOVE_ITEM_WITH_ID") {

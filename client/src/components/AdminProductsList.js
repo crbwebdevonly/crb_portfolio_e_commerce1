@@ -5,17 +5,56 @@ import styled from "styled-components";
 import { myAxios } from "../myAxios";
 import ProductItem from "./ProductItem";
 import { useContext } from "react";
-import { AdminContext } from "../context/AdminContext";
 import { useEffect } from "react";
 import { Spinner } from "react-bootstrap";
 import AdminProductItem from "./AdminProductItem";
 import { Link } from "react-router-dom";
+import ProductsFilter from "./ProductsFilter";
+import Paginator from "./Paginator";
+import { useState } from "react";
+import { useRef } from "react";
+import { useAppContext } from "../context/AppContext";
 
 const AdminProductsList = () => {
 	//============
 	//============
-	const { getAllProducts, productsList, loading, error } =
-		useContext(AdminContext);
+	const {
+		loading,
+		error,
+		productsList,
+		paginatorData,
+		setCurrentPage,
+		ClearFilter_on_dismount,
+		ClearFilter_and_reFetch_products,
+		getCurrentPageProductsListWithQuery,
+	} = useAppContext();
+	//============
+	const { itemsPerPage, currentPage } = paginatorData;
+	//============
+	//============
+	//============
+	useEffect(() => {
+		return () => {
+			//     clear filter on this page dismount
+			//  so that next time the page is loaded ....
+			// the initial load will load with cleared filter
+			console.log("clear filter- ADMIN products page");
+			ClearFilter_on_dismount();
+			setCurrentPage(1);
+		};
+	}, []);
+	//============
+	//============
+	//============
+	//============
+	useEffect(() => {
+		//   first
+		getCurrentPageProductsListWithQuery();
+		return () => {
+			//     second
+		};
+	}, [itemsPerPage, currentPage]);
+
 	//============
 	//============
 	//============
@@ -42,16 +81,22 @@ const AdminProductsList = () => {
 	};
 	//============
 	//============
-	//============
-	//============
-	useEffect(() => {
-		//   first
-		getAllProducts();
-		return () => {
-			//     second
-		};
-	}, []);
 
+	//============
+	//============
+
+	//============
+	//============
+	//============
+	// //============
+
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
 	//============
 	//============
 	if (loading) return <div className="spinner-border mx-auto d-grid "></div>;
@@ -69,6 +114,9 @@ const AdminProductsList = () => {
 				{/* <button className="btn btn-warning" onClick={handleSeedProducts}>
 				Seed Products
 			</button> */}
+
+				<ProductsFilter />
+				<Paginator />
 				<Link to="add-new-product">
 					<button className="btn btn-info">
 						Add New Product
@@ -79,6 +127,7 @@ const AdminProductsList = () => {
 						<AdminProductItem key={i} {...e} />
 					))}
 				</div>
+				<Paginator bottom />
 			</StyledWrapper>
 		</>
 	);

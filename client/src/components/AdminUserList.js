@@ -3,13 +3,13 @@ import { useContext } from "react";
 import { useEffect } from "react";
 import { Link, Outlet } from "react-router-dom";
 import styled from "styled-components";
-import { AdminContext } from "../context/AdminContext";
+import { useAppContext } from "../context/AppContext";
 import AdminUserItem from "./AdminUserItem";
 
 const AdminUserList = () => {
 	//============
 	//============
-	const { getAllUsers, usersList } = useContext(AdminContext);
+	const { getAllUsers, usersList } =useAppContext()
 	//============
 	//============
 	//============

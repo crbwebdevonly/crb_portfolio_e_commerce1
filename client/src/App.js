@@ -9,8 +9,6 @@ import AdminUserList from "./components/AdminUserList";
 import DeleteMe from "./components/DeleteMe";
 import MiniCart from "./components/MiniCart";
 import NavBar from "./components/NavBar";
-import { AdminContextProvider } from "./context/AdminContext";
-import { AuthContext } from "./context/AuthContext";
 import AdminPage from "./pages/AdminPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
 import CheckoutPage from "./pages/CheckoutPage";
@@ -28,21 +26,22 @@ import AdminAddNewUser from "./components/AdminAddNewUser";
 import AdminProductsPage from "./pages/AdminProductsPage";
 import AdminEditProduct from "./components/AdminEditProduct";
 import AdminAddNewProduct from "./components/AdminAddNewProduct";
-import { CustomerContext } from "./context/CustomerContext";
+import { useAppContext } from "./context/AppContext";
+import TestPage from "./pages/TestPage";
 //============
 //============
 
 function App() {
 	//============
 	//============
-	const { showMiniCart } = useContext(CustomerContext);
 	//============
 	//============
-	const { user } = useContext(AuthContext);
+	const { user, showMiniCart } = useAppContext();
 	//============
 	// console.log(user, "app user");
 	//============
 	//============
+
 	//============
 	//============
 	useEffect(() => {
@@ -67,6 +66,8 @@ function App() {
 	//============
 
 	const AuthAdminRedirect = ({ children }) => {
+          // causing useeffect infinit loop at initial fetch
+		return { ...children };
 		if (user?.isAdmin) return { ...children };
 		// else return <Navigate to="/login-register" />;
 		else
@@ -105,14 +106,11 @@ function App() {
 					path="/product-item/:productId"
 					element={<SingleProductPage />}
 				/>
+				{/* <Route path="/testpage" element={<TestPage />} /> */}
 				<Route
 					path="/admin"
 					element={
-						<AuthAdminRedirect>
-							<AdminContextProvider>
-								<AdminPage />
-							</AdminContextProvider>
-						</AuthAdminRedirect>
+							<AdminPage />
 					}
 				>
 					<Route index element={<AdminStats />} />
@@ -132,6 +130,7 @@ function App() {
 					</Route>
 					<Route path="products" element={<AdminProductsPage />}>
 						<Route index element={<AdminProductsList />} />
+						{/* <Route index element={<ProductsListPage />} /> */}
 						<Route
 							path="edit-product/:productId"
 							element={<AdminEditProduct />}

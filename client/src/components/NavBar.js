@@ -1,9 +1,7 @@
-import React, { useContext } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { AuthContext } from "../context/AuthContext";
-import { CustomerContext } from "../context/CustomerContext";
+import { useAppContext } from "../context/AppContext";
 import { myAxios } from "../myAxios";
 
 //============
@@ -14,10 +12,10 @@ import { myAxios } from "../myAxios";
 const NavBar = () => {
 	//============
 	//============
-	const { totalQty, toggleShowMiniCart, resetCart } =
-		useContext(CustomerContext);
+
 	//============
-	const { doLogout, user } = useContext(AuthContext);
+	const { doLogout, user, totalQty, toggleShowMiniCart, resetCart } =
+		useAppContext();
 	//============
 	const [showMobileMenu, setShowMobileMenu] = useState(false);
 	//============
@@ -123,6 +121,14 @@ const NavBar = () => {
 									Checkout
 								</Link>
 							</li>
+                                   {/* <li className="nav-item">
+								<Link
+									className="nav-link active"
+									to={"/testpage"}
+								>
+									testpage
+								</Link>
+							</li> */}
 
 							{user?.isAdmin && (
 								<li className="nav-item">
@@ -201,9 +207,14 @@ const StyledWrapper = styled.div`
 	li {
 		cursor: pointer;
 		transition: all 0.2s ease-in-out;
+
 		&:hover {
 			opacity: 0.6;
-			transform: scale(0.8);
+		}
+		@media screen and (min-width: 800px) {
+			&:hover {
+				transform: scale(0.9);
+			}
 		}
 	}
 
