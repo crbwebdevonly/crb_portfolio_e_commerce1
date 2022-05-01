@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import styled from "styled-components";
 import { AdminContext } from "../context/AdminContext";
+import { useAppContext } from "../context/AppContext";
 
 //============
 //============
@@ -16,8 +17,7 @@ const AdminAddNewProduct = () => {
 		newProductData,
 		handleNewProductDataChange,
 		addNewProduct,
-	} = useContext(AdminContext);
-
+	} = useAppContext();
 	//============
 
 	//============

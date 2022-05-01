@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { AdminContext } from "../context/AdminContext";
+import { useAppContext } from "../context/AppContext";
 import { fakeProducts } from "../fakeProducts";
 
 const AdminEditProduct = () => {
@@ -13,19 +14,19 @@ const AdminEditProduct = () => {
 	//============
 	//============
 	const {
-		setEditProduct,
-		updateProductData,
+		loading,
+		error,
+		editProductEnable:editEnable,
 		editProduct: product,
-		editEnable,
+		updateProductData,
+
+		setEditProduct,
 		setEnableEditProduct,
 		cancelEditProduct,
 		handleupdateProductDataChange,
-		loading,
-		error,
 		applyProductUpdate,
 		deleteProduct,
-	} = useContext(AdminContext);
-
+	} = useAppContext();
 	//============
 	const {
 		_id: id,

@@ -12,7 +12,6 @@ const LoginRegisterPage = () => {
 	//============
 	const nav = useNavigate();
 	//============
-	// const { user, doLogin, doRegister, error } = useContext(AuthContext);
 	const { user, doLogin, doRegister, error } = useAppContext()
      
 
@@ -37,12 +36,6 @@ const LoginRegisterPage = () => {
 		};
 	}, [user]);
 
-	//============
-	//============
-	//============
-	
-
-	//============
 	//============
 	//============
 	//============

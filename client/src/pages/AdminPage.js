@@ -1,14 +1,42 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { useEffect } from "react";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import AdminControlPanel from "../components/AdminControlPanel";
+import { useAppContext } from "../context/AppContext";
 
 const AdminPage = () => {
 	//============
 	//============
+	const { user } = useAppContext();
+	//============
+	const navigate = useNavigate();
+	//============
+	//============
+	useEffect(() => {
+		//   first
+		if (!user || !user.isAdmin) {
+			setTimeout(() => {
+				navigate("/login-register");
+			}, 2000);
+		}
+
+		return () => {
+			//     second
+		};
+	}, [user]);
+
 	//============
 	//============
 	//============
+	if (!user || !user.isAdmin)
+		return (
+			<div className="alert alert-warning text-center">
+				You must login as Admin
+			</div>
+		);
+	//============
+
 	//============
 	//============
 

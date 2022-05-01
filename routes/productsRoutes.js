@@ -31,7 +31,7 @@ productsRouter.get("/getoneproduct/:id", handleGetOneProduct);
 //============
 productsRouter.put("/updateproduct/:id", handleUpdateProduct);
 //============
-productsRouter.delete("/delete-product/:id", handleDeleteProduct)
+productsRouter.delete("/delete-product/:id", handleDeleteProduct);
 //============
 //============
 //============

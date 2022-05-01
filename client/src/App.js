@@ -9,7 +9,6 @@ import AdminUserList from "./components/AdminUserList";
 import DeleteMe from "./components/DeleteMe";
 import MiniCart from "./components/MiniCart";
 import NavBar from "./components/NavBar";
-import { AdminContextProvider } from "./context/AdminContext";
 import AdminPage from "./pages/AdminPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
 import CheckoutPage from "./pages/CheckoutPage";
@@ -28,6 +27,7 @@ import AdminProductsPage from "./pages/AdminProductsPage";
 import AdminEditProduct from "./components/AdminEditProduct";
 import AdminAddNewProduct from "./components/AdminAddNewProduct";
 import { useAppContext } from "./context/AppContext";
+import TestPage from "./pages/TestPage";
 //============
 //============
 
@@ -36,12 +36,12 @@ function App() {
 	//============
 	//============
 	//============
-	const { user,showMiniCart } =  useAppContext()
+	const { user, showMiniCart } = useAppContext();
 	//============
 	// console.log(user, "app user");
 	//============
 	//============
-    
+
 	//============
 	//============
 	useEffect(() => {
@@ -66,6 +66,8 @@ function App() {
 	//============
 
 	const AuthAdminRedirect = ({ children }) => {
+          // causing useeffect infinit loop at initial fetch
+		return { ...children };
 		if (user?.isAdmin) return { ...children };
 		// else return <Navigate to="/login-register" />;
 		else
@@ -104,14 +106,11 @@ function App() {
 					path="/product-item/:productId"
 					element={<SingleProductPage />}
 				/>
+				<Route path="/testpage" element={<TestPage />} />
 				<Route
 					path="/admin"
 					element={
-						<AuthAdminRedirect>
-							{/* <AdminContextProvider> */}
-								<AdminPage />
-							{/* </AdminContextProvider> */}
-						</AuthAdminRedirect>
+							<AdminPage />
 					}
 				>
 					<Route index element={<AdminStats />} />

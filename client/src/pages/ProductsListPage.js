@@ -1,6 +1,5 @@
 import React from "react";
 import { useEffect } from "react";
-import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import AdminProductItem from "../components/AdminProductItem";
@@ -8,7 +7,6 @@ import Paginator from "../components/Paginator";
 import ProductItem from "../components/ProductItem";
 import ProductsFilter from "../components/ProductsFilter";
 import { useAppContext } from "../context/AppContext";
-import { CustomerContext } from "../context/CustomerContext";
 
 const ProductsListPage = ({ admin }) => {
 	//============
@@ -27,14 +25,6 @@ const ProductsListPage = ({ admin }) => {
 	//============
 	//============
 	const { itemsPerPage, currentPage } = paginatorData;
-	//============
-	//============
-	const productsFilterPassProps = {
-		handleFilterQueryChange,
-		filter,
-		handleClearFilter,
-		handleApplyFilter,
-	};
 	//============
 	//============
 	const navigate = useNavigate();
@@ -108,7 +98,7 @@ const ProductsListPage = ({ admin }) => {
 	//============
 	return (
 		<StyledWrapper>
-			<ProductsFilter {...productsFilterPassProps} />
+			<ProductsFilter  />
 			<Paginator />
 			<div className="all-products-container ">
 				{productsList.map(

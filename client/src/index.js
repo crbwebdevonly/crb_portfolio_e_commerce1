@@ -5,10 +5,6 @@ import reportWebVitals from "./reportWebVitals";
 //
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter } from "react-router-dom";
-import { AuthContextProvider } from "./context/AuthContext";
-import { CustomerContextProvider } from "./context/CustomerContext";
-import { AdminContextProvider } from "./context/AdminContext";
-import { FilterContextProvider } from "./context/FilterContext";
 import { AppContextProvider } from "./context/AppContext";
 
 // ReactDOM.render(
@@ -25,17 +21,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
 	<React.StrictMode>
 		<BrowserRouter>
-			<FilterContextProvider>
-				<AdminContextProvider>
-					<AuthContextProvider>
-						<CustomerContextProvider>
 							<AppContextProvider>
 								<App />
 							</AppContextProvider>
-						</CustomerContextProvider>
-					</AuthContextProvider>
-				</AdminContextProvider>
-			</FilterContextProvider>
 		</BrowserRouter>
 	</React.StrictMode>
 );

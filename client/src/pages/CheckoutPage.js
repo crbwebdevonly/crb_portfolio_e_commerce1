@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
 import { useEffect } from "react";
 import { useAppContext } from "../context/AppContext";
 

@@ -1,11 +1,9 @@
 // import { Carousel } from 'bootstrap'
 import Carousel from "react-bootstrap/Carousel";
-import { useContext } from "react";
 import { useEffect } from "react";
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { CustomerContext } from "../context/CustomerContext";
 import { useState } from "react";
 
 const HomePageSlider = (props) => {

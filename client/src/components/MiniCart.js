@@ -1,10 +1,9 @@
 import React from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
-import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { CustomerContext } from "../context/CustomerContext";
+import { useAppContext } from "../context/AppContext";
 
 const MiniCart = () => {
 	//============
@@ -16,7 +15,7 @@ const MiniCart = () => {
 		removeItemWithIndex,
 		toggleShowMiniCart,
 		resetCart,
-	} = useContext(CustomerContext);
+	} = useAppContext()
 	//============
 	//============
 	const miniCartRef = useRef();

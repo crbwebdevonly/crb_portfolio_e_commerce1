@@ -5,22 +5,21 @@ import styled from "styled-components";
 import { myAxios } from "../myAxios";
 import ProductItem from "./ProductItem";
 import { useContext } from "react";
-import { AdminContext } from "../context/AdminContext";
 import { useEffect } from "react";
 import { Spinner } from "react-bootstrap";
 import AdminProductItem from "./AdminProductItem";
 import { Link } from "react-router-dom";
 import ProductsFilter from "./ProductsFilter";
 import Paginator from "./Paginator";
-import { CustomerContext } from "../context/CustomerContext";
 import { useState } from "react";
 import { useRef } from "react";
-import { useFilterContext } from "../context/FilterContext";
+import { useAppContext } from "../context/AppContext";
 
 const AdminProductsList = () => {
 	//============
 	//============
-	const { handleClearFilter } = useFilterContext();
+	const { loading, error, productsList, handleClearFilter } =
+		useAppContext();
 	//============
 	//============
 	// const { getAllProducts, productsList, loading, error } =
@@ -31,23 +30,23 @@ const AdminProductsList = () => {
 	//============
 	//============
 	//============
-	const {
-		loading,
-		error,
-		// filterRefreshTrigger,
-		// setFilterRefreshTrigger,
-		// getAllProducts,
-		productsList,
-		// getProductsWithQuery,
-		// handleFilterQueryChange,
-		// filterQuery,
+	// const {
+	// 	loading,
+	// 	error,
+	// 	// filterRefreshTrigger,
+	// 	// setFilterRefreshTrigger,
+	// 	// getAllProducts,
+	// 	productsList,
+	// 	// getProductsWithQuery,
+	// 	// handleFilterQueryChange,
+	// 	// filterQuery,
 
-		// handleClearFilter,
-		// handleClearFilter_v2,
-		// handleApplyFilter,
+	// 	// handleClearFilter,
+	// 	// handleClearFilter_v2,
+	// 	// handleApplyFilter,
 
-		// paginatorData,
-	} = useContext(CustomerContext);
+	// 	// paginatorData,
+	// } = useContext(CustomerContext);
 	//============
 	//============
 	// const productsFilterPassProps = {
@@ -85,11 +84,9 @@ const AdminProductsList = () => {
 	};
 	//============
 	//============
-	
 
 	//============
 	//============
-
 
 	//============
 	//============

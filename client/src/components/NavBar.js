@@ -1,10 +1,7 @@
-import React, { useContext } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useAppContext } from "../context/AppContext";
-import { AuthContext } from "../context/AuthContext";
-import { CustomerContext } from "../context/CustomerContext";
 import { myAxios } from "../myAxios";
 
 //============
@@ -122,6 +119,14 @@ const NavBar = () => {
 									to={"/checkout"}
 								>
 									Checkout
+								</Link>
+							</li>
+                                   <li className="nav-item">
+								<Link
+									className="nav-link active"
+									to={"/testpage"}
+								>
+									testpage
 								</Link>
 							</li>
 

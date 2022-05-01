@@ -1,15 +1,13 @@
 import React from "react";
 import { useEffect } from "react";
-import { useContext } from "react";
-import { AdminContext } from "../context/AdminContext";
 import AdminOrderItem from "./AdminOrderItem";
 import styled from "styled-components";
+import { useAppContext } from "../context/AppContext";
 
 const AdminOrdersList = () => {
 	//============
 	//============
-	const { loading, error, getAllOrders, ordersList } =
-		useContext(AdminContext);
+	const { loading, error, getAllOrders, ordersList } = useAppContext();
 	//============
 	//============
 	useEffect(() => {
@@ -34,7 +32,7 @@ const AdminOrdersList = () => {
 	if (ordersList.length < 1)
 		return (
 			<>
-				<div className="spinner-border mx-auto d-grid "></div>
+				{/* <div className="spinner-border mx-auto d-grid "></div> */}
 				<h1 className="text-center">No orders To Display</h1>
 			</>
 		);

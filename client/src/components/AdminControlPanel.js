@@ -1,13 +1,12 @@
 import React from "react";
-import { useContext } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { AdminContext } from "../context/AdminContext";
+import { useAppContext } from "../context/AppContext";
 
 const AdminControlPanel = () => {
 	//============
 	//============
-	const { menuItems } = useContext(AdminContext);
+	const { menuItems } = useAppContext()
 	//============
 	//============
 	if (!menuItems) {

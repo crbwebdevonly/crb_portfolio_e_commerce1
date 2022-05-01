@@ -7,19 +7,9 @@ import { useAppContext } from "../context/AppContext";
 const HomePage = () => {
 	//============
 	//============
-	// const { loading, error } = useContext(CustomerContext);
-	//============
-	//============
-	//============
-	//============
-	//============
 	//============
 	const { loading, error, getSliderProducts, sliderProductsList } =
 		useAppContext();
-
-	//============
-
-	//============
 
 	//============
 	//============
