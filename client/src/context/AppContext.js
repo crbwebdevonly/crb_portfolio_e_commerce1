@@ -38,6 +38,19 @@ const initialFilter = {
 //============
 //============
 //============
+const initial_ordersFilter = {
+	searchEmail: "",
+	orderStatus: "any",
+	minAmount: 0,
+	maxAmount: 0,
+	dateRange: "all",
+	sort: "new",
+};
+//============
+//============
+//============
+//============
+//============
 const initialAppState = {
 	loading: false,
 	error: false,
@@ -45,19 +58,16 @@ const initialAppState = {
 	//============auth
 	user: getUserFromLocalStorage() || null,
 
-	//============filter
+	//============filter-products
 	filter: initialFilter,
 	//============
 	paginatorData: { itemsPerPage: 10, currentPage: 1, totalHitsCount: null },
-
-	//============
-	//============
 	//============
 	//============products
 	sliderProductsList: [],
-	//============
 	productsList: [],
 	currentProduct: {},
+	//============
 	//============cart
 	cartItems: [],
 	showMiniCart: false,
@@ -72,10 +82,10 @@ const initialAppState = {
 	//============
 	menuItems: ["stats", "users", "products", "orders"],
 	//============
-	//============
+	//============users
 	usersList: [],
 	//============
-	//============
+	//============products
 	editProduct: {},
 	editProductEnable: false,
 	updateProductData: {},
@@ -88,8 +98,15 @@ const initialAppState = {
 		rating: "",
 	},
 	//============
-	//============
+	//============orders
 	ordersList: [],
+	ordersFilter: initial_ordersFilter,
+	ordersPaginatorData: {
+		itemsPerPage: 10,
+		currentPage: 1,
+		totalHitsCount: null,
+	},
+
 	//============
 	//============
 
@@ -615,6 +632,85 @@ export const AppContextProvider = ({ children }) => {
 			blinkError();
 		}
 	};
+	//============
+	//============
+	//============ordersfilter
+	//============
+	//============
+	const handleOrdersFilterChange = (e) => {
+		const name = e.target.name;
+		let value = e.target.value;
+		dispatch({ type: "ORDERS_FILTER_CHANGE", payload: { name, value } });
+	};
+	//============
+	//============
+	const ClearOrdersFilter = () => {
+		dispatch({ type: "RESET_ORDERS_FILTER", payload: initialFilter });
+	};
+	//============
+	//============
+	const ClearOrdersFilter_on_dismount = () => {
+		ClearOrdersFilter();
+	};
+	//============
+	//============
+	const ClearOrdersFilter_and_reFetch_products = () => {
+		ClearOrdersFilter();
+		// must re-fetch products-with-initial-filter-query
+		getCurrentPageOrdersListWithQuery("initial");
+	};
+	//============
+	//============
+	// //============
+	// //============
+	const getCurrentPageOrdersListWithQuery = async (filterQuery) => {
+		const {
+			searchEmail,
+			orderStatus,
+			minAmount,
+			maxAmount,
+			dateRange,
+			sort,
+		} =
+			filterQuery === "initial"
+				? initial_ordersFilter
+				: state.ordersFilter;
+
+		const { itemsPerPage, currentPage } = state.ordersPaginatorData;
+
+		let qstring = `/api/orders/getorderswithquery?searchEmail=${searchEmail}&orderStatus={orderStatus}&minAmount=${minAmount}&maxAmount=${maxAmount}&dateRange={dateRange}&sort=${sort}&currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`;
+
+		dispatch({ type: "FETCH_BEGIN" });
+
+		try {
+			const reply = await myAxios.get(qstring);
+			dispatch({
+				type: "GET_CURRENT_PAGE_PRODUCTS_LIST_AND_HITS_COUNT_WITH_QUERY",
+				payload: reply.data,
+			});
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+		}
+	};
+	// //============
+	// //============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
 	//============
 	//============
 	//============

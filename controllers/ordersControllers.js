@@ -56,5 +56,86 @@ const updateOrder = async (req, res) => {
 //============
 //============
 //============
-module.exports = { getAllOrders, createOrder, deleteOrder ,updateOrder};
+const getOrdersWithQuery = async (req, res) => {
+	// console.log(req.query);
+	// let { search, minPrice, maxPrice, itemsPerPage, sort, currentPage } =
+	let {
+		searchEmail,
+		orderStatus,
+		minAmount,
+		maxAmount,
+		dateRange,
+		sort,
+		itemsPerPage,
+		currentPage,
+	} = req.query;
+	// build query object---maybe not use try catch!!!!???
+	minPrice = Number(minPrice) || 0;
+	maxPrice = Number(maxPrice) || 0;
+
+	const queryObject = {};
+	if (minPrice && !maxPrice) {
+		queryObject.price = { $gt: minPrice };
+	} else if (minPrice && maxPrice) {
+		if (minPrice > maxPrice || minPrice === maxPrice) {
+			minPrice = 0;
+		}
+
+		queryObject.price = { $gt: minPrice, $lt: maxPrice };
+	} else if (!minPrice && maxPrice) {
+		queryObject.price = { $lt: maxPrice };
+	}
+	if (search) {
+		queryObject.title = { $regex: search, $options: "i" };
+	}
+	// console.log(queryObject, "q-obj");
+	//============
+	const totalHitsCount = await ProductModel.countDocuments(queryObject);
+	//============
+	//============
+	// use let for sorting!! and NO wait
+	let result = ProductModel.find(queryObject);
+	// use let for sorting!! and NO wait
+
+	if (sort === "priceLow") {
+		result = result.sort({ price: 1 });
+		// result = result.sort("price");
+	}
+	if (sort === "priceHigh") {
+		result = result.sort({ price: -1 });
+		// result = result.sort("-price");
+	}
+	if (sort === "titleAZ") {
+		result = result.sort({ title: 1 });
+	}
+	if (sort === "titleZA") {
+		result = result.sort({ title: -1 });
+	}
+	if (sort === "new") {
+		result = result.sort({ createdAt: -1 });
+	}
+	if (sort === "old") {
+		result = result.sort({ createdAt: 1 });
+	}
+	// paginate
+	const page = Number(currentPage) || 1;
+	const limit = Number(itemsPerPage) || 10;
+	const skip = (page - 1) * limit;
+	//============
+	result = result.skip(skip).limit(limit);
+	result = await result;
+	res.status(200).json({ totalHitsCount, productsList: result });
+};
+//============
+//============
+//============
+//============
+//============
+module.exports = {
+	getAllOrders,
+	createOrder,
+	deleteOrder,
+	updateOrder,
+	getOrdersWithQuery,
+};
 //============

@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import AdminOrderItem from "./AdminOrderItem";
 import styled from "styled-components";
 import { useAppContext } from "../context/AppContext";
+import AdminOrdersFilter from "./AdminOrdersFilter";
+import PageSelector from "./PageSelector";
 
 const AdminOrdersList = () => {
 	//============
@@ -41,6 +43,8 @@ const AdminOrdersList = () => {
 	return (
 		<>
 			<StyledWrapper className="container ">
+				<AdminOrdersFilter />
+                    <PageSelector />
 				<div className="all-orders-container">
 					{ordersList.map((e, i) => (
 						<AdminOrderItem key={i} {...e} />

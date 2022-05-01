@@ -1,9 +1,7 @@
-import React, { useContext } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { AdminContext } from "../context/AdminContext";
 import { useAppContext } from "../context/AppContext";
 import { fakeProducts } from "../fakeProducts";
 
