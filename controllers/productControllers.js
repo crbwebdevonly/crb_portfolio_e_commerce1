@@ -1,5 +1,6 @@
 //============
 
+const OrderModel = require("../DataModels/OrderModel");
 const ProductModel = require("../DataModels/ProductModel");
 
 //============
@@ -105,8 +106,11 @@ const handleGetProductsWithQuery = async (req, res) => {
 		queryObject.title = { $regex: search, $options: "i" };
 	}
 	// console.log(queryObject, "q-obj");
+	
 	//============
-	const totalHitsCount = await ProductModel.countDocuments(queryObject);
+	//============
+	//============
+	const totalHitsCount = await ProductModel.countDocuments(queryObject)
 	//============
 	//============
 	// use let for sorting!! and NO wait
@@ -144,6 +148,7 @@ const handleGetProductsWithQuery = async (req, res) => {
 };
 //============
 //============
+
 //============
 //============
 const handleGetOneProduct = async (req, res) => {

@@ -2,33 +2,33 @@ import styled from "styled-components";
 import React from "react";
 import { useAppContext } from "../context/AppContext";
 
-const AdminOrdersFilter = (props) => {
+const AdminOrdersFilter = () => {
 	//============
 	//============
 	const {
-		searchEmail,
-		orderStatus,
-		minAmount,
-		maxAmount,
-		dateRange,
-		sort,
-		handleChange,
-	} = props;
-	//============
-	//============
-	//============
-	const {
-		filter,
-		// handleFilterChange: handleChange,
-		ClearFilter_on_dismount,
-		ClearFilter_and_reFetch_products,
-		handleApplyFilter,
-		getCurrentPageProductsListWithQuery,
+		ordersFilter,
+		//
+		handleOrdersFilterChange: handleChange,
+		ClearOrdersFilter,
+		ClearOrdersFilter_and_reFetch_orders: handleClearFilter,
+		setOrdersItemsPerPage,
+		setOrdersCurrentPage,
+		getCurrentPageOrdersListWithQuery: handleApplyFilter,
 	} = useAppContext();
 	//============
-
+	//============
+	const { searchEmail, orderStatus, minAmount, maxAmount, dateRange, sort } =
+		ordersFilter;
+	//============
+	//============
 	//============
 	// const { search, minPrice, maxPrice, sort } = filter;
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
 
 	return (
 		<StyledWrapper>
@@ -60,20 +60,25 @@ const AdminOrdersFilter = (props) => {
 										value={dateRange}
 										onChange={handleChange}
 									>
-										<option value="0">All</option>
-										<option value="50">
+										<option value="all">
+											All
+										</option>
+										<option value="1hr">
 											past 1 hr
 										</option>
-										<option value="100">
-											past 24 hrs
+										<option value="1day">
+											past 1 Day
 										</option>
-										<option value="200">
-											past 72 hrs
+										<option value="2day">
+											past 2 Days
 										</option>
-										<option value="500">
+                                                  <option value="3day">
+											past 3 Days
+										</option>
+										<option value="week">
 											past week
 										</option>
-										<option value="1000">
+										<option value="month9">
 											past 30 days
 										</option>
 									</select>
@@ -86,9 +91,16 @@ const AdminOrdersFilter = (props) => {
 									</label>
 									<select
 										className={"form-select  "}
+										name="orderStatus"
 										value={orderStatus}
 										onChange={handleChange}
 									>
+										<option
+											className="text-warning"
+											value="any"
+										>
+											Any
+										</option>
 										<option
 											className="text-warning"
 											value="processing"
@@ -183,17 +195,23 @@ const AdminOrdersFilter = (props) => {
 										value={sort}
 										onChange={handleChange}
 									>
-										<option value="priceHigh">
+										<option value="amountHigh">
 											Amount-High
 										</option>
-										<option value="priceLow">
+										<option value="amountLow">
 											Amount-Low
 										</option>
-										<option value="titleAZ">
-											Name A-Z
+										<option
+											disabled
+											value="userAZ"
+										>
+											User A-Z -disabled
 										</option>
-										<option value="titleZA">
-											Name Z-A
+										<option
+											disabled
+											value="userZA"
+										>
+											User Z-A -disabled
 										</option>
 										<option value="new">
 											New First
@@ -213,9 +231,7 @@ const AdminOrdersFilter = (props) => {
 								</button>
 								<button
 									className="btn      btn-secondary col-6 col-md-3"
-									onClick={
-										ClearFilter_and_reFetch_products
-									}
+									onClick={handleClearFilter}
 								>
 									Clear Filter
 								</button>

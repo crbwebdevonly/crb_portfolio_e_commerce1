@@ -55,15 +55,13 @@ const updateOrder = async (req, res) => {
 //============
 //============
 //============
-//============
 const getOrdersWithQuery = async (req, res) => {
-	// console.log(req.query);
-	// let { search, minPrice, maxPrice, itemsPerPage, sort, currentPage } =
+	console.log(req.query);
 	let {
 		searchEmail,
 		orderStatus,
-		minAmount,
-		maxAmount,
+		minAmount: minPrice,
+		maxAmount: maxPrice,
 		dateRange,
 		sort,
 		itemsPerPage,
@@ -75,42 +73,92 @@ const getOrdersWithQuery = async (req, res) => {
 
 	const queryObject = {};
 	if (minPrice && !maxPrice) {
-		queryObject.price = { $gt: minPrice };
+		queryObject.orderTotalAmount = { $gt: minPrice };
 	} else if (minPrice && maxPrice) {
 		if (minPrice > maxPrice || minPrice === maxPrice) {
 			minPrice = 0;
 		}
 
-		queryObject.price = { $gt: minPrice, $lt: maxPrice };
+		queryObject.orderTotalAmount = { $gt: minPrice, $lt: maxPrice };
 	} else if (!minPrice && maxPrice) {
-		queryObject.price = { $lt: maxPrice };
+		queryObject.orderTotalAmount = { $lt: maxPrice };
 	}
-	if (search) {
-		queryObject.title = { $regex: search, $options: "i" };
+	if (searchEmail) {
+		queryObject.stringifiedCustomer = {
+			$regex: searchEmail,
+			$options: "i",
+		};
 	}
 	// console.log(queryObject, "q-obj");
+	//============query date range
+	if (dateRange !== "all") {
+		const date = new Date();
+		const hour = date.getHours(); //Get the hour (0-23)
+		const minutes = date.getMinutes(); //Get the minute (0-59)
+		const day = date.getDate(); //day number 1-31
+		const month = date.getMonth(); //0-11
+		const year = date.getFullYear();
+		let startDate = new Date();
+		let endDate = new Date(year - 100, month, day);
+		if (dateRange === "1hr") {
+			endDate = new Date(
+				new Date(year, month, day).setHours(hour - 1, minutes, 00)
+			);
+		}
+		if (dateRange === "1day") {
+			endDate = new Date(
+				new Date(year, month, day - 1).setHours(hour, minutes, 00)
+			);
+		}
+		if (dateRange === "2day") {
+			endDate = new Date(year, month, day - 2);
+		}
+		if (dateRange === "3day") {
+			endDate = new Date(year, month, day - 3);
+		}
+		if (dateRange === "week") {
+			endDate = new Date(year, month, day - 7);
+		}
+		if (dateRange === "month") {
+			endDate = new Date(year, month - 1, day);
+		}
+		// console.log(startDate, "start", endDate, "end");
+
+		queryObject.createdAt = { $gte: endDate, $lte: startDate };
+	}
 	//============
-	const totalHitsCount = await ProductModel.countDocuments(queryObject);
+	//============
+	//============query order-satus
+	if (
+		orderStatus === "processing" ||
+		orderStatus === "completed" ||
+		orderStatus === "check-issue"
+	) {
+		queryObject.status = orderStatus;
+	}
+
+	//============
+	//============
+	//============
+	const totalHitsCount = await OrderModel.countDocuments(queryObject);
 	//============
 	//============
 	// use let for sorting!! and NO wait
-	let result = ProductModel.find(queryObject);
+	let result = OrderModel.find(queryObject);
 	// use let for sorting!! and NO wait
 
-	if (sort === "priceLow") {
-		result = result.sort({ price: 1 });
-		// result = result.sort("price");
+	if (sort === "amountLow") {
+		result = result.sort({ orderTotalAmount: 1 });
 	}
-	if (sort === "priceHigh") {
-		result = result.sort({ price: -1 });
-		// result = result.sort("-price");
+	if (sort === "amountHigh") {
+		result = result.sort({ orderTotalAmount: -1 });
 	}
-	if (sort === "titleAZ") {
-		result = result.sort({ title: 1 });
-	}
-	if (sort === "titleZA") {
-		result = result.sort({ title: -1 });
-	}
+	// if (sort === "titleAZ") {
+	// 	result = result.sort({ title: 1 });
+	// }
+	// if (sort === "titleZA") {
+	// 	result = result.sort({ title: -1 });
+	// }
 	if (sort === "new") {
 		result = result.sort({ createdAt: -1 });
 	}
@@ -124,8 +172,14 @@ const getOrdersWithQuery = async (req, res) => {
 	//============
 	result = result.skip(skip).limit(limit);
 	result = await result;
-	res.status(200).json({ totalHitsCount, productsList: result });
+	res.status(200).json({ totalHitsCount, ordersList: result });
 };
+//============
+//============
+//============
+//============
+//============
+
 //============
 //============
 //============

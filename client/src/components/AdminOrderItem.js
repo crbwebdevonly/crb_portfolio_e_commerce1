@@ -1,3 +1,4 @@
+import moment from "moment";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -8,7 +9,7 @@ import { useAppContext } from "../context/AppContext";
 const AdminOrderItem = (props) => {
 	//============
 	//============
-	const { deleteOrder, updateOrder } = useAppContext()
+	const { deleteOrder, updateOrder } = useAppContext();
 	const {
 		_id: id,
 		createdAt,
@@ -86,7 +87,7 @@ const AdminOrderItem = (props) => {
 	return (
 		<StyledWrapper>
 			<div className="card p-2">
-				<div className="input-group input-group-lg mb-0  ">
+				<div className="input-group input-group mb-0  ">
 					<span className="input-group-text fw-bold">
 						OrderID:
 					</span>
@@ -95,6 +96,17 @@ const AdminOrderItem = (props) => {
 						className="form-control"
 						disabled
 						value={id}
+					/>
+					<span className="input-group-text fw-bold fs-6">
+						Order Date:
+					</span>
+					<input
+						type="text"
+						className="form-control fs-6"
+						disabled
+						value={`${moment(createdAt).format(
+							"MMMM Do YYYY"
+						)} , ${moment(createdAt).fromNow()}`}
 					/>
 				</div>
 				{/* <div className="col card-header ">
@@ -212,17 +224,6 @@ const AdminOrderItem = (props) => {
 					/>
 				</div>
 
-				<div className="input-group input-group-sm mb-0  ">
-					<span className="input-group-text fw-bold">
-						Order Date:
-					</span>
-					<input
-						type="text"
-						className="form-control"
-						disabled
-						value={createdAt}
-					/>
-				</div>
 				<hr />
 
 				<table className="table table-striped">

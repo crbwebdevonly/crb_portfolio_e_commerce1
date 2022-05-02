@@ -645,7 +645,11 @@ export const AppContextProvider = ({ children }) => {
 	//============
 	//============
 	const ClearOrdersFilter = () => {
-		dispatch({ type: "RESET_ORDERS_FILTER", payload: initialFilter });
+		// also changes current order page to 1
+		dispatch({
+			type: "RESET_ORDERS_FILTER",
+			payload: initial_ordersFilter,
+		});
 	};
 	//============
 	//============
@@ -654,10 +658,24 @@ export const AppContextProvider = ({ children }) => {
 	};
 	//============
 	//============
-	const ClearOrdersFilter_and_reFetch_products = () => {
+	const ClearOrdersFilter_and_reFetch_orders = () => {
 		ClearOrdersFilter();
 		// must re-fetch products-with-initial-filter-query
 		getCurrentPageOrdersListWithQuery("initial");
+	};
+	//============
+	//============
+	//============orders paginator
+	//============
+	const setOrdersItemsPerPage = (arg) => {
+		dispatch({ type: "SET_ORDERS_ITEMS_PER_PAGE", payload: arg });
+		// must also change current page to 1??
+		setOrdersCurrentPage(1);
+	};
+	//============
+	//============
+	const setOrdersCurrentPage = (arg) => {
+		dispatch({ type: "SET_ORDERS_CURRENT_PAGE", payload: arg });
 	};
 	//============
 	//============
@@ -678,14 +696,14 @@ export const AppContextProvider = ({ children }) => {
 
 		const { itemsPerPage, currentPage } = state.ordersPaginatorData;
 
-		let qstring = `/api/orders/getorderswithquery?searchEmail=${searchEmail}&orderStatus={orderStatus}&minAmount=${minAmount}&maxAmount=${maxAmount}&dateRange={dateRange}&sort=${sort}&currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`;
+		let qstring = `/api/orders/getorderswithquery?searchEmail=${searchEmail}&orderStatus=${orderStatus}&minAmount=${minAmount}&maxAmount=${maxAmount}&dateRange=${dateRange}&sort=${sort}&currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`;
 
 		dispatch({ type: "FETCH_BEGIN" });
 
 		try {
 			const reply = await myAxios.get(qstring);
 			dispatch({
-				type: "GET_CURRENT_PAGE_PRODUCTS_LIST_AND_HITS_COUNT_WITH_QUERY",
+				type: "GET_CURRENT_PAGE_ORDERS_LIST_AND_HITS_COUNT_WITH_QUERY",
 				payload: reply.data,
 			});
 			dispatch({ type: "FETCH_SUCCESS" });
@@ -759,6 +777,14 @@ export const AppContextProvider = ({ children }) => {
 		getAllOrders,
 		deleteOrder,
 		updateOrder,
+		//============ordersfilter
+		handleOrdersFilterChange,
+		ClearOrdersFilter,
+		ClearOrdersFilter_on_dismount,
+		ClearOrdersFilter_and_reFetch_orders,
+		setOrdersItemsPerPage,
+		setOrdersCurrentPage,
+		getCurrentPageOrdersListWithQuery,
 	};
 	//============
 	//============

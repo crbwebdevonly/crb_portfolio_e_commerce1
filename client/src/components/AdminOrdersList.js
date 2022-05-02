@@ -9,16 +9,56 @@ import PageSelector from "./PageSelector";
 const AdminOrdersList = () => {
 	//============
 	//============
-	const { loading, error, getAllOrders, ordersList } = useAppContext();
+	const {
+		loading,
+		error,
+          ordersPaginatorData,
+		ordersList,
+		ClearOrdersFilter_on_dismount,
+		ClearOrdersFilter_and_reFetch_orders,
+		getCurrentPageOrdersListWithQuery,
+	} = useAppContext();
+	//============
+	//============
+     const {
+		itemsPerPage,
+		currentPage,
+		totalHitsCount: hitsCount,
+	} = ordersPaginatorData;
+	//============
 	//============
 	//============
 	useEffect(() => {
 		//   first
-		getAllOrders();
+		// getAllOrders();
+		ClearOrdersFilter_and_reFetch_orders();
+		return () => {
+			//     second
+			ClearOrdersFilter_on_dismount();
+		};
+	}, []);
+	//============
+	//============
+	//============
+	//============
+	useEffect(() => {
+		//   first
+		getCurrentPageOrdersListWithQuery();
 		return () => {
 			//     second
 		};
-	}, []);
+	}, [itemsPerPage,currentPage]);
+
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
 	//============
 	//============
 	if (loading) return <div className="spinner-border mx-auto d-grid "></div>;
@@ -35,7 +75,15 @@ const AdminOrdersList = () => {
 		return (
 			<>
 				{/* <div className="spinner-border mx-auto d-grid "></div> */}
-				<h1 className="text-center">No orders To Display</h1>
+				<h1 className="text-center">
+					No orders To Display <br />
+					<button
+						className="btn btn-info"
+						onClick={ClearOrdersFilter_and_reFetch_orders}
+					>
+						Clear Filter
+					</button>
+				</h1>
 			</>
 		);
 	//============
@@ -44,7 +92,7 @@ const AdminOrdersList = () => {
 		<>
 			<StyledWrapper className="container ">
 				<AdminOrdersFilter />
-                    <PageSelector />
+				<PageSelector />
 				<div className="all-orders-container">
 					{ordersList.map((e, i) => (
 						<AdminOrderItem key={i} {...e} />

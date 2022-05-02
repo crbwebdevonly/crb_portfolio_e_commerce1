@@ -1,29 +1,27 @@
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
+import { useAppContext } from "../context/AppContext";
 
 const PageSelector = (props) => {
-	const {} = props;
+	//============
+	const { bottom } = props;
 	//============
 	const {
-		searchEmail,
-		orderStatus,
-		minAmount,
-		maxAmount,
-		dateRange,
-		sort,
-		handleChange,
-	} = props;
+		ordersPaginatorData,
+		setOrdersItemsPerPage: setItemsPerPage,
+		setOrdersCurrentPage: setCurrentPage,
+		getCurrentPageOrdersListWithQuery,
 
+	} = useAppContext();
 	//============
+	//============
+
 	const {
-		bottom,
 		itemsPerPage,
 		currentPage,
 		totalHitsCount: hitsCount,
-		setItemsPerPage,
-		setCurrentPage,
-	} = props;
+	} = ordersPaginatorData;
 	//============
 	//============
 	//============
@@ -34,7 +32,7 @@ const PageSelector = (props) => {
 	//============
 	useEffect(() => {
 		//   first
-		let pages = 10;
+		let pages = 1;
 		if (hitsCount) pages = Math.ceil(hitsCount / itemsPerPage);
 		setPagesList(Array.from({ length: pages }, (_, i) => i + 1));
 		return () => {
@@ -43,33 +41,54 @@ const PageSelector = (props) => {
 	}, [hitsCount]);
 
 	//============
+
 	//============
-	// if (!hitsCount) return <></>;
+	//============
+	//============
+	//============
+	//============
+	//============
+	if (!hitsCount) return <></>;
 	//============
 	//============
 	return (
 		<div className="container">
 			<div className="row g-1 my-1 justify-content-between">
-				<div className="col-12 col-md-6">
+				<div className="col col-md">
+					<div className="input-group mb-0">
+						<label className="input-group-text">
+							Results Count
+						</label>
+						<select
+							className="form-select"
+							disabled
+							value={hitsCount}
+						>
+							<option value="">{hitsCount}</option>
+						</select>
+					</div>
+				</div>
+				<div className="col-12 col-md">
 					<div className="input-group mb-0 ">
 						<label className="input-group-text">Page</label>
 						<select
 							className="form-select"
-							name="minPrice"
 							value={currentPage}
 							onChange={(e) => {
 								setCurrentPage(Number(e.target.value));
 							}}
 						>
 							{pagesList.map((e, i) => (
-								<option value={e}>{e}</option>
+								<option key={i} value={e}>
+									{e}
+								</option>
 							))}
 						</select>
 					</div>
 				</div>
 
 				{!bottom && (
-					<div className="col col-md-6">
+					<div className="col col-md">
 						<div className="input-group mb-0">
 							<label className="input-group-text">
 								Items per page

@@ -327,6 +327,97 @@ export const AppContextReducer = (state, action) => {
 		}
 		//============
 		//============
+		case "GET_CURRENT_PAGE_ORDERS_LIST_AND_HITS_COUNT_WITH_QUERY": {
+			const { totalHitsCount, ordersList } = action.payload;
+
+			return {
+				...state,
+				ordersList,
+				ordersPaginatorData: {
+					...state.ordersPaginatorData,
+					totalHitsCount,
+				},
+			};
+		}
+		//============
+		//============
+		//============ordersfilter
+		//============
+		case "ORDERS_FILTER_CHANGE": {
+			let { name, value } = action.payload;
+			if (name === "minAmount" || name === "maxAmount")
+				value = Number(value);
+			if (name === "minAmount") {
+				if (value >= state.ordersFilter.maxAmount) {
+					return {
+						...state,
+						ordersFilter: {
+							...state.ordersFilter,
+							[name]: value,
+							maxAmount: 0,
+						},
+					};
+				}
+			}
+			if (name === "maxAmount") {
+				if (value <= state.ordersFilter.minAmount) {
+					return {
+						...state,
+						ordersFilter: {
+							...state.ordersFilter,
+							[name]: value,
+							minAmount: 0,
+						},
+					};
+				}
+			}
+			return {
+				...state,
+				ordersFilter: {
+					...state.ordersFilter,
+					[name]: value,
+				},
+			};
+		}
+		//============
+		//============
+		case "RESET_ORDERS_FILTER": {
+			return {
+				...state,
+				ordersFilter: action.payload,
+                    ordersPaginatorData: {
+					...state.ordersPaginatorData,
+					currentPage: 1,
+				},
+			};
+		}
+		//============
+		//============orders-paginatorData
+		//============
+		case "SET_ORDERS_ITEMS_PER_PAGE": {
+			return {
+				...state,
+				ordersPaginatorData: {
+					...state.ordersPaginatorData,
+					itemsPerPage: action.payload,
+				},
+			};
+		}
+		//============
+		//============
+		case "SET_ORDERS_CURRENT_PAGE": {
+			return {
+				...state,
+				ordersPaginatorData: {
+					...state.ordersPaginatorData,
+					currentPage: action.payload,
+				},
+			};
+		}
+		//============
+		//============
+		//============
+		//============
 		//============
 		//============
 		//============
