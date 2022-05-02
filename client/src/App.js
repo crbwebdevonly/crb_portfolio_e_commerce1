@@ -28,6 +28,7 @@ import AdminEditProduct from "./components/AdminEditProduct";
 import AdminAddNewProduct from "./components/AdminAddNewProduct";
 import { useAppContext } from "./context/AppContext";
 import TestPage from "./pages/TestPage";
+import styled from "styled-components";
 //============
 //============
 
@@ -66,7 +67,7 @@ function App() {
 	//============
 
 	const AuthAdminRedirect = ({ children }) => {
-          // causing useeffect infinit loop at initial fetch
+		// causing useeffect infinit loop at initial fetch
 		return { ...children };
 		if (user?.isAdmin) return { ...children };
 		// else return <Navigate to="/login-register" />;
@@ -88,70 +89,85 @@ function App() {
 
 	return (
 		<>
-			{/* <DeleteMe /> */}
-			<ToastContainer position="bottom-right" autoClose={1000} />
-			<NavBar />
-			{showMiniCart && <MiniCart />}
-			<Routes>
-				<Route path="/" element={<HomePage />} />
-				<Route
-					path="login-register"
-					element={<LoginRegisterPage />}
-				/>
-				<Route
-					path="/productslist"
-					element={<ProductsListPage />}
-				/>
-				<Route
-					path="/product-item/:productId"
-					element={<SingleProductPage />}
-				/>
-				{/* <Route path="/testpage" element={<TestPage />} /> */}
-				<Route
-					path="/admin"
-					element={
-							<AdminPage />
-					}
-				>
-					<Route index element={<AdminStats />} />
-					<Route path="stats" element={<AdminStats />} />
-					<Route path="users" element={<AdminUsersPage />}>
-						{/* <Route path="users" element={<AdminUserList />}> */}
-						<Route index element={<AdminUserList />} />
+			<StyledWrapper>
+				{/* <DeleteMe /> */}
+				<ToastContainer position="bottom-right" autoClose={1000} />
+				<NavBar />
+				{showMiniCart && <MiniCart />}
+				<Routes>
+					<Route path="/" element={<HomePage />} />
+					<Route
+						path="login-register"
+						element={<LoginRegisterPage />}
+					/>
+					<Route
+						path="/productslist"
+						element={<ProductsListPage />}
+					/>
+					<Route
+						path="/product-item/:productId"
+						element={<SingleProductPage />}
+					/>
+					{/* <Route path="/testpage" element={<TestPage />} /> */}
+					<Route path="/admin" element={<AdminPage />}>
+						<Route index element={<AdminStats />} />
+						<Route path="stats" element={<AdminStats />} />
+						<Route path="users" element={<AdminUsersPage />}>
+							{/* <Route path="users" element={<AdminUserList />}> */}
+							<Route index element={<AdminUserList />} />
 
+							<Route
+								path=":userId"
+								element={<AdminEditUser />}
+							/>
+							<Route
+								path="add-new-user"
+								element={<AdminAddNewUser />}
+							/>
+						</Route>
 						<Route
-							path=":userId"
-							element={<AdminEditUser />}
-						/>
+							path="products"
+							element={<AdminProductsPage />}
+						>
+							<Route
+								index
+								element={<AdminProductsList />}
+							/>
+							{/* <Route index element={<ProductsListPage />} /> */}
+							<Route
+								path="edit-product/:productId"
+								element={<AdminEditProduct />}
+							/>
+							<Route
+								path="add-new-product"
+								element={<AdminAddNewProduct />}
+							/>
+						</Route>
 						<Route
-							path="add-new-user"
-							element={<AdminAddNewUser />}
+							path="orders"
+							element={<AdminOrdersList />}
 						/>
 					</Route>
-					<Route path="products" element={<AdminProductsPage />}>
-						<Route index element={<AdminProductsList />} />
-						{/* <Route index element={<ProductsListPage />} /> */}
-						<Route
-							path="edit-product/:productId"
-							element={<AdminEditProduct />}
-						/>
-						<Route
-							path="add-new-product"
-							element={<AdminAddNewProduct />}
-						/>
-					</Route>
-					<Route path="orders" element={<AdminOrdersList />} />
-				</Route>
-				<Route
-					path="/login-register"
-					element={<LoginRegisterPage />}
-				/>
-				<Route path="/checkout" element={<CheckoutPage />} />
-				<Route path="/payment" element={<PaymentPage />} />
-				<Route path="*" element={<PageNotFound />} />
-			</Routes>
+					<Route
+						path="/login-register"
+						element={<LoginRegisterPage />}
+					/>
+					<Route path="/checkout" element={<CheckoutPage />} />
+					<Route path="/payment" element={<PaymentPage />} />
+					<Route path="*" element={<PageNotFound />} />
+				</Routes>
+			</StyledWrapper>
 		</>
 	);
 }
 
 export default App;
+
+const StyledWrapper = styled.div`
+	/* global styler */
+
+	a {
+		text-decoration: none;
+		color: inherit;
+	}
+`;

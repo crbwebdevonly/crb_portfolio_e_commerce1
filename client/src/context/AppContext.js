@@ -80,7 +80,7 @@ const initialAppState = {
 	//============admin
 	//============
 	//============
-	menuItems: ["stats", "users", "products", "orders"],
+	menuItems: ["Stats", "Users", "Products", "Orders"],
 	//============
 	//============users
 	usersList: [],
