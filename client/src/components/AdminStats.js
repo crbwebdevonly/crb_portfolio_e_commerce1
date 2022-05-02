@@ -1,31 +1,73 @@
 import React from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useAppContext } from "../context/AppContext";
+import { myAxios } from "../myAxios";
 
 const AdminStats = () => {
+	//============
+	//============
+	const { loading, error, adminStats, getAdminStats } = useAppContext();
+	//============
+	//============
+
+	//============
+	//============
+	useEffect(() => {
+		//   first
+		getAdminStats();
+		return () => {
+			//     second
+		};
+	}, []);
+
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	if (loading) return <div className="spinner-border mx-auto d-grid "></div>;
+	//============
+	if (error)
+		return (
+			<h5 className="alert alert-danger">
+				Error occured- getting all orders
+			</h5>
+		);
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
 	return (
 		<>
 			<div className="container py-4">
 				<div className="row g-3">
 					<div className="col-md p-2 border">
 						<div className="card text-center">
-							<button className="btn btn-outline-info  text-dark">
-								<Link to="/admin/users">Users</Link>
-							</button>
+							<Link
+								to="/admin/users"
+								className="btn btn-outline-info  text-dark"
+							>
+								Users
+							</Link>
 							<div className="card-body">
 								<h5 className="card-title">
 									Total Users: 5
 								</h5>
-								{/* <p className="card-text">
-									With supporting text below as a
-									natural lead-in to additional
-									content.
-								</p>
-								<a href="#" className="btn btn-primary">
-									Go somewhere
-								</a> */}
-								<button className="btn btn-primary">
+
+								<Link
+									to="/admin/Users/add-new-user"
+									className="btn btn-primary"
+								>
 									Add New User
-								</button>
+								</Link>
+							</div>
+							<div className=" btn btn-outline-info">
+								2 New Users Today
 							</div>
 							<div className=" btn btn-outline-info">
 								2 New Users This Week
@@ -34,19 +76,17 @@ const AdminStats = () => {
 					</div>
 					<div className="col-md  p-2 border">
 						<div className="card text-center">
-							<button className="btn btn-outline-info  text-dark">
-								<Link to="/admin/users">Orders</Link>
-							</button>
+							<Link
+								to="/admin/orders"
+								className="btn btn-outline-info  text-dark"
+							>
+								Orders
+							</Link>
 							<div className="card-body">
 								<h5 className="card-title">
 									This Month Sales $ 999.12
 								</h5>
-
-								{/* <p className="card-text">
-									With supporting text below as a
-									natural lead-in to additional
-									content.
-								</p> */}
+								<p>from 20 orders</p>
 							</div>
 							<div className=" btn btn-outline-info">
 								5 New Orders Today
@@ -61,24 +101,22 @@ const AdminStats = () => {
 					</div>
 					<div className="col-md  p-2 border">
 						<div className="card text-center">
-							<button className="btn btn-outline-info text-dark ">
-								<Link to="/admin/users">Products</Link>
-							</button>
+							<Link
+								to="/admin/products"
+								className="btn btn-outline-info text-dark "
+							>
+								Products
+							</Link>
 							<div className="card-body">
 								<h5 className="card-title">
 									Total Products: 99
 								</h5>
-								<button className="btn btn-primary">
+								<Link
+									to="/admin/products/add-new-product"
+									className="btn btn-primary "
+								>
 									Add New Product
-								</button>
-								{/* <p className="card-text">
-									With supporting text below as a
-									natural lead-in to additional
-									content.
-								</p> */}
-								{/* <a href="#" className="btn btn-primary">
-									Go somewhere
-								</a> */}
+								</Link>
 							</div>
 							<div className=" btn btn-outline-info">
 								5 New Products Added Today

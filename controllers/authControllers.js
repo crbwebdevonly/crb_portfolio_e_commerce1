@@ -9,6 +9,35 @@ const demoAdminID = "62553e08b142025551b84281";
 const demoUserID = "625dc1942d81623df53fd12b";
 //============
 //============
+//============
+//============
+//============
+const getUsersStats = async (req, res) => {
+	const usersStats = {};
+	usersStats.u = "u1";
+	usersStats.u2 = "u1";
+	let query = {};
+	try {
+		let total = await UserModel.count(query);
+		usersStats.total = total;
+          const  date = new Date()
+          const y = date.getFullYear()
+          const m = date.getMonth()
+          const d = date.getDate()
+          const hr = date.getHours()
+          query.createdAt = {$gte:new Date( new Date(y,m,d,hr-50)), $lte: new Date() }
+		let today = await UserModel.count(query);
+		usersStats.today = today;
+		res.status(200).json({ usersStats });
+	} catch (error) {
+		res.status(500).json({ msg: "error-usersStats", error });
+	}
+};
+//============
+//============
+//============
+//============
+//============
 const handleGetAllUsers = async (req, res) => {
 	try {
 		const users = await UserModel.find();
@@ -119,6 +148,7 @@ const handleRegister = async (req, res) => {
 //============
 //============
 module.exports = {
+	getUsersStats,
 	handleGetAllUsers,
 	handleGetOneUser,
 	handleUpdateUser,

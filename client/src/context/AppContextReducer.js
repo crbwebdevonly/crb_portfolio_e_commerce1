@@ -198,6 +198,13 @@ export const AppContextReducer = (state, action) => {
 
 		//============
 		//============admin
+          case "GET_ADMIN_STATS": {
+			return {
+				...state,
+				adminStats: action.payload,
+			};
+		}
+		//============
 		case "GET_ALL_USERS": {
 			return {
 				...state,

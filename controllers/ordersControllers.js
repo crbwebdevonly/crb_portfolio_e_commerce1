@@ -3,6 +3,13 @@
 const OrderModel = require("../DataModels/OrderModel");
 
 //============
+//============
+const getOrdersStats = async  (req,res)=>{
+     res.status(200).json({ordersStats:"o1"})
+
+     }
+//============
+//============
 const getAllOrders = async (req, res) => {
 	try {
 		const reply = await OrderModel.find();
@@ -84,7 +91,7 @@ const getOrdersWithQuery = async (req, res) => {
 		queryObject.orderTotalAmount = { $lt: maxPrice };
 	}
 	if (searchEmail) {
-		queryObject.stringifiedCustomer = {
+		queryObject.customerEmail = {
 			$regex: searchEmail,
 			$options: "i",
 		};
@@ -186,6 +193,7 @@ const getOrdersWithQuery = async (req, res) => {
 //============
 //============
 module.exports = {
+     getOrdersStats,
 	getAllOrders,
 	createOrder,
 	deleteOrder,

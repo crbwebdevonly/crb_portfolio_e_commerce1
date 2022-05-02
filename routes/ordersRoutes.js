@@ -4,6 +4,7 @@ const {
 	deleteOrder,
 	updateOrder,
      getOrdersWithQuery,
+     getOrdersStats,
 } = require("../controllers/ordersControllers");
 
 //============
@@ -13,6 +14,7 @@ const ordersRouter = require("express").Router();
 //============
 //============
 //============
+ordersRouter.get("/orders-stats", getOrdersStats);
 ordersRouter.post("/createorder", createOrder);
 ordersRouter.get("/getallorders", getAllOrders);
 ordersRouter.get("/getorderswithquery",getOrdersWithQuery);

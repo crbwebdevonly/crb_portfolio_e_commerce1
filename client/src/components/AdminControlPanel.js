@@ -6,7 +6,7 @@ import { useAppContext } from "../context/AppContext";
 const AdminControlPanel = () => {
 	//============
 	//============
-	const { menuItems } = useAppContext()
+	const { menuItems } = useAppContext();
 	//============
 	//============
 	if (!menuItems) {
@@ -15,12 +15,12 @@ const AdminControlPanel = () => {
 	//============
 	//============
 	return (
-		<StyledWrapper className="container alert-info">
+		<StyledWrapper className="container alert-info py-2">
 			{/* <div>AdminControlPanel</div> */}
 			<ul>
 				{menuItems.map((e, i) => (
 					<li key={i}>
-						<Link to={`/admin/${e}`} className="w-100">
+						<Link to={`/admin/${e}`} className=" btn btn-outline-info w-100">
 							{e}
 						</Link>
 					</li>

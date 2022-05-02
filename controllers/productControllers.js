@@ -7,6 +7,13 @@ const ProductModel = require("../DataModels/ProductModel");
 //============
 //============
 //============
+const getProductsStats = async  (req,res)=>{
+     res.status(200).json({productsStats:"p1"})
+}
+//============
+//============
+//============
+//============
 const handleProductsSeed = async (req, res) => {
 	try {
 		const reply = await ProductModel.insertMany(req.body);
@@ -215,6 +222,7 @@ const handleDeleteProduct = async (req, res) => {
 //============
 module.exports = {
 	handleProductsSeed,
+     getProductsStats,
 	handleGetAllProducts,
 	handleGetSliderDataID,
 	handleGetSliderProducts,

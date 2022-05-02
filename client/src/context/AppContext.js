@@ -81,6 +81,7 @@ const initialAppState = {
 	//============
 	//============
 	menuItems: ["Stats", "Users", "Products", "Orders"],
+     adminStats:null,
 	//============
 	//============users
 	usersList: [],
@@ -402,6 +403,7 @@ export const AppContextProvider = ({ children }) => {
 			const orderItemsID = state.cartItems.map((e) => e._id);
 			orderData = {
 				customerID: state.user._id,
+				customerEmail: state.user.email,
 				orderItemsID,
 				orderTotalAmount: state.totalAmount,
 				orderTotalQuantity: state.totalQty,
@@ -714,8 +716,33 @@ export const AppContextProvider = ({ children }) => {
 	// //============
 	// //============
 	//============
+	//============admin stats page data
 	//============
-	//============
+	const getAdminStats = async () => {
+		dispatch({ type: "FETCH_BEGIN" });
+
+		const usersStatsURL = "api/auth/users-stats";
+		const ordersStatsURL = "api/orders/orders-stats";
+		const productsStatsURL = "api/products/products-stats";
+		const statsURL = {
+			usersStatsURL: "api/auth/users-stats",
+			ordersStatsURL: "api/orders/orders-stats",
+			productsStatsURL: "api/products/products-stats",
+		};
+		const multiRequest = Object.values(statsURL).map((e) =>
+			myAxios.get(e)
+		);
+		try {
+			const reply = await Promise.all(multiRequest);
+			dispatch({
+				type: "GET_ADMIN_STATS",
+				payload: reply.map((e) => e.data),
+			});
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+		}
+	};
 	//============
 	//============
 	//============
@@ -765,6 +792,7 @@ export const AppContextProvider = ({ children }) => {
 		resetCart,
 		placeOrder,
 		//============admin
+          getAdminStats,
 		getAllUsers,
 		setEditProduct,
 		setEnableEditProduct,
