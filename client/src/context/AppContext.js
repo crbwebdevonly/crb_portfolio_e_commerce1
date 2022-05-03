@@ -81,7 +81,7 @@ const initialAppState = {
 	//============
 	//============
 	menuItems: ["Stats", "Users", "Products", "Orders"],
-     adminStats:null,
+     adminStats:{},
 	//============
 	//============users
 	usersList: [],
@@ -721,13 +721,13 @@ export const AppContextProvider = ({ children }) => {
 	const getAdminStats = async () => {
 		dispatch({ type: "FETCH_BEGIN" });
 
-		const usersStatsURL = "api/auth/users-stats";
-		const ordersStatsURL = "api/orders/orders-stats";
-		const productsStatsURL = "api/products/products-stats";
+		const usersStatsURL = "/api/auth/users-stats";
+		const ordersStatsURL = "/api/orders/orders-stats";
+		const productsStatsURL = "/api/products/products-stats";
 		const statsURL = {
-			usersStatsURL: "api/auth/users-stats",
-			ordersStatsURL: "api/orders/orders-stats",
-			productsStatsURL: "api/products/products-stats",
+			usersStatsURL: "/api/auth/users-stats",
+			ordersStatsURL: "/api/orders/orders-stats",
+			productsStatsURL: "/api/products/products-stats",
 		};
 		const multiRequest = Object.values(statsURL).map((e) =>
 			myAxios.get(e)

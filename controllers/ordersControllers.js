@@ -1,13 +1,99 @@
 //============
 
+const { aggregate } = require("../DataModels/OrderModel");
 const OrderModel = require("../DataModels/OrderModel");
 
 //============
 //============
-const getOrdersStats = async  (req,res)=>{
-     res.status(200).json({ordersStats:"o1"})
+const getOrdersStats = async (req, res) => {
+	let ordersStats = {};
+	let date = new Date();
+	const y = date.getFullYear();
+	const m = date.getMonth();
+	const d = date.getDate();
+	const h = date.getHours();
+	try {
+		let s = await OrderModel.aggregate([
+			{ $group: { _id: "$status", count: { $sum: 1 } } },
+		]);
+		ordersStats.completed = -1;
+		ordersStats.issue = -1;
+		ordersStats.processing = -1;
 
-     }
+		s.forEach((e) => {
+			console.log(e);
+			if (e._id === "completed") {
+				ordersStats.completed = e.count;
+			}
+			if (e._id === "check-issue") {
+				ordersStats.issue = e.count;
+			}
+			if (e._id === "processing") {
+				ordersStats.processing = e.count;
+			}
+		});
+		//
+		let ts = await OrderModel.aggregate([
+			{ $group: { _id: null, amount: { $sum: "$orderTotalAmount" } } },
+		]);
+		ordersStats.aggregateTotalSales = ts[0].amount;
+
+		let ms = await OrderModel.aggregate([
+			{
+				$match: {
+					createdAt: { $gte: new Date(y, m - 1, d), $lte: date },
+				},
+			},
+			{
+				$group: {
+					_id: null,
+					amount: { $sum: "$orderTotalAmount" },
+					count: { $sum: 1 },
+				},
+			},
+		]);
+		ordersStats.aggregateMonthlySales = ms[0];
+
+		let ws = await OrderModel.aggregate([
+			{
+				$match: {
+					createdAt: { $gte: new Date(y, m, d - 7), $lte: date },
+				},
+			},
+			{
+				$group: {
+					_id: null,
+					amount: { $sum: "$orderTotalAmount" },
+					count: { $sum: 1 },
+				},
+			},
+		]);
+		ordersStats.aggregateWeeklySales = ws[0];
+
+		let t = await OrderModel.aggregate([
+			{
+				$match: {
+					createdAt: {
+						$gte: new Date(y, m, d, h - 24),
+						$lte: date,
+					},
+				},
+			},
+			{
+				$group: {
+					_id: null,
+					amount: { $sum: "$orderTotalAmount" },
+					count: { $sum: 1 },
+				},
+			},
+		]);
+		ordersStats.aggregateTodaySales = t[0];
+
+		res.status(200).json({ ordersStats });
+	} catch (error) {
+		res.status(500).json({ msg: "error getting stats-products", error });
+	}
+};
 //============
 //============
 const getAllOrders = async (req, res) => {
@@ -193,7 +279,7 @@ const getOrdersWithQuery = async (req, res) => {
 //============
 //============
 module.exports = {
-     getOrdersStats,
+	getOrdersStats,
 	getAllOrders,
 	createOrder,
 	deleteOrder,

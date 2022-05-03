@@ -198,10 +198,15 @@ export const AppContextReducer = (state, action) => {
 
 		//============
 		//============admin
-          case "GET_ADMIN_STATS": {
+		case "GET_ADMIN_STATS": {
+			let TadminStats = action.payload;
+			let adminStats = {};
+			adminStats.usersStats = TadminStats[0].usersStats;
+			adminStats.ordersStats = TadminStats[1].ordersStats;
+			adminStats.productsStats = TadminStats[2].productsStats;
 			return {
 				...state,
-				adminStats: action.payload,
+				adminStats,
 			};
 		}
 		//============
@@ -392,7 +397,7 @@ export const AppContextReducer = (state, action) => {
 			return {
 				...state,
 				ordersFilter: action.payload,
-                    ordersPaginatorData: {
+				ordersPaginatorData: {
 					...state.ordersPaginatorData,
 					currentPage: 1,
 				},

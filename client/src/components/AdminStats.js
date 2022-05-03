@@ -10,7 +10,22 @@ const AdminStats = () => {
 	const { loading, error, adminStats, getAdminStats } = useAppContext();
 	//============
 	//============
-
+	const {
+		usersStats = {},
+		ordersStats = {},
+		productsStats = {},
+	} = adminStats;
+	//============
+	//============
+	const {
+		completed,
+		issue,
+		processing,
+		aggregateTotalSales,
+		aggregateMonthlySales,
+		aggregateWeeklySales,
+		aggregateTodaySales,
+	} = ordersStats;
 	//============
 	//============
 	useEffect(() => {
@@ -21,6 +36,9 @@ const AdminStats = () => {
 		};
 	}, []);
 
+	//============
+
+	//============
 	//============
 	//============
 	//============
@@ -33,7 +51,7 @@ const AdminStats = () => {
 	if (error)
 		return (
 			<h5 className="alert alert-danger">
-				Error occured- getting all orders
+				Error occured- getting admin stats
 			</h5>
 		);
 	//============
@@ -44,6 +62,7 @@ const AdminStats = () => {
 	//============
 	return (
 		<>
+			{JSON.stringify(productsStats)}
 			<div className="container py-4">
 				<div className="row g-3">
 					<div className="col-md p-2 border">
@@ -56,7 +75,7 @@ const AdminStats = () => {
 							</Link>
 							<div className="card-body">
 								<h5 className="card-title">
-									Total Users: 5
+									Total Users: {usersStats.total}
 								</h5>
 
 								<Link
@@ -67,10 +86,10 @@ const AdminStats = () => {
 								</Link>
 							</div>
 							<div className=" btn btn-outline-info">
-								2 New Users Today
+								{usersStats.today} New Users Today
 							</div>
 							<div className=" btn btn-outline-info">
-								2 New Users This Week
+								{usersStats.week} New Users This Week
 							</div>
 						</div>
 					</div>
@@ -82,20 +101,41 @@ const AdminStats = () => {
 							>
 								Orders
 							</Link>
+							<div className=" btn btn-outline-danger my-1">
+								{issue} orders with issues
+							</div>
 							<div className="card-body">
 								<h5 className="card-title">
-									This Month Sales $ 999.12
+									Total Sales $ {aggregateTotalSales}
 								</h5>
-								<p>from 20 orders</p>
+								<p className="border">
+									This Month Sales ${" "}
+									{aggregateMonthlySales.amount.toFixed(2)}
+									<br />{" "}
+									{aggregateMonthlySales.count}{" "}
+									orders
+								</p>
+								<p className="border">
+									This week Sales ${" "}
+									{aggregateWeeklySales.amount.toFixed(2)}
+									<br />
+									{aggregateWeeklySales.count} orders
+								</p>
+								<p className="border">
+									Todays' Sales ${" "}
+									{aggregateTodaySales.amount.toFixed(2)}
+									<br /> {
+										aggregateTodaySales.count
+									}{" "}
+									orders
+								</p>
 							</div>
-							<div className=" btn btn-outline-info">
-								5 New Orders Today
+
+							<div className=" btn btn-outline-success">
+								{completed} Orders Completed
 							</div>
 							<div className=" btn btn-outline-warning">
-								5 Orders Processing
-							</div>
-							<div className=" btn btn-outline-danger">
-								5 orders with issues
+								{processing} Orders Processing
 							</div>
 						</div>
 					</div>
@@ -109,7 +149,7 @@ const AdminStats = () => {
 							</Link>
 							<div className="card-body">
 								<h5 className="card-title">
-									Total Products: 99
+									Total Products: {productsStats.total}
 								</h5>
 								<Link
 									to="/admin/products/add-new-product"
@@ -119,10 +159,15 @@ const AdminStats = () => {
 								</Link>
 							</div>
 							<div className=" btn btn-outline-info">
-								5 New Products Added Today
+								{productsStats.today} New Products Added Today
 							</div>
+
+                                   <div className=" btn btn-outline-info">
+								{productsStats.week} New Products Added This Week
+							</div>
+
 							<div className=" btn btn-outline-info">
-								25 New Products Added This Month
+								{productsStats.month} New Products Added This Month
 							</div>
 						</div>
 					</div>

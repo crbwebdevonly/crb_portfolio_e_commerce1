@@ -195,7 +195,7 @@ const StyledWrapper = styled.div`
 	/* nav { */
 	position: sticky;
 	top: 0px;
-	z-index: 2;
+	z-index: 9;
 	width: 100%;
 	/* } */
 	.navbar-toggler {

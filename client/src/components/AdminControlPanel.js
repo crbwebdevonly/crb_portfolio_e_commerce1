@@ -15,18 +15,23 @@ const AdminControlPanel = () => {
 	//============
 	//============
 	return (
-		<StyledWrapper className="container alert-info py-2">
+		// <div className="container">
+		<StyledWrapper className="alert-info py-2">
 			{/* <div>AdminControlPanel</div> */}
 			<ul>
 				{menuItems.map((e, i) => (
 					<li key={i}>
-						<Link to={`/admin/${e}`} className=" btn btn-outline-info w-100">
+						<Link
+							to={`/admin/${e}`}
+							className=" btn btn-outline-info w-100"
+						>
 							{e}
 						</Link>
 					</li>
 				))}
 			</ul>
 		</StyledWrapper>
+		// </div>
 	);
 };
 
@@ -35,7 +40,7 @@ const StyledWrapper = styled.div`
 	position: fixed;
 	margin-top: 0px;
 	top: 50px;
-	z-index: 1;
+	z-index: 9;
 	width: 100%;
 	/* padding: 10px; */
 	ul {
