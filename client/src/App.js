@@ -29,6 +29,8 @@ import AdminAddNewProduct from "./components/AdminAddNewProduct";
 import { useAppContext } from "./context/AppContext";
 import TestPage from "./pages/TestPage";
 import styled from "styled-components";
+import AdminOrdersPage from "./pages/AdminOrdersPage";
+import AdminEditOrder from "./components/AdminEditOrder";
 //============
 //============
 
@@ -145,8 +147,14 @@ function App() {
 						</Route>
 						<Route
 							path="orders"
-							element={<AdminOrdersList />}
-						/>
+							element={<AdminOrdersPage />}
+						>
+							<Route index element={<AdminOrdersList />} />
+							<Route
+								path="edit-order/:orderId"
+								element={<AdminEditOrder />}
+							/>
+						</Route>
 					</Route>
 					<Route
 						path="/login-register"

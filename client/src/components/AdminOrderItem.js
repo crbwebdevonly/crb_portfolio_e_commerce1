@@ -14,6 +14,7 @@ const AdminOrderItem = (props) => {
 		_id: id,
 		createdAt,
 		customerID,
+		customerEmail,
 		status,
 		issue,
 		orderItemsID,
@@ -73,9 +74,9 @@ const AdminOrderItem = (props) => {
 	//============
 	//============
 	function getStatusClassName() {
-		if (orderStatus === "processing") return "text-warning";
-		if (orderStatus === "completed") return "text-success";
-		if (orderStatus === "check-issue") return "text-danger";
+		if (orderStatus === "processing") return "warning";
+		if (orderStatus === "completed") return "success";
+		if (orderStatus === "check-issue") return "danger";
 	}
 	//============
 
@@ -83,191 +84,104 @@ const AdminOrderItem = (props) => {
 	//============
 
 	//============
-	//============
+	// return "item3"
 	return (
 		<StyledWrapper>
-			<div className="card p-2">
-				<div className="input-group input-group mb-0  ">
-					<span className="input-group-text fw-bold">
-						OrderID:
-					</span>
-					<input
-						type="text"
-						className="form-control"
-						disabled
-						value={id}
-					/>
-					<span className="input-group-text fw-bold fs-6">
-						Order Date:
-					</span>
-					<input
-						type="text"
-						className="form-control fs-6"
-						disabled
-						value={`${moment(createdAt).format(
-							"MMMM Do YYYY"
-						)} , ${moment(createdAt).fromNow()}`}
-					/>
-				</div>
-				{/* <div className="col card-header ">
-							OrderID: {id}
-						</div> */}
-				<div className="row d-flex2 my-0 px-2 align-items-center">
-					{enableEdit && (
-						<>
-							<div className="col">
-								<button
-									className="btn btn-danger"
-									onClick={() => {
-										deleteOrder(id);
-									}}
-								>
-									Delete Order
-								</button>
-							</div>
-							<div className="col">
-								<button
-									className="btn btn-info"
-									onClick={() => {
-										setEnableEdit(false);
-									}}
-								>
-									Cancel Update
-								</button>
-							</div>
-							<div className="col">
-								<button
-									className="btn btn-warning"
-									onClick={() => {
-										updateOrder(id, {
-											status: orderStatus,
-										});
-									}}
-								>
-									Apply Update
-								</button>
-							</div>
-						</>
-					)}
-					{!enableEdit && (
-						<div className="col">
-							<button
-								className="btn btn-warning"
-								onClick={() => {
-									setEnableEdit(true);
-								}}
-							>
-								Enable Update
-							</button>
-						</div>
-					)}
-					<div className="col-md-4 shadow7 border">
-						<label className="form-label ">
-							Order Status
-						</label>
-						<select
-							className={"form-select  " + statusClassName}
-							disabled={!enableEdit}
-							value={orderStatus}
-							onChange={handleStatusChange}
-						>
-							<option
-								className="text-warning"
-								value="processing"
-							>
-								processing
-							</option>
-							<option
-								className="text-success"
-								value="completed"
-							>
-								completed
-							</option>
-							<option
-								className="text-danger"
-								value="check-issue"
-							>
-								check-issue
-							</option>
-						</select>
-					</div>
-					{/* <select
-						className="col form-select  mb-0"
-						disabled={!enableEdit}
+			<div className="card p-1 h-auto">
+				<div className="card-body ">
+					<div
+						className="d-flex my-1
+                              "
 					>
-						<option selected>Open this select menu</option>
-						<option value="1">One</option>
-						<option value="2">Two</option>
-						<option value="3">Three</option>
-					</select> */}
-				</div>
-				<div className="input-group input-group-sm mb-0  ">
-					<span className="input-group-text fw-bold">
-						Customer Email:
-					</span>
-					<input
-						type="text"
-						className="form-control"
-						disabled
-						value={parsedCustomer.email}
-					/>
-				</div>
-				<div className="input-group input-group-sm mb-0  ">
-					<span className="input-group-text fw-bold">
-						Customer ID:
-					</span>
-					<input
-						type="text"
-						className="form-control"
-						disabled
-						value={customerID}
-					/>
-				</div>
+						<Link to={`edit-order/${id}`}>
+							<button className="btn btn-info">
+								Edit Order
+							</button>
+						</Link>
 
-				<hr />
-
-				<table className="table table-striped">
-					<thead>
-						<tr>
-							<th scope="col">#</th>
-							<th scope="col">Product</th>
-							<th scope="col">Price</th>
-						</tr>
-					</thead>
-					<tbody>
-						{parsedOrderItems.map((e, i) => (
-							<tr key={i}>
-								<th scope="row">{i + 1}</th>
-								<td>
-									<div className="desc-wrap d-flex">
-										<div className="title">
-											<h6>{e.title}</h6>
-											<p>
-												Product ID: {e._id}
-											</p>
-										</div>
-										<img src={e.image} alt="" />
-									</div>
-								</td>
-								<td>
-									<h6>${e.price}</h6>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
-
-				<div className="price-wrap">
-					<div className="">
-						Items Quantity {orderTotalQuantity}
+						<button
+							type="text"
+							// className="form-control"
+							className={
+								"ms-auto btn btn-" + statusClassName
+							}
+							disabled
+						>
+							{orderStatus}
+						</button>
 					</div>
-					<h5 className="card-title">
-						Total Amount: ${orderTotalAmount}
-					</h5>
+
+					<div className="input-group input-group-sm mb-1">
+						<span
+							className="input-group-text"
+							id="inputGroup-sizing-sm"
+						>
+							CustomerEmail:
+						</span>
+						<input
+							type="text"
+							className="form-control"
+							disabled
+							value={customerEmail || parsedCustomer.email}
+						/>
+					</div>
+					<div className="input-group input-group-sm mb-1">
+						<span
+							className="input-group-text"
+							id="inputGroup-sizing-sm"
+						>
+							Date:
+						</span>
+						<input
+							type="text"
+							className="form-control"
+							disabled
+							value={` ${moment(createdAt).format(
+								"MMMM Do YYYY"
+							)} , ${moment(createdAt).fromNow()}`}
+						/>
+					</div>
+					<div className="input-group input-group-sm mb-1">
+						<span
+							className="input-group-text"
+							id="inputGroup-sizing-sm"
+						>
+							Order ID:
+						</span>
+						<input
+							type="text"
+							className="form-control id"
+							disabled
+							value={id}
+						/>
+					</div>
+					<div className="input-group input-group-sm mb-1">
+						<span
+							className="input-group-text"
+							id="inputGroup-sizing-sm"
+						>
+							Items Quantity
+						</span>
+						<input
+							type="text"
+							className="form-control"
+							disabled
+							value={orderTotalQuantity}
+						/>
+					</div>
+					<div className="input-group input-group-sm mb-1">
+						<span
+							className="input-group-text amt"
+							id="inputGroup-sizing-sm"
+						>
+							{`Total Amount: $ ${orderTotalAmount}`}
+						</span>
+					</div>
 				</div>
 			</div>
 		</StyledWrapper>
 	);
+	//============
 };
 
 export default AdminOrderItem;
@@ -282,10 +196,7 @@ const StyledWrapper = styled.div`
 	max-width: 45rem;
 	/* z-index: 1; */
 
-	img {
-		/* border: 1px solid red; */
-		margin-left: auto;
-	}
+	
 	&:hover {
 		filter: brightness(0.98);
 		box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.3);
@@ -294,44 +205,36 @@ const StyledWrapper = styled.div`
 		text-decoration: none;
 		color: inherit;
 	}
-	img {
-		width: 30px;
-		object-fit: contain;
-	}
+	
 	h6,
 	p {
 		font-size: 0.8rem;
 	}
 	.card {
 		height: 100%;
-		min-height: 250px;
+		/* min-height: 250px; */
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
 		/* align-items: center; */
 	}
-	.img-wrap {
-		display: flex;
-		flex-direction: column;
+
+	span {
+		font-weight: bold;
+		font-size: 0.6rem !important;
 	}
-	.price-wrap {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		/* z-index: 99; */
-		position: relative;
+	input {
+		font-size: 0.7rem !important;
 	}
-	.alert {
-		position: absolute;
-		font-size: 0.8rem;
-		height: 10px;
-		z-index: 99;
-		/* padding: 0px;
-		margin: 0;
-		padding: 10px; */
-		bottom: 110%;
-		left: 0px;
-		display: grid;
-		place-content: center;
+	@media screen and (min-width: 750px) {
+		input {
+			font-size: 0.8rem !important;
+		}
+	}
+	.id {
+		font-size: 0.7rem !important;
+	}
+	.amt {
+		font-size: 1rem !important;
 	}
 `;

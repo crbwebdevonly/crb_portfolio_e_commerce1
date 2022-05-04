@@ -12,7 +12,7 @@ const AdminOrdersList = () => {
 	const {
 		loading,
 		error,
-          ordersPaginatorData,
+		ordersPaginatorData,
 		ordersList,
 		ClearOrdersFilter_on_dismount,
 		ClearOrdersFilter_and_reFetch_orders,
@@ -20,7 +20,7 @@ const AdminOrdersList = () => {
 	} = useAppContext();
 	//============
 	//============
-     const {
+	const {
 		itemsPerPage,
 		currentPage,
 		totalHitsCount: hitsCount,
@@ -31,7 +31,9 @@ const AdminOrdersList = () => {
 	useEffect(() => {
 		//   first
 		// getAllOrders();
-		ClearOrdersFilter_and_reFetch_orders();
+		// ClearOrdersFilter_and_reFetch_orders();
+		getCurrentPageOrdersListWithQuery();
+
 		return () => {
 			//     second
 			ClearOrdersFilter_on_dismount();
@@ -47,7 +49,7 @@ const AdminOrdersList = () => {
 		return () => {
 			//     second
 		};
-	}, [itemsPerPage,currentPage]);
+	}, [itemsPerPage, currentPage]);
 
 	//============
 	//============
@@ -106,17 +108,19 @@ const AdminOrdersList = () => {
 export default AdminOrdersList;
 const StyledWrapper = styled.div`
 	.all-orders-container {
-		/* padding: 20px; */
+		padding: 10px;
 		display: grid;
 		place-items: center;
 		grid-template-columns: repeat(1, 1fr);
-		gap: 1.5rem;
 
-		@media screen and (min-width: 1050px) {
-			/* grid-template-columns: repeat(2, 1fr); */
+		@media screen and (min-width: 770px) {
+			grid-template-columns: repeat(2, 1fr);
 		}
-		/* @media screen and (min-width: 1050px) {
+		@media screen and (min-width: 1050px) {
 			grid-template-columns: repeat(3, 1fr);
-		} */
+		}
+		@media screen and (min-width: 1400px) {
+			grid-template-columns: repeat(4, 1fr);
+		}
 	}
 `;

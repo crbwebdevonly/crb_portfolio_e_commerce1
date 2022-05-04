@@ -319,6 +319,13 @@ export const AppContextReducer = (state, action) => {
 				ordersList: action.payload,
 			};
 		}
+		//============
+		case "SET_EDIT_ORDER": {
+			return {
+				...state,
+				editOrder: action.payload,
+			};
+		}
 		case "DELETE_ORDER_SUCCESS": {
 			return {
 				...state,
@@ -339,12 +346,25 @@ export const AppContextReducer = (state, action) => {
 		}
 		//============
 		//============
+		case "SET_ORDER_ARG": {
+			return {
+				...state,
+				order_arg: action.payload,
+				// ordersFilter: {
+				// 	...state.ordersFilter,
+				// 	status: action.payload,
+				// },
+			};
+		}
+		//============
+		//============
 		case "GET_CURRENT_PAGE_ORDERS_LIST_AND_HITS_COUNT_WITH_QUERY": {
 			const { totalHitsCount, ordersList } = action.payload;
 
 			return {
 				...state,
 				ordersList,
+				order_arg: null,
 				ordersPaginatorData: {
 					...state.ordersPaginatorData,
 					totalHitsCount,

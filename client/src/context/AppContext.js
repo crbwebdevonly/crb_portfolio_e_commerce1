@@ -81,7 +81,7 @@ const initialAppState = {
 	//============
 	//============
 	menuItems: ["Stats", "Users", "Products", "Orders"],
-     adminStats:{},
+	adminStats: {},
 	//============
 	//============users
 	usersList: [],
@@ -100,8 +100,10 @@ const initialAppState = {
 	},
 	//============
 	//============orders
+	editOrder: {},
 	ordersList: [],
 	ordersFilter: initial_ordersFilter,
+	order_arg: null,
 	ordersPaginatorData: {
 		itemsPerPage: 10,
 		currentPage: 1,
@@ -596,6 +598,24 @@ export const AppContextProvider = ({ children }) => {
 	};
 	//============
 	//============
+	const setEditOrder = (id) => {
+		dispatch({ type: "FETCH_BEGIN" });
+
+		const editOrder = state.ordersList.find(
+			(e) => e._id === id
+		);
+		if (!editOrder) {
+			dispatch({ type: "SET_ERROR" });
+			return;
+		}
+
+		dispatch({ type: "SET_EDIT_ORDER", payload: editOrder });
+		dispatch({ type: "FETCH_SUCCESS" });
+	};
+	//============
+	//============
+	//============
+	//============
 	//============
 	//============
 	const deleteOrder = async (id) => {
@@ -683,7 +703,7 @@ export const AppContextProvider = ({ children }) => {
 	//============
 	// //============
 	// //============
-	const getCurrentPageOrdersListWithQuery = async (filterQuery) => {
+	const getCurrentPageOrdersListWithQuery_orginal = async (filterQuery) => {
 		const {
 			searchEmail,
 			orderStatus,
@@ -697,6 +717,46 @@ export const AppContextProvider = ({ children }) => {
 				: state.ordersFilter;
 
 		const { itemsPerPage, currentPage } = state.ordersPaginatorData;
+
+		let qstring = `/api/orders/getorderswithquery?searchEmail=${searchEmail}&orderStatus=${orderStatus}&minAmount=${minAmount}&maxAmount=${maxAmount}&dateRange=${dateRange}&sort=${sort}&currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`;
+
+		dispatch({ type: "FETCH_BEGIN" });
+
+		try {
+			const reply = await myAxios.get(qstring);
+			dispatch({
+				type: "GET_CURRENT_PAGE_ORDERS_LIST_AND_HITS_COUNT_WITH_QUERY",
+				payload: reply.data,
+			});
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+		}
+	};
+	// //============
+	// //============
+	// //============
+	// //============
+	const getCurrentPageOrdersListWithQuery = async (
+		order_arg = state.order_arg
+	) => {
+		let {
+			searchEmail,
+			orderStatus,
+			minAmount,
+			maxAmount,
+			dateRange,
+			sort,
+		} =
+			order_arg === "initial"
+				? initial_ordersFilter
+				: state.ordersFilter;
+		let { itemsPerPage, currentPage } = state.ordersPaginatorData;
+		if (order_arg === "issue") {
+			orderStatus = "check-issue";
+			currentPage = 1;
+		}
+		console.log(order_arg, "orderarg");
 
 		let qstring = `/api/orders/getorderswithquery?searchEmail=${searchEmail}&orderStatus=${orderStatus}&minAmount=${minAmount}&maxAmount=${maxAmount}&dateRange=${dateRange}&sort=${sort}&currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`;
 
@@ -745,6 +805,18 @@ export const AppContextProvider = ({ children }) => {
 	};
 	//============
 	//============
+	const setOrder_Arg = (arg) => {
+		dispatch({ type: "SET_ORDER_ARG", payload: arg });
+	};
+	//============
+	//============
+	const handleIssueClick = () => {
+		setOrder_Arg("issue");
+		dispatch({ type: "FETCH_BEGIN" });
+		navigate("/admin/orders");
+		// getCurrentPageOrdersListWithQuery("issue");
+		// dispatch({ type: "FETCH_SUCCESS" });
+	};
 	//============
 	//============
 	//============
@@ -792,7 +864,7 @@ export const AppContextProvider = ({ children }) => {
 		resetCart,
 		placeOrder,
 		//============admin
-          getAdminStats,
+		getAdminStats,
 		getAllUsers,
 		setEditProduct,
 		setEnableEditProduct,
@@ -803,6 +875,7 @@ export const AppContextProvider = ({ children }) => {
 		addNewProduct,
 		deleteProduct,
 		getAllOrders,
+		setEditOrder,
 		deleteOrder,
 		updateOrder,
 		//============ordersfilter
@@ -813,6 +886,9 @@ export const AppContextProvider = ({ children }) => {
 		setOrdersItemsPerPage,
 		setOrdersCurrentPage,
 		getCurrentPageOrdersListWithQuery,
+		//============
+		setOrder_Arg,
+		handleIssueClick,
 	};
 	//============
 	//============

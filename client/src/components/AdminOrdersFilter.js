@@ -72,7 +72,7 @@ const AdminOrdersFilter = () => {
 										<option value="2day">
 											past 2 Days
 										</option>
-                                                  <option value="3day">
+										<option value="3day">
 											past 3 Days
 										</option>
 										<option value="week">
