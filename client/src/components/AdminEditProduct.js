@@ -49,7 +49,7 @@ const AdminEditProduct = () => {
 		setEditProduct(productId);
 		return () => {
 			//     second
-               cancelEditProduct();
+			cancelEditProduct();
 		};
 	}, [productId]);
 
@@ -70,8 +70,8 @@ const AdminEditProduct = () => {
 	//============
 	//============
 	return (
-		<StyledWrapper>
-			<div className="container">
+		<StyledWrapper className="border shadow">
+			<div className="container border-1">
 				<h5 className="title card-header  text-center my-3">
 					{title}
 				</h5>
@@ -207,8 +207,9 @@ const AdminEditProduct = () => {
 						</div>
 					</div>
 					<div className="alert alert-warning p-0 text-center">
-						NOTE: to add decimal, please write the full number without decimal 
-						first, then add decimal by moving the cursor back
+						NOTE: to add decimal, please write the full number
+						without decimal first, then add decimal by moving
+						the cursor back
 					</div>
 					<button
 						className="btn btn-warning w-50 my-3 "

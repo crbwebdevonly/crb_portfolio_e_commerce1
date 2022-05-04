@@ -174,7 +174,7 @@ const AdminEditOrder = (props) => {
 	//============
 	//============
 	return (
-		<StyledWrapper>
+		<StyledWrapper className="test1">
 			<div className="card p-2">
 				<div className="input-group input-group mb-0  ">
 					<span className="input-group-text fw-bold">
@@ -363,9 +363,12 @@ const StyledWrapper = styled.div`
 	/* flex: 1; */
 	height: 100%;
 	width: 100%;
+	width: 80vw;
 	padding: 10px;
-	max-width: 45rem;
+	max-width: 65rem;
 	/* z-index: 1; */
+	display: flex;
+	justify-content: center;
 
 	img {
 		/* border: 1px solid red; */
