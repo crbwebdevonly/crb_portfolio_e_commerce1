@@ -38,6 +38,48 @@ const initialFilter = {
 //============
 //============
 //============
+const initial_ordersFilter = {
+	searchEmail: "",
+	orderStatus: "any",
+	minAmount: 0,
+	maxAmount: 0,
+	dateRange: "all",
+	sort: "new",
+};
+//============
+//============
+const initialAdminStats = {
+	usersStats: { total: 0, today: 0, week: 0 },
+	ordersStats: {
+		completed: 0,
+		issue: 0,
+		processing: 0,
+		aggregateTotalSales: 0,
+		aggregateMonthlySales: { amount: 0, count: 0 },
+		aggregateWeeklySales: { amount: 0, count: 0 },
+		aggregateTodaySales: { amount: 0, count: 0 },
+	},
+	productsStats: { total: 0, today: 0, week: 0, month: 0 },
+};
+//============
+//============
+// const initialEditOrder = {
+//      _id:"",
+//      createdAt:"",
+//      customerID:"",
+//      status:"",
+//      issue:"",
+//      orderItemsID,
+//      orderTotalAmount,
+//      orderTotalQuantity,
+//      stringifiedOrderItems,
+//      stringifiedCustomer,
+// }
+//============
+//============
+//============
+//============
+//============
 const initialAppState = {
 	loading: false,
 	error: false,
@@ -45,19 +87,16 @@ const initialAppState = {
 	//============auth
 	user: getUserFromLocalStorage() || null,
 
-	//============filter
+	//============filter-products
 	filter: initialFilter,
 	//============
 	paginatorData: { itemsPerPage: 10, currentPage: 1, totalHitsCount: null },
-
-	//============
-	//============
 	//============
 	//============products
 	sliderProductsList: [],
-	//============
 	productsList: [],
 	currentProduct: {},
+	//============
 	//============cart
 	cartItems: [],
 	showMiniCart: false,
@@ -70,12 +109,13 @@ const initialAppState = {
 	//============admin
 	//============
 	//============
-	menuItems: ["stats", "users", "products", "orders"],
+	menuItems: ["Stats", "Users", "Products", "Orders"],
+	adminStats: initialAdminStats,
 	//============
-	//============
+	//============users
 	usersList: [],
 	//============
-	//============
+	//============products
 	editProduct: {},
 	editProductEnable: false,
 	updateProductData: {},
@@ -88,8 +128,17 @@ const initialAppState = {
 		rating: "",
 	},
 	//============
-	//============
+	//============orders
+	editOrder: {},
 	ordersList: [],
+	ordersFilter: initial_ordersFilter,
+	order_arg: null,
+	ordersPaginatorData: {
+		itemsPerPage: 10,
+		currentPage: 1,
+		totalHitsCount: null,
+	},
+
 	//============
 	//============
 
@@ -385,6 +434,7 @@ export const AppContextProvider = ({ children }) => {
 			const orderItemsID = state.cartItems.map((e) => e._id);
 			orderData = {
 				customerID: state.user._id,
+				customerEmail: state.user.email,
 				orderItemsID,
 				orderTotalAmount: state.totalAmount,
 				orderTotalQuantity: state.totalQty,
@@ -483,6 +533,7 @@ export const AppContextProvider = ({ children }) => {
 			dispatch({ type: "SET_EDIT_PRODUCT", payload: reply.data });
 			cancelEditProduct();
 			dispatch({ type: "FETCH_SUCCESS" });
+               toast.warning("product updated")
 		} catch (error) {
 			toast.error("error updating product");
 			cancelEditProduct();
@@ -577,6 +628,23 @@ export const AppContextProvider = ({ children }) => {
 	};
 	//============
 	//============
+	const setEditOrder = (id) => {
+		dispatch({ type: "FETCH_BEGIN" });
+
+		const editOrder = state.ordersList.find((e) => e._id === id);
+		if (!editOrder) {
+			dispatch({ type: "SET_ERROR" });
+			return;
+		}
+
+		dispatch({ type: "SET_EDIT_ORDER", payload: editOrder });
+		dispatch({ type: "FETCH_SUCCESS" });
+	};
+	//============
+
+	//============
+	//============
+	//============
 	//============
 	//============
 	const deleteOrder = async (id) => {
@@ -606,7 +674,7 @@ export const AppContextProvider = ({ children }) => {
 				`/api/orders/updateorder/${id}`,
 				updateData
 			);
-			dispatch({ type: "UPDATE_ORDER_SUCCESS", payload: reply.data });
+			dispatch({ type: "UPDATE_ORDER_SUCCESS_v2", payload: reply.data });
 			dispatch({ type: "FETCH_SUCCESS" });
 
 			toast.warning(" Order updated");
@@ -615,6 +683,180 @@ export const AppContextProvider = ({ children }) => {
 			blinkError();
 		}
 	};
+	//============
+	//============
+	//============ordersfilter
+	//============
+	//============
+	const handleOrdersFilterChange = (e) => {
+		const name = e.target.name;
+		let value = e.target.value;
+		dispatch({ type: "ORDERS_FILTER_CHANGE", payload: { name, value } });
+	};
+	//============
+	//============
+	const ClearOrdersFilter = () => {
+		// also changes current order page to 1
+		dispatch({
+			type: "RESET_ORDERS_FILTER",
+			payload: initial_ordersFilter,
+		});
+	};
+	//============
+	//============
+	const ClearOrdersFilter_on_dismount = () => {
+		ClearOrdersFilter();
+	};
+	//============
+	//============
+	const ClearOrdersFilter_and_reFetch_orders = () => {
+		ClearOrdersFilter();
+		// must re-fetch products-with-initial-filter-query
+		getCurrentPageOrdersListWithQuery("initial");
+	};
+	//============
+	//============
+	//============orders paginator
+	//============
+	const setOrdersItemsPerPage = (arg) => {
+		dispatch({ type: "SET_ORDERS_ITEMS_PER_PAGE", payload: arg });
+		// must also change current page to 1??
+		setOrdersCurrentPage(1);
+	};
+	//============
+	//============
+	const setOrdersCurrentPage = (arg) => {
+		dispatch({ type: "SET_ORDERS_CURRENT_PAGE", payload: arg });
+	};
+	//============
+	//============
+	// //============
+	// //============
+	const getCurrentPageOrdersListWithQuery_orginal = async (filterQuery) => {
+		const {
+			searchEmail,
+			orderStatus,
+			minAmount,
+			maxAmount,
+			dateRange,
+			sort,
+		} =
+			filterQuery === "initial"
+				? initial_ordersFilter
+				: state.ordersFilter;
+
+		const { itemsPerPage, currentPage } = state.ordersPaginatorData;
+
+		let qstring = `/api/orders/getorderswithquery?searchEmail=${searchEmail}&orderStatus=${orderStatus}&minAmount=${minAmount}&maxAmount=${maxAmount}&dateRange=${dateRange}&sort=${sort}&currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`;
+
+		dispatch({ type: "FETCH_BEGIN" });
+
+		try {
+			const reply = await myAxios.get(qstring);
+			dispatch({
+				type: "GET_CURRENT_PAGE_ORDERS_LIST_AND_HITS_COUNT_WITH_QUERY",
+				payload: reply.data,
+			});
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+		}
+	};
+	// //============
+	// //============
+	// //============
+	// //============
+	const getCurrentPageOrdersListWithQuery = async (
+		order_arg = state.order_arg
+	) => {
+		let {
+			searchEmail,
+			orderStatus,
+			minAmount,
+			maxAmount,
+			dateRange,
+			sort,
+		} =
+			order_arg === "initial"
+				? initial_ordersFilter
+				: state.ordersFilter;
+		let { itemsPerPage, currentPage } = state.ordersPaginatorData;
+		if (order_arg === "issue") {
+			orderStatus = "check-issue";
+			currentPage = 1;
+		}
+		console.log(order_arg, "orderarg");
+
+		let qstring = `/api/orders/getorderswithquery?searchEmail=${searchEmail}&orderStatus=${orderStatus}&minAmount=${minAmount}&maxAmount=${maxAmount}&dateRange=${dateRange}&sort=${sort}&currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`;
+
+		dispatch({ type: "FETCH_BEGIN" });
+
+		try {
+			const reply = await myAxios.get(qstring);
+			dispatch({
+				type: "GET_CURRENT_PAGE_ORDERS_LIST_AND_HITS_COUNT_WITH_QUERY",
+				payload: reply.data,
+			});
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+		}
+	};
+	// //============
+	// //============
+	//============
+	//============admin stats page data
+	//============
+	const getAdminStats = async () => {
+		dispatch({ type: "FETCH_BEGIN" });
+
+		const usersStatsURL = "/api/auth/users-stats";
+		const ordersStatsURL = "/api/orders/orders-stats";
+		const productsStatsURL = "/api/products/products-stats";
+		const statsURL = {
+			usersStatsURL: "/api/auth/users-stats",
+			ordersStatsURL: "/api/orders/orders-stats",
+			productsStatsURL: "/api/products/products-stats",
+		};
+		const multiRequest = Object.values(statsURL).map((e) =>
+			myAxios.get(e)
+		);
+		try {
+			const reply = await Promise.all(multiRequest);
+			dispatch({
+				type: "GET_ADMIN_STATS",
+				payload: reply.map((e) => e.data),
+			});
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+		}
+	};
+	//============
+	//============
+	const setOrder_Arg = (arg) => {
+		dispatch({ type: "SET_ORDER_ARG", payload: arg });
+	};
+	//============
+	//============
+	const handleIssueClick = () => {
+		setOrder_Arg("issue");
+		dispatch({ type: "FETCH_BEGIN" });
+		navigate("/admin/orders");
+		// getCurrentPageOrdersListWithQuery("issue");
+		// dispatch({ type: "FETCH_SUCCESS" });
+	};
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
 	//============
 	//============
 	//============
@@ -651,6 +893,7 @@ export const AppContextProvider = ({ children }) => {
 		resetCart,
 		placeOrder,
 		//============admin
+		getAdminStats,
 		getAllUsers,
 		setEditProduct,
 		setEnableEditProduct,
@@ -661,8 +904,20 @@ export const AppContextProvider = ({ children }) => {
 		addNewProduct,
 		deleteProduct,
 		getAllOrders,
+		setEditOrder,
 		deleteOrder,
 		updateOrder,
+		//============ordersfilter
+		handleOrdersFilterChange,
+		ClearOrdersFilter,
+		ClearOrdersFilter_on_dismount,
+		ClearOrdersFilter_and_reFetch_orders,
+		setOrdersItemsPerPage,
+		setOrdersCurrentPage,
+		getCurrentPageOrdersListWithQuery,
+		//============
+		setOrder_Arg,
+		handleIssueClick,
 	};
 	//============
 	//============

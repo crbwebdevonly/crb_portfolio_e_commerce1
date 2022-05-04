@@ -1,8 +1,6 @@
-import React, { useContext } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import styled from "styled-components";
-import { AdminContext } from "../context/AdminContext";
 import { useAppContext } from "../context/AppContext";
 
 //============

@@ -124,7 +124,7 @@ const StyledWrapper = styled.div`
 	max-width: 300px;
 	background-color: whitesmoke;
 	list-style: none;
-	z-index: 9;
+	z-index: 99;
 	* {
 		padding: 0;
 		margin: 0;

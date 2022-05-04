@@ -114,7 +114,7 @@ const ProductsFilter = (props) => {
 									<option value="priceLow">
 										Price-Low
 									</option>
-									<option value="titleAZ">
+									<option  value="titleAZ">
 										Name A-Z
 									</option>
 									<option value="titleZA">

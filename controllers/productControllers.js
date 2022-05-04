@@ -1,7 +1,34 @@
 //============
 
+const OrderModel = require("../DataModels/OrderModel");
 const ProductModel = require("../DataModels/ProductModel");
 
+//============
+//============
+//============
+//============
+const getProductsStats = async (req, res) => {
+     let productsStats = {}
+     let query = {}
+     let date = new Date()
+     const y = date.getFullYear()
+     const m = date.getMonth()
+     const d = date.getDate()
+     const h = date.getHours()
+	try {
+          productsStats.total = await ProductModel.count()
+          query.createdAt = {$gte:new Date(y,m,d,h-24) , $lte:date}
+          productsStats.today = await ProductModel.count(query)
+          query.createdAt = {$gte:new Date(y,m,d-7,h) , $lte:date}
+          productsStats.week = await ProductModel.count(query)
+          query.createdAt = {$gte:new Date(y,m-30,d,h) , $lte:date}
+          productsStats.month = await ProductModel.count(query)
+		res.status(200).json({ productsStats });
+	} catch (error) {
+		res.status(500).json({ msg: "error getting stats-products", error });
+
+     }
+};
 //============
 //============
 //============
@@ -105,6 +132,9 @@ const handleGetProductsWithQuery = async (req, res) => {
 		queryObject.title = { $regex: search, $options: "i" };
 	}
 	// console.log(queryObject, "q-obj");
+
+	//============
+	//============
 	//============
 	const totalHitsCount = await ProductModel.countDocuments(queryObject);
 	//============
@@ -144,6 +174,7 @@ const handleGetProductsWithQuery = async (req, res) => {
 };
 //============
 //============
+
 //============
 //============
 const handleGetOneProduct = async (req, res) => {
@@ -210,6 +241,7 @@ const handleDeleteProduct = async (req, res) => {
 //============
 module.exports = {
 	handleProductsSeed,
+	getProductsStats,
 	handleGetAllProducts,
 	handleGetSliderDataID,
 	handleGetSliderProducts,

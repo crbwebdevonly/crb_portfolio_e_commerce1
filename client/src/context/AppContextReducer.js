@@ -198,6 +198,18 @@ export const AppContextReducer = (state, action) => {
 
 		//============
 		//============admin
+		case "GET_ADMIN_STATS": {
+			let TadminStats = action.payload;
+			let adminStats = {};
+			adminStats.usersStats = TadminStats[0].usersStats;
+			adminStats.ordersStats = TadminStats[1].ordersStats;
+			adminStats.productsStats = TadminStats[2].productsStats;
+			return {
+				...state,
+				adminStats,
+			};
+		}
+		//============
 		case "GET_ALL_USERS": {
 			return {
 				...state,
@@ -244,7 +256,7 @@ export const AppContextReducer = (state, action) => {
 		case "UPDATE_PRODUCT_DATA_CHANGE": {
 			let { name, value } = action.payload;
 			if (name === "price" || name === "rating") {
-				value = Number(value);
+				value = Number(Number(value).toFixed(2));
 			}
 
 			return {
@@ -307,6 +319,13 @@ export const AppContextReducer = (state, action) => {
 				ordersList: action.payload,
 			};
 		}
+		//============
+		case "SET_EDIT_ORDER": {
+			return {
+				...state,
+				editOrder: action.payload,
+			};
+		}
 		case "DELETE_ORDER_SUCCESS": {
 			return {
 				...state,
@@ -325,6 +344,118 @@ export const AppContextReducer = (state, action) => {
 				ordersList: updatedList,
 			};
 		}
+          case "UPDATE_ORDER_SUCCESS_v2": {
+			const {status} = action.payload
+			return {
+				...state,
+                    editOrder:{...state.editOrder,status}
+			};
+		}
+		//============
+		//============
+		//============
+		case "SET_ORDER_ARG": {
+			return {
+				...state,
+				order_arg: action.payload,
+				// ordersFilter: {
+				// 	...state.ordersFilter,
+				// 	status: action.payload,
+				// },
+			};
+		}
+		//============
+		//============
+		case "GET_CURRENT_PAGE_ORDERS_LIST_AND_HITS_COUNT_WITH_QUERY": {
+			const { totalHitsCount, ordersList } = action.payload;
+
+			return {
+				...state,
+				ordersList,
+				order_arg: null,
+				ordersPaginatorData: {
+					...state.ordersPaginatorData,
+					totalHitsCount,
+				},
+			};
+		}
+		//============
+		//============
+		//============ordersfilter
+		//============
+		case "ORDERS_FILTER_CHANGE": {
+			let { name, value } = action.payload;
+			if (name === "minAmount" || name === "maxAmount")
+				value = Number(value);
+			if (name === "minAmount") {
+				if (value >= state.ordersFilter.maxAmount) {
+					return {
+						...state,
+						ordersFilter: {
+							...state.ordersFilter,
+							[name]: value,
+							maxAmount: 0,
+						},
+					};
+				}
+			}
+			if (name === "maxAmount") {
+				if (value <= state.ordersFilter.minAmount) {
+					return {
+						...state,
+						ordersFilter: {
+							...state.ordersFilter,
+							[name]: value,
+							minAmount: 0,
+						},
+					};
+				}
+			}
+			return {
+				...state,
+				ordersFilter: {
+					...state.ordersFilter,
+					[name]: value,
+				},
+			};
+		}
+		//============
+		//============
+		case "RESET_ORDERS_FILTER": {
+			return {
+				...state,
+				ordersFilter: action.payload,
+				ordersPaginatorData: {
+					...state.ordersPaginatorData,
+					currentPage: 1,
+				},
+			};
+		}
+		//============
+		//============orders-paginatorData
+		//============
+		case "SET_ORDERS_ITEMS_PER_PAGE": {
+			return {
+				...state,
+				ordersPaginatorData: {
+					...state.ordersPaginatorData,
+					itemsPerPage: action.payload,
+				},
+			};
+		}
+		//============
+		//============
+		case "SET_ORDERS_CURRENT_PAGE": {
+			return {
+				...state,
+				ordersPaginatorData: {
+					...state.ordersPaginatorData,
+					currentPage: action.payload,
+				},
+			};
+		}
+		//============
+		//============
 		//============
 		//============
 		//============

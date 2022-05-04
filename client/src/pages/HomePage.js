@@ -49,6 +49,7 @@ const HomePage = () => {
 		<div className="container">
 			<HomePageHero />
 			<HomePageSlider sliderProductsList={sliderProductsList} />
+               homefooter??
 		</div>
 	);
 };

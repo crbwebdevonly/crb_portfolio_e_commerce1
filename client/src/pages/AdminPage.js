@@ -41,14 +41,16 @@ const AdminPage = () => {
 	//============
 
 	return (
-		<StyledWrapper className="container shadow">
-			<div className="control">
-				<AdminControlPanel className="bg-secondary" />
-			</div>
-			<div className="outlet mt-5 pt-5">
-				<Outlet />
-			</div>
-		</StyledWrapper>
+		<>
+
+			<AdminControlPanel />
+			<StyledWrapper className="container shadow">
+				<div className="control"></div>
+				<div className="outlet mt-5 pt-5">
+					<Outlet />
+				</div>
+			</StyledWrapper>
+		</>
 	);
 };
 

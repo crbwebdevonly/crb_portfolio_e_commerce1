@@ -34,6 +34,8 @@ const AdminProductsList = () => {
 	//============
 	//============
 	useEffect(() => {
+			// setCurrentPage(1);
+
 		return () => {
 			//     clear filter on this page dismount
 			//  so that next time the page is loaded ....

@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const OrderSchema = mongoose.Schema(
 	{
 		customerID: { type: String, required: true },
+		customerEmail: { type: String, required: true },
 		status: {
 			type: String,
 			required: true,

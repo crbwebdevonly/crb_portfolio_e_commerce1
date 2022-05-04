@@ -63,13 +63,13 @@ const ProductsListPage = ({ admin }) => {
 	//============
 	//============
 	useEffect(() => {
-		//   redirect-if search results-is zero
-		// if (loading || error) return;
-		// if (productsList.length < 1) {
-		// 	setTimeout(() => {
-		// 		handleClearFilter();
-		// 	}, 2000);
-		// }
+		//   redirect/refetch, clear search-if search results-is zero
+		if (loading || error) return;
+		if (productsList.length < 1) {
+			setTimeout(() => {
+				ClearFilter_and_reFetch_products();
+			}, 2000);
+		}
 		return () => {
 			//     second
 		};
