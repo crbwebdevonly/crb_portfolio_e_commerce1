@@ -533,6 +533,7 @@ export const AppContextProvider = ({ children }) => {
 			dispatch({ type: "SET_EDIT_PRODUCT", payload: reply.data });
 			cancelEditProduct();
 			dispatch({ type: "FETCH_SUCCESS" });
+               toast.warning("product updated")
 		} catch (error) {
 			toast.error("error updating product");
 			cancelEditProduct();

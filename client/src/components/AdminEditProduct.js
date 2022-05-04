@@ -14,7 +14,7 @@ const AdminEditProduct = () => {
 	const {
 		loading,
 		error,
-		editProductEnable:editEnable,
+		editProductEnable: editEnable,
 		editProduct: product,
 		updateProductData,
 
@@ -49,6 +49,7 @@ const AdminEditProduct = () => {
 		setEditProduct(productId);
 		return () => {
 			//     second
+               cancelEditProduct();
 		};
 	}, [productId]);
 
@@ -205,6 +206,10 @@ const AdminEditProduct = () => {
 							/>
 						</div>
 					</div>
+					<div className="alert alert-warning p-0 text-center">
+						NOTE: to add decimal, please write the full number without decimal 
+						first, then add decimal by moving the cursor back
+					</div>
 					<button
 						className="btn btn-warning w-50 my-3 "
 						onClick={() => {
@@ -241,5 +246,8 @@ const StyledWrapper = styled.div`
 		p {
 			font-size: 1.3rem;
 		}
+	}
+	.alert {
+		font-size: 0.6rem;
 	}
 `;

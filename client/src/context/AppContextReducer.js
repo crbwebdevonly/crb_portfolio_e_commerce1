@@ -256,7 +256,7 @@ export const AppContextReducer = (state, action) => {
 		case "UPDATE_PRODUCT_DATA_CHANGE": {
 			let { name, value } = action.payload;
 			if (name === "price" || name === "rating") {
-				value = Number(value);
+				value = Number(Number(value).toFixed(2));
 			}
 
 			return {
