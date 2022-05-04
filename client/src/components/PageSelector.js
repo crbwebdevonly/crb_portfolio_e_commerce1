@@ -80,7 +80,7 @@ const PageSelector = (props) => {
 						>
 							{pagesList.map((e, i) => (
 								<option key={i} value={e}>
-									{e}
+									{e + ` of ${pagesList.length}`}
 								</option>
 							))}
 						</select>

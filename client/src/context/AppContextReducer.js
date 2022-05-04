@@ -344,6 +344,14 @@ export const AppContextReducer = (state, action) => {
 				ordersList: updatedList,
 			};
 		}
+          case "UPDATE_ORDER_SUCCESS_v2": {
+			const {status} = action.payload
+			return {
+				...state,
+                    editOrder:{...state.editOrder,status}
+			};
+		}
+		//============
 		//============
 		//============
 		case "SET_ORDER_ARG": {

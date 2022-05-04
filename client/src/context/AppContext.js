@@ -48,6 +48,35 @@ const initial_ordersFilter = {
 };
 //============
 //============
+const initialAdminStats = {
+	usersStats: { total: 0, today: 0, week: 0 },
+	ordersStats: {
+		completed: 0,
+		issue: 0,
+		processing: 0,
+		aggregateTotalSales: 0,
+		aggregateMonthlySales: { amount: 0, count: 0 },
+		aggregateWeeklySales: { amount: 0, count: 0 },
+		aggregateTodaySales: { amount: 0, count: 0 },
+	},
+	productsStats: { total: 0, today: 0, week: 0, month: 0 },
+};
+//============
+//============
+// const initialEditOrder = {
+//      _id:"",
+//      createdAt:"",
+//      customerID:"",
+//      status:"",
+//      issue:"",
+//      orderItemsID,
+//      orderTotalAmount,
+//      orderTotalQuantity,
+//      stringifiedOrderItems,
+//      stringifiedCustomer,
+// }
+//============
+//============
 //============
 //============
 //============
@@ -81,7 +110,7 @@ const initialAppState = {
 	//============
 	//============
 	menuItems: ["Stats", "Users", "Products", "Orders"],
-	adminStats: {},
+	adminStats: initialAdminStats,
 	//============
 	//============users
 	usersList: [],
@@ -601,9 +630,7 @@ export const AppContextProvider = ({ children }) => {
 	const setEditOrder = (id) => {
 		dispatch({ type: "FETCH_BEGIN" });
 
-		const editOrder = state.ordersList.find(
-			(e) => e._id === id
-		);
+		const editOrder = state.ordersList.find((e) => e._id === id);
 		if (!editOrder) {
 			dispatch({ type: "SET_ERROR" });
 			return;
@@ -613,6 +640,7 @@ export const AppContextProvider = ({ children }) => {
 		dispatch({ type: "FETCH_SUCCESS" });
 	};
 	//============
+
 	//============
 	//============
 	//============
@@ -645,7 +673,7 @@ export const AppContextProvider = ({ children }) => {
 				`/api/orders/updateorder/${id}`,
 				updateData
 			);
-			dispatch({ type: "UPDATE_ORDER_SUCCESS", payload: reply.data });
+			dispatch({ type: "UPDATE_ORDER_SUCCESS_v2", payload: reply.data });
 			dispatch({ type: "FETCH_SUCCESS" });
 
 			toast.warning(" Order updated");

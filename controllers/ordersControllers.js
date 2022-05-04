@@ -52,7 +52,7 @@ const getOrdersStats = async (req, res) => {
 				},
 			},
 		]);
-		ordersStats.aggregateMonthlySales = ms[0];
+		ordersStats.aggregateMonthlySales = ms.length<1? {amount:0,count:0} : ms[0];
 
 		let ws = await OrderModel.aggregate([
 			{
@@ -68,7 +68,7 @@ const getOrdersStats = async (req, res) => {
 				},
 			},
 		]);
-		ordersStats.aggregateWeeklySales = ws[0];
+		ordersStats.aggregateWeeklySales= ws.length<1? {amount:0,count:0} :  ws[0];
 
 		let t = await OrderModel.aggregate([
 			{
@@ -87,7 +87,8 @@ const getOrdersStats = async (req, res) => {
 				},
 			},
 		]);
-		ordersStats.aggregateTodaySales = t[0];
+          console.log(ws,"week",t,"today");
+		ordersStats.aggregateTodaySales = t.length<1? {amount:0,count:0} : t[0];
 
 		res.status(200).json({ ordersStats });
 	} catch (error) {

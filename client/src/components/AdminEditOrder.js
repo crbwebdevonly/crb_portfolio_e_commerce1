@@ -17,7 +17,7 @@ const AdminEditOrder = (props) => {
 		error,
 		deleteOrder,
 		updateOrder,
-		editOrder = {},
+		editOrder,
 		setEditOrder,
 	} = useAppContext();
 
@@ -53,19 +53,11 @@ const AdminEditOrder = (props) => {
 	const [localLoading, setLocalLoading] = useState(true);
 	const [enableEdit, setEnableEdit] = useState(false);
 	const [orderStatus, setOrderStatus] = useState(status);
-	// const [statusClassName, setStatusClassName] = useState(
-	// 	getStatusClassName()
-	// );
+	const [statusClassName, setStatusClassName] = useState("");
 
 	//============
-	const handleStatusChange = (e) => {
-		setOrderStatus(e.target.value);
-	};
 	//============
-	//============
-	const handleApplyUpdate = () => {};
-	//============
-	//============
+
 	//============
 	//============
 	useEffect(() => {
@@ -86,6 +78,7 @@ const AdminEditOrder = (props) => {
 	//============
 	useEffect(() => {
 		//   first
+		setLocalLoading(true);
 		setEditOrder(orderId);
 		setLocalLoading(false);
 		return () => {
@@ -109,7 +102,32 @@ const AdminEditOrder = (props) => {
 	//============
 	useEffect(() => {
 		//   first
-		// setStatusClassName(getStatusClassName());
+		if (status) {
+			// function getStatusClassName() {
+			// 	console.log("kkk", status, orderStatus);
+			// 	if (status === "processing") return "text-warning";
+			// 	if (status === "completed") return "text-success";
+			// 	if (status === "check-issue") return "text-danger";
+			// }
+			// setStatusClassName(getStatusClassName());
+			setOrderStatus(status);
+		}
+
+		return () => {
+			//     second
+		};
+	}, [status]);
+
+	//============
+	//============
+	useEffect(() => {
+		//   first
+		function getStatusClassName() {
+			if (orderStatus === "processing") return "text-warning";
+			if (orderStatus === "completed") return "text-success";
+			if (orderStatus === "check-issue") return "text-danger";
+		}
+		setStatusClassName(getStatusClassName());
 
 		return () => {
 			//     second
@@ -118,13 +136,21 @@ const AdminEditOrder = (props) => {
 
 	//============
 	//============
-	function getStatusClassName() {
-		if (orderStatus === "processing") return "text-warning";
-		if (orderStatus === "completed") return "text-success";
-		if (orderStatus === "check-issue") return "text-danger";
-	}
 	//============
-	let statusClassName = getStatusClassName();
+	//============
+	//============
+	const handleStatusChange = (e) => {
+		setOrderStatus(e.target.value);
+	};
+	//============
+	//============
+	const handleApplyUpdate = () => {
+		updateOrder(id, {
+			status: orderStatus,
+		});
+		setEnableEdit(false);
+	};
+	//============
 	//============
 	//============
 	//============
@@ -201,11 +227,7 @@ const AdminEditOrder = (props) => {
 							<div className="col">
 								<button
 									className="btn btn-warning"
-									onClick={() => {
-										updateOrder(id, {
-											status: orderStatus,
-										});
-									}}
+									onClick={handleApplyUpdate}
 								>
 									Apply Update
 								</button>
