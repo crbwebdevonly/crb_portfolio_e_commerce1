@@ -12,10 +12,10 @@ const MiniCart = () => {
 		showMiniCart,
 		totalQty,
 		totalAmount,
-		removeItemWithIndex,
+		removeItemFromCartWithIndex: removeItemWithIndex,
 		toggleShowMiniCart,
 		resetCart,
-	} = useAppContext()
+	} = useAppContext();
 	//============
 	//============
 	const miniCartRef = useRef();

@@ -18,8 +18,8 @@ const AdminUserItem = (props) => {
 	//============
 	//============
 	return (
-		<StyledWrapper>
-			<div className="card p-2">
+		<StyledWrapper className="w-100kk">
+			<div className="card p-2 w-100kk">
 				<Link to={`/admin/users/${id}`}>
 					<div className="img-wrap d-grid justify-content-center">
 						{image ? (
@@ -53,6 +53,7 @@ const StyledWrapper = styled.div`
 	width: 100%;
 	padding: 10px;
 	max-width: 24rem;
+
 	a {
 		text-decoration: none;
 		color: inherit;

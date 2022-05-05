@@ -49,7 +49,7 @@ const AdminEditProduct = () => {
 		setEditProduct(productId);
 		return () => {
 			//     second
-               cancelEditProduct();
+			cancelEditProduct();
 		};
 	}, [productId]);
 
@@ -70,8 +70,8 @@ const AdminEditProduct = () => {
 	//============
 	//============
 	return (
-		<StyledWrapper>
-			<div className="container">
+		<StyledWrapper className="border shadow">
+			<div className="container border-1">
 				<h5 className="title card-header  text-center my-3">
 					{title}
 				</h5>
@@ -123,22 +123,10 @@ const AdminEditProduct = () => {
 			</div>
 			{/* edit form */}
 			{editEnable && (
-				<div className="update-form ">
-					<div className="row ">
-						<button
-							className="btn btn-danger w-50 ms-auto"
-							onClick={() => {
-								deleteProduct(id);
-							}}
-						>
-							Delete Product
-						</button>
-					</div>
+				<div className="update-form border border-3 border-warning p-2 ">
 					<div className="row g-3">
 						<div className="col-md-6">
-							<label for="inputEmail4" class="form-label">
-								Title
-							</label>
+							<label className="form-label">Title</label>
 							<input
 								type="text"
 								name="title"
@@ -148,10 +136,7 @@ const AdminEditProduct = () => {
 							/>
 						</div>
 						<div className="col-md-6">
-							<label
-								for="inputPassword4"
-								className="form-label"
-							>
+							<label className="form-label">
 								Category
 							</label>
 							<input
@@ -164,9 +149,7 @@ const AdminEditProduct = () => {
 						</div>
 					</div>
 					<div className="col-md-6">
-						<label for="inputEmail4" class="form-label">
-							Image URL
-						</label>
+						<label className="form-label">Image URL</label>
 						<input
 							type="text"
 							name="image"
@@ -207,17 +190,34 @@ const AdminEditProduct = () => {
 						</div>
 					</div>
 					<div className="alert alert-warning p-0 text-center">
-						NOTE: to add decimal, please write the full number without decimal 
-						first, then add decimal by moving the cursor back
+						NOTE: to add decimal, please write the full number
+						without decimal first, then add decimal by moving
+						the cursor back
 					</div>
-					<button
-						className="btn btn-warning w-50 my-3 "
-						onClick={() => {
-							applyProductUpdate(id);
-						}}
-					>
-						Apply Update
-					</button>
+					<div className="container">
+						<div className="row g-2 justify-content-end">
+							<div className="col-12 col-md-4">
+								<button
+									className="btn btn-warning w-75  "
+									onClick={() => {
+										applyProductUpdate(id);
+									}}
+								>
+									Apply Update
+								</button>
+							</div>
+							<div className="col-12 col-md-4">
+								<button
+									className="btn btn-danger w-75  col-12 col-md-4 "
+									onClick={() => {
+										deleteProduct(id);
+									}}
+								>
+									Delete Product
+								</button>
+							</div>
+						</div>
+					</div>
 				</div>
 			)}
 		</StyledWrapper>

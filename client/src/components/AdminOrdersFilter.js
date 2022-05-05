@@ -13,7 +13,7 @@ const AdminOrdersFilter = () => {
 		ClearOrdersFilter_and_reFetch_orders: handleClearFilter,
 		setOrdersItemsPerPage,
 		setOrdersCurrentPage,
-		getCurrentPageOrdersListWithQuery: handleApplyFilter,
+		getCurrentPageOrdersListWithQuery,
 	} = useAppContext();
 	//============
 	//============
@@ -25,6 +25,12 @@ const AdminOrdersFilter = () => {
 	// const { search, minPrice, maxPrice, sort } = filter;
 	//============
 	//============
+     const handleApplyFilter = ()=>{
+          // page change causes useeffect refetch
+          setOrdersCurrentPage(1)
+          // must also get if page already 1
+		getCurrentPageOrdersListWithQuery()
+     }
 	//============
 	//============
 	//============

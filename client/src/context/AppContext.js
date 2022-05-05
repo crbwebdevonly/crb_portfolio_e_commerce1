@@ -533,7 +533,7 @@ export const AppContextProvider = ({ children }) => {
 			dispatch({ type: "SET_EDIT_PRODUCT", payload: reply.data });
 			cancelEditProduct();
 			dispatch({ type: "FETCH_SUCCESS" });
-               toast.warning("product updated")
+			toast.warning("product updated");
 		} catch (error) {
 			toast.error("error updating product");
 			cancelEditProduct();
@@ -674,7 +674,10 @@ export const AppContextProvider = ({ children }) => {
 				`/api/orders/updateorder/${id}`,
 				updateData
 			);
-			dispatch({ type: "UPDATE_ORDER_SUCCESS_v2", payload: reply.data });
+			dispatch({
+				type: "UPDATE_ORDER_SUCCESS_v2",
+				payload: reply.data,
+			});
 			dispatch({ type: "FETCH_SUCCESS" });
 
 			toast.warning(" Order updated");
@@ -781,6 +784,7 @@ export const AppContextProvider = ({ children }) => {
 				? initial_ordersFilter
 				: state.ordersFilter;
 		let { itemsPerPage, currentPage } = state.ordersPaginatorData;
+
 		if (order_arg === "issue") {
 			orderStatus = "check-issue";
 			currentPage = 1;
@@ -790,7 +794,6 @@ export const AppContextProvider = ({ children }) => {
 		let qstring = `/api/orders/getorderswithquery?searchEmail=${searchEmail}&orderStatus=${orderStatus}&minAmount=${minAmount}&maxAmount=${maxAmount}&dateRange=${dateRange}&sort=${sort}&currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`;
 
 		dispatch({ type: "FETCH_BEGIN" });
-
 		try {
 			const reply = await myAxios.get(qstring);
 			dispatch({
@@ -841,6 +844,8 @@ export const AppContextProvider = ({ children }) => {
 	//============
 	const handleIssueClick = () => {
 		setOrder_Arg("issue");
+		// dispatch({ type: "SET_ORDER_ARG", payload: "issue" });
+
 		dispatch({ type: "FETCH_BEGIN" });
 		navigate("/admin/orders");
 		// getCurrentPageOrdersListWithQuery("issue");
@@ -848,6 +853,29 @@ export const AppContextProvider = ({ children }) => {
 	};
 	//============
 	//============
+	const handleGoToCustomersOrdersPageClick = (userId) => {
+		setOrder_Arg(userId);
+		navigate("/admin/orders");
+	};
+	//============
+	//============
+	//============
+	//============
+	const getCustomersOrdersWithCustomerId = async (userId) => {
+		dispatch({ type: "FETCH_BEGIN" });
+
+		try {
+			const reply = await myAxios.post(
+				"/api/orders/getCustomersOrdersList",
+				userId
+			);
+			dispatch({ type: "SET_USER_ORDERS_LIST", payload: reply.data });
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+		}
+		setOrder_Arg(null);
+	};
 	//============
 	//============
 	//============
@@ -915,9 +943,11 @@ export const AppContextProvider = ({ children }) => {
 		setOrdersItemsPerPage,
 		setOrdersCurrentPage,
 		getCurrentPageOrdersListWithQuery,
+		getCustomersOrdersWithCustomerId,
 		//============
 		setOrder_Arg,
 		handleIssueClick,
+		handleGoToCustomersOrdersPageClick,
 	};
 	//============
 	//============

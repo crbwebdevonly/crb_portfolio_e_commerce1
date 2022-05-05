@@ -1,3 +1,4 @@
+import moment from "moment";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -5,12 +6,14 @@ import { useContext } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import styled from "styled-components";
+import { useAppContext } from "../context/AppContext";
 import { myAxios } from "../myAxios";
 import InputControlled from "./InputControlled";
 import Spinner from "./Spinner";
 
 const AdminEditUser = (props) => {
 	//============
+	const { handleGoToCustomersOrdersPageClick } = useAppContext();
 	//============
 	const { userId } = useParams();
 	//============
@@ -19,6 +22,7 @@ const AdminEditUser = (props) => {
 	const [isError, setisError] = useState(false);
 	const [editMode, setEditMode] = useState(false);
 	const [user, setUser] = useState({});
+	const [customersOrderList, setCustomersOrderList] = useState([]);
 	const [userUpdate, setUserUpdate] = useState({});
 	const [applyDisable, setapplyDisable] = useState(true);
 	//============
@@ -39,6 +43,11 @@ const AdminEditUser = (props) => {
 				setUser(reply.data);
 				// const { email, password, isAdmin } = reply.data;
 				// setUserUpdate({ email, password, isAdmin });
+				const orders = await myAxios.post(
+					"/api/orders/getCustomersOrdersList",
+					{ userId }
+				);
+				setCustomersOrderList(orders.data);
 				setLoading(false);
 			} catch (error) {}
 		};
@@ -132,6 +141,10 @@ const AdminEditUser = (props) => {
 			toast.error("Update user failed");
 		}
 	};
+	//============
+
+	//============
+	//============
 	//============
 	//============
 	if (isError)
@@ -245,6 +258,33 @@ const AdminEditUser = (props) => {
 					</>
 				)}
 			</div>
+			{!editMode && (
+				<div className="container">
+					<div className="row border border-2 p-2">
+						<h2
+							className="btn btn-info"
+							onClick={() => {
+								handleGoToCustomersOrdersPageClick({
+									userId: id,
+								});
+							}}
+						>
+							Go to Customer's orders page{" "}
+						</h2>
+						{/* {JSON.stringify(customersOrderList)} */}
+						{customersOrderList.length < 1 && (
+							<h5>No Orders to Display</h5>
+						)}
+						{customersOrderList.length > 0 &&
+							customersOrderList.map((e) => (
+								<LocalOrderListItem
+									key={e._id}
+									{...e}
+								/>
+							))}
+					</div>
+				</div>
+			)}
 		</StyledWrapper>
 	);
 };
@@ -267,4 +307,88 @@ const StyledWrapper = styled.div`
 	i {
 		cursor: pointer;
 	}
+	.input-group span {
+		font-size: 0.7rem !important;
+	}
+	.input-group input {
+		font-size: 0.8rem !important;
+	}
 `;
+
+const LocalOrderListItem = (props) => {
+	const {
+		_id: id,
+		createdAt,
+		status,
+		orderTotalAmount,
+		orderTotalQuantity,
+	} = props;
+	//============
+	//============
+	function getStatusClassName(status) {
+		if (status === "processing") return "warning";
+		if (status === "completed") return "success";
+		if (status === "check-issue") return "danger";
+	}
+	//============
+	//============
+	const c = getStatusClassName(status);
+	return (
+		<div className={`card rounded p-2 m-2 border-5 border-${c}`}>
+			<div className="input-group input-group mb-0  ">
+				<span className="input-group-text fw-bold">
+					Order Status
+				</span>
+				<input
+					type="text"
+					className={`form-control order-id text-${c}`}
+					disabled
+					value={status}
+				/>
+			</div>
+			<div className="input-group input-group mb-0 col ">
+				<span className="input-group-text fw-bold">OrderID:</span>
+				<input
+					type="text"
+					className="form-control order-id"
+					disabled
+					value={id}
+				/>
+			</div>
+			<div className="input-group input-group mb-0 col ">
+				<span className="input-group-text fw-bold fs-6">
+					Order Date:
+				</span>
+				<input
+					type="text"
+					className="form-control order-date"
+					disabled
+					value={`${moment(createdAt).format(
+						"MMMM Do YYYY"
+					)} , ${moment(createdAt).fromNow()}`}
+				/>
+			</div>
+
+			<div className="input-group input-group mb-0  ">
+				<span className="input-group-text fw-bold">
+					Items Quantity
+				</span>
+				<input
+					type="text"
+					className="form-control order-id"
+					disabled
+					value={orderTotalQuantity}
+				/>
+				<span className="input-group-text fw-bold fs-6">
+					Total Amount:
+				</span>
+				<input
+					type="text"
+					className="form-control order-date fw-bold "
+					disabled
+					value={`$ ${orderTotalAmount}`}
+				/>
+			</div>
+		</div>
+	);
+};

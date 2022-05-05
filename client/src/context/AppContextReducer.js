@@ -344,11 +344,11 @@ export const AppContextReducer = (state, action) => {
 				ordersList: updatedList,
 			};
 		}
-          case "UPDATE_ORDER_SUCCESS_v2": {
-			const {status} = action.payload
+		case "UPDATE_ORDER_SUCCESS_v2": {
+			const { status } = action.payload;
 			return {
 				...state,
-                    editOrder:{...state.editOrder,status}
+				editOrder: { ...state.editOrder, status },
 			};
 		}
 		//============
@@ -358,10 +358,6 @@ export const AppContextReducer = (state, action) => {
 			return {
 				...state,
 				order_arg: action.payload,
-				// ordersFilter: {
-				// 	...state.ordersFilter,
-				// 	status: action.payload,
-				// },
 			};
 		}
 		//============
@@ -372,13 +368,24 @@ export const AppContextReducer = (state, action) => {
 			return {
 				...state,
 				ordersList,
-				order_arg: null,
+				// order_arg: null,
 				ordersPaginatorData: {
 					...state.ordersPaginatorData,
 					totalHitsCount,
 				},
 			};
 		}
+		//============
+		//============
+		//============
+		case "SET_USER_ORDERS_LIST": {
+               console.log(action.payload, "set cus o l");
+			return {
+				...state,
+				ordersList: action.payload,
+			};
+		}
+		//============
 		//============
 		//============
 		//============ordersfilter
