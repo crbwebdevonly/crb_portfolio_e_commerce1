@@ -206,22 +206,22 @@ const AdminEditOrder = (props) => {
 						<>
 							<div className="col">
 								<button
-									className="btn btn-danger"
-									onClick={() => {
-										deleteOrder(id);
-									}}
-								>
-									Delete Order
-								</button>
-							</div>
-							<div className="col">
-								<button
 									className="btn btn-info"
 									onClick={() => {
 										setEnableEdit(false);
 									}}
 								>
 									Cancel Update
+								</button>
+							</div>
+							<div className="col">
+								<button
+									className="btn btn-danger"
+									onClick={() => {
+										deleteOrder(id);
+									}}
+								>
+									Delete Order
 								</button>
 							</div>
 							<div className="col">
@@ -351,6 +351,7 @@ const AdminEditOrder = (props) => {
 					</h5>
 				</div>
 			</div>
+			
 		</StyledWrapper>
 	);
 };

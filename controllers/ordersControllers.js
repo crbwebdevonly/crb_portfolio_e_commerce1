@@ -52,7 +52,8 @@ const getOrdersStats = async (req, res) => {
 				},
 			},
 		]);
-		ordersStats.aggregateMonthlySales = ms.length<1? {amount:0,count:0} : ms[0];
+		ordersStats.aggregateMonthlySales =
+			ms.length < 1 ? { amount: 0, count: 0 } : ms[0];
 
 		let ws = await OrderModel.aggregate([
 			{
@@ -68,7 +69,8 @@ const getOrdersStats = async (req, res) => {
 				},
 			},
 		]);
-		ordersStats.aggregateWeeklySales= ws.length<1? {amount:0,count:0} :  ws[0];
+		ordersStats.aggregateWeeklySales =
+			ws.length < 1 ? { amount: 0, count: 0 } : ws[0];
 
 		let t = await OrderModel.aggregate([
 			{
@@ -87,8 +89,9 @@ const getOrdersStats = async (req, res) => {
 				},
 			},
 		]);
-          console.log(ws,"week",t,"today");
-		ordersStats.aggregateTodaySales = t.length<1? {amount:0,count:0} : t[0];
+		console.log(ws, "week", t, "today");
+		ordersStats.aggregateTodaySales =
+			t.length < 1 ? { amount: 0, count: 0 } : t[0];
 
 		res.status(200).json({ ordersStats });
 	} catch (error) {
@@ -105,6 +108,22 @@ const getAllOrders = async (req, res) => {
 		res.status(500).json({ msg: "get all order failed", error });
 	}
 };
+//============
+//============
+//============
+const getCustomersOrdersList = async (req, res) => {
+     console.log(req.body, "cusid");
+	try {
+		const reply = await OrderModel.find({ customerID: req.body.userId }).sort({createdAt:-1});
+		res.status(200).json(reply);
+	} catch (error) {
+		res.status(500).json({
+			msg: "get cstomers order List failed",
+			error,
+		});
+	}
+};
+//============
 //============
 //============
 //============
@@ -282,6 +301,7 @@ const getOrdersWithQuery = async (req, res) => {
 module.exports = {
 	getOrdersStats,
 	getAllOrders,
+	getCustomersOrdersList,
 	createOrder,
 	deleteOrder,
 	updateOrder,

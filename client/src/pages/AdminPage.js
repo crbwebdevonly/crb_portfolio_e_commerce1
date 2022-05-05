@@ -46,7 +46,7 @@ const AdminPage = () => {
 			<AdminControlPanel />
 			<StyledWrapper className="container shadow">
 				<div className="control"></div>
-				<div className="outlet mt-5 py-5 d-grid justify-content-center">
+				<div className="outlet mt-5 py-5  justify-content-center">
 					<Outlet />
 				</div>
 			</StyledWrapper>

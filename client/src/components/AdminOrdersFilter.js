@@ -28,7 +28,8 @@ const AdminOrdersFilter = () => {
      const handleApplyFilter = ()=>{
           // page change causes useeffect refetch
           setOrdersCurrentPage(1)
-		// getCurrentPageOrdersListWithQuery()
+          // must also get if page already 1
+		getCurrentPageOrdersListWithQuery()
      }
 	//============
 	//============

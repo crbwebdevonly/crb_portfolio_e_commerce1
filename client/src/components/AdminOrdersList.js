@@ -12,11 +12,15 @@ const AdminOrdersList = () => {
 	const {
 		loading,
 		error,
+
+		order_arg,
+
 		ordersPaginatorData,
-		ordersList,
+		ordersList = [],
 		ClearOrdersFilter_on_dismount,
 		ClearOrdersFilter_and_reFetch_orders,
 		getCurrentPageOrdersListWithQuery,
+		getCustomersOrdersWithCustomerId,
 	} = useAppContext();
 	//============
 	//============
@@ -32,7 +36,8 @@ const AdminOrdersList = () => {
 		//   first
 		// getAllOrders();
 		// ClearOrdersFilter_and_reFetch_orders();
-		getCurrentPageOrdersListWithQuery();
+		if (order_arg?.userId) getCustomersOrdersWithCustomerId(order_arg);
+		else getCurrentPageOrdersListWithQuery();
 
 		return () => {
 			//     second
@@ -45,7 +50,8 @@ const AdminOrdersList = () => {
 	//============
 	useEffect(() => {
 		//   first
-		getCurrentPageOrdersListWithQuery();
+		if (order_arg?.userId) getCustomersOrdersWithCustomerId(order_arg);
+		else getCurrentPageOrdersListWithQuery();
 		return () => {
 			//     second
 		};
@@ -63,7 +69,8 @@ const AdminOrdersList = () => {
 	//============
 	//============
 	//============
-	if (loading) return <div className="spinner-border mx-auto d-grid "></div>;
+	if (loading || !ordersList)
+		return <div className="spinner-border mx-auto d-grid "></div>;
 	//============
 	if (error)
 		return (
