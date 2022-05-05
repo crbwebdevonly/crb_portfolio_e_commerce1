@@ -804,6 +804,8 @@ export const AppContextProvider = ({ children }) => {
 		} catch (error) {
 			dispatch({ type: "FETCH_ERROR" });
 		}
+		setOrder_Arg(null);
+
 	};
 	// //============
 	// //============
