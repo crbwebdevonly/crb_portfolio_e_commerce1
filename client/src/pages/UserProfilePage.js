@@ -8,12 +8,12 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import { useAppContext } from "../context/AppContext";
 import { myAxios } from "../myAxios";
-import InputControlled from "./InputControlled";
-import Spinner from "./Spinner";
+import InputControlled from "../components/InputControlled";
+import Spinner from "../components/Spinner";
 
-const AdminEditUser = (props) => {
+const UserProfilePage = (props) => {
 	//============
-	const { handleGoToCustomersOrdersPageClick } = useAppContext();
+	const { user, handleGoToCustomersOrdersPageClick } = useAppContext();
 	//============
 	const { userId } = useParams();
 	//============
@@ -21,7 +21,7 @@ const AdminEditUser = (props) => {
 	const [loading, setLoading] = useState(true);
 	const [isError, setisError] = useState(false);
 	const [editMode, setEditMode] = useState(false);
-	const [user, setUser] = useState({});
+	// const [user, setUser] = useState({});
 	const [customersOrderList, setCustomersOrderList] = useState([]);
 	const [userUpdate, setUserUpdate] = useState({});
 	const [applyDisable, setapplyDisable] = useState(true);
@@ -37,15 +37,15 @@ const AdminEditUser = (props) => {
 		//   first -fetch user
 		const fetchUser = async () => {
 			try {
-				const reply = await myAxios.post("/api/auth/getoneuser", {
-					userId,
-				});
-				setUser(reply.data);
+				// const reply = await myAxios.post("/api/auth/getoneuser", {
+				// 	userId,
+				// });
+				// setUser(reply.data);
 				// const { email, password, isAdmin } = reply.data;
 				// setUserUpdate({ email, password, isAdmin });
 				const orders = await myAxios.post(
 					"/api/orders/getCustomersOrdersList",
-					{ userId }
+					{ userId: id }
 				);
 				setCustomersOrderList(orders.data);
 				setLoading(false);
@@ -123,7 +123,7 @@ const AdminEditUser = (props) => {
 			// window.location.reload(true);
 			// console.log(reply.data);
 			toast.success("Update user success");
-			setUser(reply.data);
+			// setUser(reply.data);
 		} catch (error) {
 			toast.error("Update user failed");
 		}
@@ -172,9 +172,7 @@ const AdminEditUser = (props) => {
 					)}
 				</div>
 				<div className="info-wrap">
-					<h5 className="card-title">
-						Admin: {isAdmin ? "Yes" : "No"}
-					</h5>
+					
 					<h5>userID: {id}</h5>
 					<h5>Email: {email}</h5>
 					<h5>password: {password}</h5>
@@ -187,12 +185,20 @@ const AdminEditUser = (props) => {
 							setEditMode(true);
 						}}
 					>
-						Enable Edit
+						Edit Profile
 					</button>
 				) : (
 					<>
 						{" "}
 						<div className="d-sm-flex">
+							<i class="fa-solid fa-user-slash ms-auto fs-1 shadowp p-1  ">
+								<button
+									className="btn btn-danger fs-6 ms-2"
+									onClick={handleDeleteUser}
+								>
+									Delete your Account
+								</button>
+							</i>
 							<button
 								className="btn btn-info w-50 "
 								onClick={() => {
@@ -201,21 +207,13 @@ const AdminEditUser = (props) => {
 							>
 								Disable Edit
 							</button>
-							<i className="fa-solid fa-user-slash ms-auto fs-1 shadowp p-1  ">
-								<button
-									className="btn btn-danger fs-6 ms-2"
-									onClick={handleDeleteUser}
-								>
-									Delete this User
-								</button>
-							</i>
 						</div>
 					</>
 				)}
 				<hr />
 				{editMode && (
 					<>
-						<div className="edit-control-wrap">
+						{/* <div className="edit-control-wrap">
 							<InputControlled
 								type="select-bool"
 								label="isAdmin"
@@ -225,7 +223,7 @@ const AdminEditUser = (props) => {
 								handleChange={handleUserUpdateChange}
 								setUpdateObject={setUserUpdate}
 							/>
-						</div>
+						</div> */}
 						<div className="edit-control-wrap">
 							<InputControlled
 								type="text"
@@ -261,7 +259,8 @@ const AdminEditUser = (props) => {
 			{!editMode && (
 				<div className="container">
 					<div className="row border border-2 p-2">
-						<h2
+                              <h2>Your Orders History</h2>
+						{/* <h2
 							className="btn btn-info"
 							onClick={() => {
 								handleGoToCustomersOrdersPageClick({
@@ -270,7 +269,7 @@ const AdminEditUser = (props) => {
 							}}
 						>
 							Go to Customer's orders page{" "}
-						</h2>
+						</h2> */}
 						{/* {JSON.stringify(customersOrderList)} */}
 						{customersOrderList.length < 1 && (
 							<h5>No Orders to Display</h5>
@@ -289,7 +288,7 @@ const AdminEditUser = (props) => {
 	);
 };
 
-export default AdminEditUser;
+export default UserProfilePage;
 
 const StyledWrapper = styled.div`
 	height: 100%;

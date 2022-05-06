@@ -31,6 +31,7 @@ import TestPage from "./pages/TestPage";
 import styled from "styled-components";
 import AdminOrdersPage from "./pages/AdminOrdersPage";
 import AdminEditOrder from "./components/AdminEditOrder";
+import UserProfilePage from "./pages/UserProfilePage";
 //============
 //============
 
@@ -98,6 +99,7 @@ function App() {
 				{showMiniCart && <MiniCart />}
 				<Routes>
 					<Route path="/" element={<HomePage />} />
+					<Route path="/profile" element={<UserProfilePage />} />
 					<Route
 						path="login-register"
 						element={<LoginRegisterPage />}

@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { useContext, useReducer } from "react";
 import { createContext } from "react";
 import { useNavigate } from "react-router-dom";
@@ -789,7 +788,6 @@ export const AppContextProvider = ({ children }) => {
 			orderStatus = "check-issue";
 			currentPage = 1;
 		}
-		console.log(order_arg, "orderarg");
 
 		let qstring = `/api/orders/getorderswithquery?searchEmail=${searchEmail}&orderStatus=${orderStatus}&minAmount=${minAmount}&maxAmount=${maxAmount}&dateRange=${dateRange}&sort=${sort}&currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`;
 

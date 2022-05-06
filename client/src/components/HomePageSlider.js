@@ -8,7 +8,6 @@ import { useState } from "react";
 
 const HomePageSlider = (props) => {
 	//============
-	console.log(props);
 	const { sliderProductsList } = props;
 	//============
 
