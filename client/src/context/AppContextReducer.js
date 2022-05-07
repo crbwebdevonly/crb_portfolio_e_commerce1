@@ -112,6 +112,17 @@ export const AppContextReducer = (state, action) => {
 		//============
 		//============
 		//============
+		//============customer profile
+          case "GET_CUSTOMER_PROFILE_ORDERS_LIST": {
+			return {
+				...state,
+				customerProfileOrdersList: action.payload,
+			};
+		}
+		//============
+		//============
+		//============
+		//============
 
 		//============
 		//============products

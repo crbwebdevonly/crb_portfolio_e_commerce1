@@ -2,8 +2,7 @@ import moment from "moment";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useContext } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import { useAppContext } from "../context/AppContext";
@@ -13,16 +12,19 @@ import Spinner from "../components/Spinner";
 
 const UserProfilePage = (props) => {
 	//============
-	const { user, handleGoToCustomersOrdersPageClick } = useAppContext();
 	//============
-	const { userId } = useParams();
+	const {
+		loading,
+		error,
+		user,
+		customerProfileOrdersList,
+		doCustomerProfileUpdate,
+		getCustomerProfileOrderList,
+	} = useAppContext();
 	//============
 	//============
-	const [loading, setLoading] = useState(true);
-	const [isError, setisError] = useState(false);
+	//============
 	const [editMode, setEditMode] = useState(false);
-	// const [user, setUser] = useState({});
-	const [customersOrderList, setCustomersOrderList] = useState([]);
 	const [userUpdate, setUserUpdate] = useState({});
 	const [applyDisable, setapplyDisable] = useState(true);
 	//============
@@ -34,24 +36,8 @@ const UserProfilePage = (props) => {
 	//============
 	//============
 	useEffect(() => {
-		//   first -fetch user
-		const fetchUser = async () => {
-			try {
-				// const reply = await myAxios.post("/api/auth/getoneuser", {
-				// 	userId,
-				// });
-				// setUser(reply.data);
-				// const { email, password, isAdmin } = reply.data;
-				// setUserUpdate({ email, password, isAdmin });
-				const orders = await myAxios.post(
-					"/api/orders/getCustomersOrdersList",
-					{ userId: id }
-				);
-				setCustomersOrderList(orders.data);
-				setLoading(false);
-			} catch (error) {}
-		};
-		fetchUser();
+		//   first
+		getCustomerProfileOrderList();
 		return () => {
 			//     second
 		};
@@ -88,17 +74,6 @@ const UserProfilePage = (props) => {
 
 	//============
 	//============
-	// const generateInputs = () => {
-	// 	const entries = Object.entries(userUpdate);
-	// 	return entries.map((e, i) => (
-	// 		<InputControlled
-	// 			key={i}
-	// 			label={e[0]}
-	// 			updateValue={userUpdate[e[0]]}
-	// 			handleChange={handleUserUpdateChange}
-	// 		/>
-	// 	));
-	// };
 	//============
 	//============
 	const handleUserUpdateChange = (e) => {
@@ -114,40 +89,17 @@ const UserProfilePage = (props) => {
 	//============
 	//============
 	const handleApplyUpdate = async () => {
-		console.log(userUpdate);
-		try {
-			const reply = await myAxios.put(
-				`/api/auth/updateuser/${user._id}`,
-				userUpdate
-			);
-			// window.location.reload(true);
-			// console.log(reply.data);
-			toast.success("Update user success");
-			// setUser(reply.data);
-		} catch (error) {
-			toast.error("Update user failed");
-		}
+		doCustomerProfileUpdate(userUpdate);
+		setEditMode(false);
 	};
 	//============
 	//============
-	const handleDeleteUser = async () => {
-		try {
-			const reply = await myAxios.delete(`/api/auth/deleteuser/${id}`);
-			toast.success(" user Deleted");
-			setTimeout(() => {
-				navigate("/admin/users");
-			}, 2000);
-		} catch (error) {
-			toast.error("Update user failed");
-		}
-	};
-	//============
-
 	//============
 	//============
 	//============
 	//============
-	if (isError)
+	//============
+	if (error)
 		return (
 			<div className="alert-danger p-3 my-3">error loading user</div>
 		);
@@ -157,8 +109,6 @@ const UserProfilePage = (props) => {
 	//============
 	return (
 		<StyledWrapper>
-			{/* <h6>user: {JSON.stringify(user)}</h6> */}
-			{/* <h6>update: {JSON.stringify(userUpdate)}</h6> */}
 			<div className="card p-2">
 				<div className="img-wrap d-grid justify-content-center">
 					{image ? (
@@ -172,7 +122,6 @@ const UserProfilePage = (props) => {
 					)}
 				</div>
 				<div className="info-wrap">
-					
 					<h5>userID: {id}</h5>
 					<h5>Email: {email}</h5>
 					<h5>password: {password}</h5>
@@ -189,16 +138,7 @@ const UserProfilePage = (props) => {
 					</button>
 				) : (
 					<>
-						{" "}
 						<div className="d-sm-flex">
-							<i class="fa-solid fa-user-slash ms-auto fs-1 shadowp p-1  ">
-								<button
-									className="btn btn-danger fs-6 ms-2"
-									onClick={handleDeleteUser}
-								>
-									Delete your Account
-								</button>
-							</i>
 							<button
 								className="btn btn-info w-50 "
 								onClick={() => {
@@ -213,17 +153,6 @@ const UserProfilePage = (props) => {
 				<hr />
 				{editMode && (
 					<>
-						{/* <div className="edit-control-wrap">
-							<InputControlled
-								type="select-bool"
-								label="isAdmin"
-								name="isAdmin"
-								originalData={user.isAdmin}
-								updateValue={userUpdate.isAdmin}
-								handleChange={handleUserUpdateChange}
-								setUpdateObject={setUserUpdate}
-							/>
-						</div> */}
 						<div className="edit-control-wrap">
 							<InputControlled
 								type="text"
@@ -259,23 +188,13 @@ const UserProfilePage = (props) => {
 			{!editMode && (
 				<div className="container">
 					<div className="row border border-2 p-2">
-                              <h2>Your Orders History</h2>
-						{/* <h2
-							className="btn btn-info"
-							onClick={() => {
-								handleGoToCustomersOrdersPageClick({
-									userId: id,
-								});
-							}}
-						>
-							Go to Customer's orders page{" "}
-						</h2> */}
-						{/* {JSON.stringify(customersOrderList)} */}
-						{customersOrderList.length < 1 && (
+						<h2>Your Orders History</h2>
+
+						{customerProfileOrdersList.length < 1 && (
 							<h5>No Orders to Display</h5>
 						)}
-						{customersOrderList.length > 0 &&
-							customersOrderList.map((e) => (
+						{customerProfileOrdersList.length > 0 &&
+							customerProfileOrdersList.map((e) => (
 								<LocalOrderListItem
 									key={e._id}
 									{...e}

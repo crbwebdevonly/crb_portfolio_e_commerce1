@@ -112,7 +112,6 @@ const getAllOrders = async (req, res) => {
 //============
 //============
 const getCustomersOrdersList = async (req, res) => {
-     console.log(req.body, "cusid");
 	try {
 		const reply = await OrderModel.find({ customerID: req.body.userId }).sort({createdAt:-1});
 		res.status(200).json(reply);

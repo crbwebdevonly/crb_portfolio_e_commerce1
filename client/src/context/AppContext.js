@@ -85,6 +85,7 @@ const initialAppState = {
 	//============
 	//============auth
 	user: getUserFromLocalStorage() || null,
+     customerProfileOrdersList: [],
 
 	//============filter-products
 	filter: initialFilter,
@@ -222,6 +223,54 @@ export const AppContextProvider = ({ children }) => {
 			blinkError();
 		}
 	};
+	//============
+	//============
+	const doCustomerProfileUpdate = async (newProfile) => {
+		dispatch({ type: "FETCH_BEGIN" });
+
+		try {
+			const reply = await myAxios.put(
+				`/api/auth/updateuser/${state.user._id}`,
+				newProfile
+			);
+			doLogin(reply.data);
+			navigate("/profile");
+			dispatch({ type: "FETCH_SUCCESS" });
+			toast.success("Update user success");
+		} catch (error) {
+			// dispatch({ type: "SET_ERROR" })
+			blinkError();
+			toast.error("Update user failed");
+		}
+	};
+	//============
+	//============
+	const getCustomerProfileOrderList = async () => {
+		dispatch({ type: "FETCH_BEGIN" });
+
+		try {
+			const reply = await myAxios.post(
+				"/api/orders/getCustomersOrdersList",
+				{ userId: state.user._id }
+			);
+			dispatch({
+				type: "GET_CUSTOMER_PROFILE_ORDERS_LIST",
+				payload: reply.data,
+			});
+
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+			// blinkError();
+		}
+	};
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
 	//============
 	//============
 	//============filter
@@ -803,7 +852,6 @@ export const AppContextProvider = ({ children }) => {
 			dispatch({ type: "FETCH_ERROR" });
 		}
 		setOrder_Arg(null);
-
 	};
 	// //============
 	// //============
@@ -901,6 +949,8 @@ export const AppContextProvider = ({ children }) => {
 		doLogin,
 		doLogout,
 		doRegister,
+		doCustomerProfileUpdate,
+          getCustomerProfileOrderList,
 		//============filter
 		handleFilterChange,
 		ClearFilter_on_dismount,
