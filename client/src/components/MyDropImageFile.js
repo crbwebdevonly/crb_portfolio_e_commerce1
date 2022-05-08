@@ -7,7 +7,8 @@ const thumbsContainer = {
 	flexDirection: "row",
 	flexWrap: "wrap",
 	marginTop: 16,
-	// height: "100px"
+	height: "100%",
+	width: "100%",
 };
 
 const thumb = {
@@ -16,8 +17,8 @@ const thumb = {
 	border: "1px solid #eaeaea",
 	marginBottom: 8,
 	marginRight: 8,
-	width: 100,
-	height: 100,
+	width: 200,
+	height: 200,
 	padding: 4,
 	boxSizing: "border-box",
 };
@@ -29,8 +30,9 @@ const thumbInner = {
 };
 
 const img = {
-	display: "block",
-	width: "auto",
+	// display: "block",
+	// width: "auto",
+	objectFit: "contain",
 	height: "100%",
 };
 
@@ -44,7 +46,7 @@ const MyDropImageFile = ({ setimageURL, setimageFile }) => {
 			let u = "";
 			setFiles(
 				acceptedFiles.map((file) => {
-					console.log(file, "drop file");
+					// console.log(file, "drop file");
 					setimageFile(file);
 					setimageURL(URL.createObjectURL(file));
 					return Object.assign(file, {
@@ -54,7 +56,7 @@ const MyDropImageFile = ({ setimageURL, setimageFile }) => {
 			);
 		},
 	});
-	console.log(isDragReject, "is rej");
+	// console.log(isDragReject, "is rej");
 	isDragReject && toast.error("invalid file type");
 	const thumbs = files.map((file) => (
 		<div style={thumb} key={file.name}>
@@ -83,7 +85,7 @@ const MyDropImageFile = ({ setimageURL, setimageFile }) => {
 				<input {...getInputProps()} />
 				<p>Drag 'n' drop new Profile Image here</p>
 			</div>
-			{/* <aside style={thumbsContainer}>{thumbs}</aside> */}
+			<aside style={thumbsContainer}>{thumbs}</aside>
 		</section>
 	);
 };

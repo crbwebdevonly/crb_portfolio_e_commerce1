@@ -3,17 +3,13 @@ import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import styled from "styled-components";
 import { useAppContext } from "../context/AppContext";
-import { myAxios } from "../myAxios";
 import InputControlled from "../components/InputControlled";
 import Spinner from "../components/Spinner";
 import MyDropImageFile from "../components/MyDropImageFile";
 //
-import { ref, uploadBytes } from "firebase/storage";
-import { firebaseStorage } from "../firebaseConfig";
-import { uploadBytesResumable, getDownloadURL } from "firebase/storage";
+
 
 const UserProfilePage = (props) => {
 	//============
@@ -82,8 +78,6 @@ const UserProfilePage = (props) => {
 
 	//============
 	//============
-	console.log(imageFile, "file upload");
-	console.log(imageURL, "url upload");
 	//============
 	//============
 	const handleUserUpdateChange = (e) => {
@@ -98,63 +92,6 @@ const UserProfilePage = (props) => {
 	};
 	//============
 	//============
-	const uploadImage = async () => {
-		// upload first to get image url
-		const imageRef = ref(firebaseStorage, `profile-images/${id}`);
-		// 'file' comes from the Blob or File API
-		// uploadBytes(imageRef, imageURL).then((snapshot) => {
-		// 	console.log("Uploaded a blob or file!", snapshot);
-		// });
-
-		const uploadTask = uploadBytesResumable(imageRef, imageFile);
-
-		// Register three observers:
-		// 1. 'state_changed' observer, called any time the state changes
-		// 2. Error observer, called on failure
-		// 3. Completion observer, called on successful completion
-		await uploadTask.on(
-			"state_changed",
-			(snapshot) => {
-				// Observe state change events such as progress, pause, and resume
-				// Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-				const progress =
-					(snapshot.bytesTransferred / snapshot.totalBytes) *
-					100;
-				// console.log("Upload is " + progress + "% done");
-				switch (snapshot.state) {
-					case "paused":
-						// console.log("Upload is paused");
-						break;
-					case "running":
-						// console.log("Upload is running");
-						break;
-				}
-			},
-			(error) => {
-				// Handle unsuccessful uploads
-				toast.error("image upload error");
-			},
-			() => {
-				// Handle successful uploads on complete
-				// For instance, get the download URL: https://firebasestorage.googleapis.com/...
-				getDownloadURL(uploadTask.snapshot.ref).then(
-					(downloadURL) => {
-						console.log("File available at", downloadURL);
-						// setUserUpdate((p) => ());
-						doCustomerProfileUpdate({
-							...userUpdate,
-							image: downloadURL,
-						});
-					}
-				);
-			}
-		);
-	};
-	//============
-	//============
-	console.log(userUpdate, "update user");
-	//============
-	//============
 	const handleCancleProfileImageChange = () => {
 		seteditProfileImage(false);
 		setimageFile({});
@@ -162,22 +99,33 @@ const UserProfilePage = (props) => {
 	};
 	//============
 	//============
-	const handleApplyUpdate = async () => {
-		if (editProfileImage && imageURL) {
-			uploadImage();
-		} else doCustomerProfileUpdate(userUpdate);
+	//============
+	//============
+	const applyProfileImageChangeOnly = async () => {
+		try {
+			if (editProfileImage && imageURL) {
+				doCustomerProfileUpdate({ imageFile });
+				
+				handleCancleProfileImageChange();
+				setEditMode(false);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	//============
+	//============
+	//============
+	const handleApplyUpdate = () => {
+		let updateArg = { ...userUpdate };
+		if (editProfileImage && imageURL) updateArg.imageFile = imageFile;
+
+		doCustomerProfileUpdate(updateArg);
 		setEditMode(false);
 		handleCancleProfileImageChange();
 	};
 	//============
 	//============
-	const handleFileChange = (e) => {
-		console.log(e.target.value);
-		const file = e.target.files[0];
-		const url = URL.createObjectURL(file);
-		console.log(file, "file");
-		setimageURL(file);
-	};
 	//============
 	//============
 	//============
@@ -273,14 +221,26 @@ const UserProfilePage = (props) => {
 									</button>
 								)}
 								{editProfileImage && (
-									<button
-										className="btn btn-outline-warning my-3"
-										onClick={
-											handleCancleProfileImageChange
-										}
-									>
-										Cancle Profile Image Change
-									</button>
+									<>
+										<button
+											className="btn btn-outline-warning my-3"
+											onClick={
+												handleCancleProfileImageChange
+											}
+										>
+											Cancle Profile Image
+											Change
+										</button>
+										<button
+											className="btn btn-outline-danger my-3"
+											onClick={
+												applyProfileImageChangeOnly
+											}
+										>
+											Apply Profile Image
+											Change Only
+										</button>
+									</>
 								)}
 
 								{editProfileImage && (
@@ -294,13 +254,13 @@ const UserProfilePage = (props) => {
 									</div>
 								)}
 							</div>
-							{editProfileImage && (
+							{/* {editProfileImage && (
 								<div className="col">
 									{imageURL && (
 										<img src={imageURL} alt="" />
 									)}
 								</div>
-							)}
+							)} */}
 						</div>
 						<button
 							className="btn btn-danger w-50"

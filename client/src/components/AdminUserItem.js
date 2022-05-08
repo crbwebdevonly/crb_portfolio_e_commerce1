@@ -25,7 +25,7 @@ const AdminUserItem = (props) => {
 						{image ? (
 							<img
 								src={image}
-								className="card-img-top mx-auto"
+								className="card-img-top mx-auto profile-img"
 								alt="profile image"
 							/>
 						) : (
@@ -60,5 +60,10 @@ const StyledWrapper = styled.div`
 	}
 	h5 {
 		font-size: 1rem;
+	}
+	.profile-img {
+		height: 100px;
+		width: 100px;
+		object-fit: contain;
 	}
 `;

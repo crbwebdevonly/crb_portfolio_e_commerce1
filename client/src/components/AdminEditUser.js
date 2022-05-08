@@ -164,7 +164,7 @@ const AdminEditUser = (props) => {
 					{image ? (
 						<img
 							src={image}
-							className="card-img-top mx-auto"
+							className="card-img-top mx-auto profile-img"
 							alt="profile image"
 						/>
 					) : (
@@ -297,6 +297,11 @@ const StyledWrapper = styled.div`
 	padding: 10px;
 	/* max-width: 24rem; */
 	margin: 0 auto;
+	.profile-img {
+		height: 200px;
+		width: 200px;
+		object-fit: contain;
+	}
 	a {
 		text-decoration: none;
 		color: inherit;
