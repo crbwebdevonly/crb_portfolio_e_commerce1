@@ -174,9 +174,9 @@ const AdminEditOrder = (props) => {
 	//============
 	//============
 	return (
-		<StyledWrapper className="test1">
-			<div className="card p-2">
-				<div className="input-group input-group mb-0  ">
+		<StyledWrapper className="mx-auto">
+			<div className="card p-2 w-100">
+				<div className="input-group input-group mb-0 row row-cols-sm-2 ">
 					<span className="input-group-text fw-bold">
 						OrderID:
 					</span>
@@ -351,7 +351,6 @@ const AdminEditOrder = (props) => {
 					</h5>
 				</div>
 			</div>
-			
 		</StyledWrapper>
 	);
 };
@@ -428,5 +427,10 @@ const StyledWrapper = styled.div`
 	}
 	.order-date {
 		font-size: 0.8rem;
+	}
+	* {
+		@media screen and (max-width: 700px) {
+			font-size: 0.7rem !important;
+		}
 	}
 `;

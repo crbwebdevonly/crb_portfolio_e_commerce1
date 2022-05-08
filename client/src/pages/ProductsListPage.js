@@ -98,7 +98,7 @@ const ProductsListPage = ({ admin }) => {
 	//============
 	//============
 	return (
-		<StyledWrapper>
+		<StyledWrapper className="container">
 			<ProductsFilter />
 			<Paginator />
 			<div className="all-products-container ">
@@ -122,7 +122,7 @@ export default ProductsListPage;
 
 const StyledWrapper = styled.div`
 	/* border: 1px solid blue; */
-	margin: 5px 0;
+	margin: 5px auto;
 
 	/* display: flex;
 	flex-direction: column;

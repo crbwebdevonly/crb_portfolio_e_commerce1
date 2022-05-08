@@ -9,6 +9,11 @@ import { useAppContext } from "../context/AppContext";
 import { myAxios } from "../myAxios";
 import InputControlled from "../components/InputControlled";
 import Spinner from "../components/Spinner";
+import MyDropImageFile from "../components/MyDropImageFile";
+//
+import { ref, uploadBytes } from "firebase/storage";
+import { firebaseStorage } from "../firebaseConfig";
+import { uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const UserProfilePage = (props) => {
 	//============
@@ -24,6 +29,9 @@ const UserProfilePage = (props) => {
 	//============
 	//============
 	//============
+	const [editProfileImage, seteditProfileImage] = useState(false);
+	const [imageURL, setimageURL] = useState("");
+	const [imageFile, setimageFile] = useState({});
 	const [editMode, setEditMode] = useState(false);
 	const [userUpdate, setUserUpdate] = useState({});
 	const [applyDisable, setapplyDisable] = useState(true);
@@ -74,6 +82,8 @@ const UserProfilePage = (props) => {
 
 	//============
 	//============
+	console.log(imageFile, "file upload");
+	console.log(imageURL, "url upload");
 	//============
 	//============
 	const handleUserUpdateChange = (e) => {
@@ -88,12 +98,86 @@ const UserProfilePage = (props) => {
 	};
 	//============
 	//============
-	const handleApplyUpdate = async () => {
-		doCustomerProfileUpdate(userUpdate);
-		setEditMode(false);
+	const uploadImage = async () => {
+		// upload first to get image url
+		const imageRef = ref(firebaseStorage, `profile-images/${id}`);
+		// 'file' comes from the Blob or File API
+		// uploadBytes(imageRef, imageURL).then((snapshot) => {
+		// 	console.log("Uploaded a blob or file!", snapshot);
+		// });
+
+		const uploadTask = uploadBytesResumable(imageRef, imageFile);
+
+		// Register three observers:
+		// 1. 'state_changed' observer, called any time the state changes
+		// 2. Error observer, called on failure
+		// 3. Completion observer, called on successful completion
+		await uploadTask.on(
+			"state_changed",
+			(snapshot) => {
+				// Observe state change events such as progress, pause, and resume
+				// Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+				const progress =
+					(snapshot.bytesTransferred / snapshot.totalBytes) *
+					100;
+				// console.log("Upload is " + progress + "% done");
+				switch (snapshot.state) {
+					case "paused":
+						// console.log("Upload is paused");
+						break;
+					case "running":
+						// console.log("Upload is running");
+						break;
+				}
+			},
+			(error) => {
+				// Handle unsuccessful uploads
+				toast.error("image upload error");
+			},
+			() => {
+				// Handle successful uploads on complete
+				// For instance, get the download URL: https://firebasestorage.googleapis.com/...
+				getDownloadURL(uploadTask.snapshot.ref).then(
+					(downloadURL) => {
+						console.log("File available at", downloadURL);
+						// setUserUpdate((p) => ());
+						doCustomerProfileUpdate({
+							...userUpdate,
+							image: downloadURL,
+						});
+					}
+				);
+			}
+		);
 	};
 	//============
 	//============
+	console.log(userUpdate, "update user");
+	//============
+	//============
+	const handleCancleProfileImageChange = () => {
+		seteditProfileImage(false);
+		setimageFile({});
+		setimageURL("");
+	};
+	//============
+	//============
+	const handleApplyUpdate = async () => {
+		if (editProfileImage && imageURL) {
+			uploadImage();
+		} else doCustomerProfileUpdate(userUpdate);
+		setEditMode(false);
+		handleCancleProfileImageChange();
+	};
+	//============
+	//============
+	const handleFileChange = (e) => {
+		console.log(e.target.value);
+		const file = e.target.files[0];
+		const url = URL.createObjectURL(file);
+		console.log(file, "file");
+		setimageURL(file);
+	};
 	//============
 	//============
 	//============
@@ -108,7 +192,8 @@ const UserProfilePage = (props) => {
 	//============
 	//============
 	return (
-		<StyledWrapper>
+		<StyledWrapper className="container">
+			{/* {image && <img className="profile-image" src={image} alt="" />} */}
 			<div className="card p-2">
 				<div className="img-wrap d-grid justify-content-center">
 					{image ? (
@@ -175,6 +260,48 @@ const UserProfilePage = (props) => {
 								setUpdateObject={setUserUpdate}
 							/>
 						</div>
+						<div className="row justify-content-center align-items-center">
+							<div className="col">
+								{!editProfileImage && (
+									<button
+										className="btn btn-warning my-3"
+										onClick={() =>
+											seteditProfileImage(true)
+										}
+									>
+										Change Profile Image
+									</button>
+								)}
+								{editProfileImage && (
+									<button
+										className="btn btn-outline-warning my-3"
+										onClick={
+											handleCancleProfileImageChange
+										}
+									>
+										Cancle Profile Image Change
+									</button>
+								)}
+
+								{editProfileImage && (
+									<div className="img-upload">
+										<MyDropImageFile
+											setimageURL={setimageURL}
+											setimageFile={
+												setimageFile
+											}
+										/>
+									</div>
+								)}
+							</div>
+							{editProfileImage && (
+								<div className="col">
+									{imageURL && (
+										<img src={imageURL} alt="" />
+									)}
+								</div>
+							)}
+						</div>
 						<button
 							className="btn btn-danger w-50"
 							onClick={handleApplyUpdate}
@@ -230,6 +357,28 @@ const StyledWrapper = styled.div`
 	}
 	.input-group input {
 		font-size: 0.8rem !important;
+	}
+	.img-upload {
+		/* height: 200px; */
+		/* width: 400px; */
+		/* border: 1px solid green; */
+		/* margin: 10px; */
+
+		p {
+			height: 100px;
+			border: 1px solid blue;
+			/* width: 100%; */
+		}
+	}
+	img {
+		height: 150px;
+		width: 150px;
+		object-fit: contain;
+	}
+	.profile-image {
+		height: 250px;
+		width: 250px;
+		object-fit: contain;
 	}
 `;
 

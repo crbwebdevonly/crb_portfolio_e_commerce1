@@ -85,7 +85,7 @@ const initialAppState = {
 	//============
 	//============auth
 	user: getUserFromLocalStorage() || null,
-     customerProfileOrdersList: [],
+	customerProfileOrdersList: [],
 
 	//============filter-products
 	filter: initialFilter,
@@ -209,6 +209,7 @@ export const AppContextProvider = ({ children }) => {
 	const doLogout = (user) => {
 		dispatch({ type: "DO_LOGOUT" });
 		removeUserFromLocalStorage();
+		resetCart();
 
 		navigate("/");
 	};
@@ -950,7 +951,7 @@ export const AppContextProvider = ({ children }) => {
 		doLogout,
 		doRegister,
 		doCustomerProfileUpdate,
-          getCustomerProfileOrderList,
+		getCustomerProfileOrderList,
 		//============filter
 		handleFilterChange,
 		ClearFilter_on_dismount,
