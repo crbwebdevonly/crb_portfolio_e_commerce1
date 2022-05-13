@@ -210,7 +210,7 @@ const UserProfilePage = (props) => {
 						</div>
 						<div className="row justify-content-center align-items-center">
 							<div className="col">
-								{!editProfileImage && (
+								{!editProfileImage  && (
 									<button
 										className="btn btn-warning my-3"
 										onClick={() =>

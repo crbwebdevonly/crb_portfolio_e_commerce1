@@ -1,9 +1,9 @@
 //============
 //============
 export const AppContextReducer = (state, action) => {
-	let c = 0;
-	c++;
-	console.count("reducer==============", c, "===");
+	// let c = 0;
+	// c++;
+	// console.count("reducer==============", c, "===");
 	switch (action.type) {
 		case "SET_LOADING_TRUE": {
 			return { ...state, loading: true };

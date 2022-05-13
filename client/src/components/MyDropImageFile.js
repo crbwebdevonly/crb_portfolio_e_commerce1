@@ -80,8 +80,11 @@ const MyDropImageFile = ({ setimageURL, setimageFile }) => {
 	}, []);
 
 	return (
-		<section className="container">
-			<div {...getRootProps({ className: "dropzone" })}>
+		<section className="container  my-2">
+			<div
+				{...getRootProps({ className: "dropzone" })}
+				className="border border-3"
+			>
 				<input {...getInputProps()} />
 				<p>Drag 'n' drop new Profile Image here</p>
 			</div>

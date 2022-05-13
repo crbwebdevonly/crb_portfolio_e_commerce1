@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import styled from "styled-components";
 import { useAppContext } from "../context/AppContext";
+import MyDropImageFile from "./MyDropImageFile";
 
 //============
 //============
@@ -12,23 +13,104 @@ const AdminAddNewProduct = () => {
 	const {
 		loading,
 		error,
-		newProductData,
-		handleNewProductDataChange,
+		// newProductData,
+		// handleNewProductDataChange,
 		addNewProduct,
 	} = useAppContext();
 	//============
 
 	//============
+	const [newProductData, setNewProductData] = useState({
+		title: "",
+		price: "",
+		description: "",
+		category: "",
+		// image: "",
+		rating: "",
+	});
+	const [imageSelectOption, setImageSelectOption] = useState("none");
+	// options>> none, input-url,upload-image
+	const [imageURL, setimageURL] = useState("");
+	const [imageFile, setimageFile] = useState({});
 	//============
 	//============
+	const removeImageAttribute = () => {
+		setNewProductData((p) => {
+			let k = { ...p };
+			const { image, imageFile, ...rest } = k;
+			return rest;
+		});
+	};
+	const addImageURLProperty = () => {
+		setNewProductData((p) => {
+			let k = { ...p, image: "" };
+			return k;
+		});
+	};
+	const addImageFileProperty = () => {
+		setNewProductData((p) => {
+			let k = { ...p, imageFile: "" };
+			return k;
+		});
+	};
 	//============
 	//============
-	if (error)
-		return (
-			<div className="alert-danger p-3 my-3">
-				error creating new Product
-			</div>
-		);
+	const handleNewProductDataChange = (e) => {
+		const name = e.target.name;
+		const value = e.target.value;
+		setNewProductData((p) => ({ ...p, [name]: value }));
+	};
+	//============
+	// console.log(newProductData, "new prod data");
+	//============
+	//============
+	useEffect(() => {
+		//   first
+		removeImageAttribute();
+
+		if (imageSelectOption === "input-url") {
+			addImageURLProperty();
+		} else if (imageSelectOption === "upload-image") {
+			addImageFileProperty();
+		}
+		// else removeImageAttribute();
+
+		return () => {
+			//     second
+		};
+	}, [imageSelectOption]);
+
+	//============
+	//============
+	useEffect(() => {
+		//  add image file to updatedata
+		if (imageFile && imageURL) {
+			setNewProductData((p) => {
+				return { ...p, imageFile };
+			});
+		}
+
+		return () => {
+			//     second
+		};
+	}, [imageFile, imageURL]);
+
+	//============
+	//============
+	const handleImageSelectChange = (e) => {
+		let v = e.target.value;
+		setImageSelectOption(v);
+	};
+	//============
+	// console.log(imageFile, imageURL, "image files");
+	//============
+	//============
+	// if (error)
+	// 	return (
+	// 		<div className="alert-danger p-3 my-3">
+	// 			error creating new Product
+	// 		</div>
+	// 	);
 	//============
 	//============
 	//============
@@ -48,7 +130,6 @@ const AdminAddNewProduct = () => {
 					</div>
 					<div className="col-md-6">
 						<label
-							for="inputPassword4"
 							className="form-label"
 						>
 							Category
@@ -62,17 +143,53 @@ const AdminAddNewProduct = () => {
 						/>
 					</div>
 				</div>
-				<div className="col-md-6">
-					<label for="inputEmail4" class="form-label">
-						Image URL
-					</label>
-					<input
-						type="text"
-						name="image"
-						className="form-control"
-						value={newProductData.image}
-						onChange={handleNewProductDataChange}
-					/>
+				<div className="col col-md">
+					<div className="input-group mb-0">
+						<label className="input-group-text">
+							Image URL
+						</label>
+						<select
+							className="form-select"
+							value={imageSelectOption}
+							onChange={handleImageSelectChange}
+						>
+							<option value="none">Dont add Image</option>
+							<option value="input-url">
+								Provide URL
+							</option>
+							<option value="upload-image">
+								Upload Image
+							</option>
+						</select>
+					</div>
+				</div>
+				<div className="col my-1">
+					{imageSelectOption === "input-url" && (
+						<>
+							<label className="form-label">
+								Image URL
+							</label>
+							<input
+								type="text"
+								name="image"
+								className="form-control"
+								// disabled
+								value={newProductData.image}
+								onChange={handleNewProductDataChange}
+							/>
+						</>
+					)}
+					
+					{imageSelectOption === "upload-image" && (
+						<>
+							
+
+							<MyDropImageFile
+								setimageURL={setimageURL}
+								setimageFile={setimageFile}
+							/>
+						</>
+					)}
 				</div>
 				<label className="form-label">Description</label>
 				<textarea
@@ -107,7 +224,7 @@ const AdminAddNewProduct = () => {
 				</div>
 				<button
 					className="btn btn-danger w-50 my-3 "
-					onClick={addNewProduct}
+					onClick={() => addNewProduct(newProductData)}
 				>
 					Add New Product
 				</button>

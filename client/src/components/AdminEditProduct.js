@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAppContext } from "../context/AppContext";
 import { fakeProducts } from "../fakeProducts";
+import MyDropImageFile from "./MyDropImageFile";
 
 const AdminEditProduct = () => {
 	//============
@@ -39,7 +40,17 @@ const AdminEditProduct = () => {
 	//============
 	// const [product, setProduct] = useState({});
 	// const [editEnable, setEditEnable] = useState(false);
+	const [imageSelectOption, setImageSelectOption] = useState("none");
+     const [imageURL, setimageURL] = useState("");
+	const [imageFile, setimageFile] = useState({});
+	//============
 
+	//============
+	//============
+	const handleImageSelectChange = (e) => {
+		let v = e.target.value;
+		setImageSelectOption(v);
+	};
 	//============
 	//============
 	//============
@@ -148,16 +159,50 @@ const AdminEditProduct = () => {
 							/>
 						</div>
 					</div>
-					<div className="col-md-6">
-						<label className="form-label">Image URL</label>
-						<input
-							type="text"
-							name="image"
-							className="form-control"
-							value={updateProductData.image}
-							onChange={handleupdateProductDataChange}
-						/>
+					<div className="col col-md">
+						<div className="input-group mb-0">
+							<label className="input-group-text">
+								Image URL
+							</label>
+							<select
+								className="form-select"
+								value={imageSelectOption}
+								onChange={handleImageSelectChange}
+							>
+								<option value="none">
+									Dont Change Image
+								</option>
+								<option value="input-url">
+									Provide New URL
+								</option>
+								<option value="upload-image">
+									Upload New Image
+								</option>
+							</select>
+						</div>
 					</div>
+					{imageSelectOption === "input-url" && (
+						<div className="col-md-6">
+							<label className="form-label">
+								Image URL
+							</label>
+							<input
+								type="text"
+								name="image"
+								className="form-control"
+								value={updateProductData.image}
+								onChange={handleupdateProductDataChange}
+							/>
+						</div>
+					)}
+					{imageSelectOption === "upload-image" && (
+						<>
+							<MyDropImageFile
+								setimageURL={setimageURL}
+								setimageFile={setimageFile}
+							/>
+						</>
+					)}
 					<label className="form-label">Description</label>
 					<textarea
 						className="form-control"

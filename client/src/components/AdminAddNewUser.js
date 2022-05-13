@@ -4,38 +4,41 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { myAxios } from "../myAxios";
+import MyDropImageFile from "./MyDropImageFile";
+import { useAppContext } from "../context/AppContext";
 
 const AdminAddNewUser = () => {
+	//============
+	const { loading, error, doAdminCreateNewUser } = useAppContext();
 	//============
 	const nav = useNavigate();
 
 	//============
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [error, seterror] = useState(false);
+	// const [error, seterror] = useState(false);
+	//============
+	//============
+	const [addProfileImage, setAddProfileImage] = useState(false);
+	const [imageURL, setimageURL] = useState("");
+	const [imageFile, setimageFile] = useState({});
 	//============
 	//============
 	//============
 	const handleCreateNewUser = async () => {
-		console.log(email, password, "register");
-		// doAdminCreateNewUser({ email, password });
-		try {
-			const reply = await myAxios.post("/api/auth/register", {
-				email,
-				password,
-			});
-			toast.success("user created successfully");
-			setTimeout(() => {
-				nav("/admin/users");
-			}, 2000);
-		} catch (error) {
-			seterror(true);
-			toast.error("create user error");
-
-			setTimeout(() => {
-				nav("/admin/users");
-			}, 2000);
+		if (!email || !password) {
+			return toast.error("No empty fields");
 		}
+
+		const newUser = {
+			email,
+			password,
+		};
+		if (addProfileImage && !imageURL) {
+			return toast.error("Profile Image Not loaded");
+		}
+		if (addProfileImage && imageURL) newUser.imageFile = imageFile;
+		doAdminCreateNewUser(newUser);
 	};
 	//============
 	//============
@@ -63,7 +66,9 @@ const AdminAddNewUser = () => {
 					placeholder="name@example.com"
 					value={email}
 					onChange={(e) => {
-						setEmail(e.target.value);
+						let v = e.target.value;
+						v = v.trim().split(" ").join("");
+						setEmail(v);
 					}}
 				/>
 				<label>Email address</label>
@@ -81,6 +86,33 @@ const AdminAddNewUser = () => {
 				/>
 				<label>Password</label>
 			</div>
+			{!addProfileImage && (
+				<button
+					className="btn btn-warning my-3"
+					onClick={() => setAddProfileImage(true)}
+				>
+					Add Profile Image
+				</button>
+			)}
+			{addProfileImage && (
+				<>
+					<button
+						className="btn btn-outline-warning my-3"
+						onClick={() => setAddProfileImage(!true)}
+					>
+						Dont Add Profile Image
+					</button>
+					
+				</>
+			)}
+			{addProfileImage && (
+				<div className="img-upload border border-3">
+					<MyDropImageFile
+						setimageURL={setimageURL}
+						setimageFile={setimageFile}
+					/>
+				</div>
+			)}
 			<button
 				className="btn btn-outline-warning my-3"
 				type="button"

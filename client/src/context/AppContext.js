@@ -125,14 +125,14 @@ const initialAppState = {
 	editProduct: {},
 	editProductEnable: false,
 	updateProductData: {},
-	newProductData: {
-		title: "",
-		price: "",
-		description: "",
-		category: "",
-		image: "",
-		rating: "",
-	},
+	// newProductData: {
+	// 	title: "",
+	// 	price: "",
+	// 	description: "",
+	// 	category: "",
+	// 	// image: "",
+	// 	rating: "",
+	// },
 	//============
 	//============orders
 	editOrder: {},
@@ -240,7 +240,7 @@ export const AppContextProvider = ({ children }) => {
 				newProfile.image =
 					await uploadImageToFirebase_getPromisedURL({
 						userId: state.user._id,
-                              imageFile:newProfile.imageFile
+						imageFile: newProfile.imageFile,
 					});
 			}
 			const reply = await myAxios.put(
@@ -257,6 +257,41 @@ export const AppContextProvider = ({ children }) => {
 			toast.error("Update user failed");
 		}
 	};
+	//============
+	//============
+	//============
+	const doAdminCreateNewUser = async (newProfile = {}) => {
+		dispatch({ type: "FETCH_BEGIN" });
+		const { email, password } = newProfile;
+		const newUser = {
+			email,
+			password,
+		};
+
+		try {
+			const reply = await myAxios.post("/api/auth/register", newUser);
+
+			if (newProfile.imageFile) {
+				newProfile.image =
+					await uploadImageToFirebase_getPromisedURL({
+						userId: reply.data._id,
+						imageFile: newProfile.imageFile,
+					});
+				const reply_2 = await myAxios.put(
+					`/api/auth/updateuser/${reply.data._id}`,
+					newProfile
+				);
+			}
+
+			navigate("/admin/users");
+			toast.success("user created successfully");
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			blinkError();
+			toast.error("Create New user failed");
+		}
+	};
+	//============
 	//============
 	//============
 	const getCustomerProfileOrderList = async () => {
@@ -618,14 +653,16 @@ export const AppContextProvider = ({ children }) => {
 	//============
 	//============
 	//============
-	const addNewProduct = async () => {
+	const addNewProduct = async (newProductData) => {
+		// console.log(newProductData, "received");
+		// return;
 		// check valid
 		let validData = null;
+		let { price, rating, imageFile, ...rest } = newProductData;
 		try {
-			for (const v of Object.values(state.newProductData)) {
+			for (const v of Object.values(newProductData)) {
 				if (!v) throw new Error("No Empty values allowed");
 			}
-			let { price, rating, ...rest } = state.newProductData;
 			price = Number(price);
 			rating = Number(rating);
 			if (isNaN(price) || isNaN(rating)) {
@@ -639,11 +676,24 @@ export const AppContextProvider = ({ children }) => {
 		}
 
 		// post data
+		let reply;
 		try {
-			const reply = await myAxios.post(
+			reply = await myAxios.post(
 				"/api/products/add-new-product",
 				validData
 			);
+			console.log(reply.data.reply._id);
+			if (imageFile) {
+				let image = await uploadImageToFirebase_getPromisedURL({
+					productId: reply.data.reply._id,
+					imageFile: imageFile,
+				});
+				const reply_2 = await myAxios.put(
+					`/api/products/updateproduct/${reply.data.reply._id}`,
+					{ image }
+				);
+			}
+
 			dispatch({ type: "ADD_NEW_PRODUCT_SUCCESS" });
 			toast.success("added new Product");
 			navigate("/admin/products");
@@ -1004,6 +1054,15 @@ export const AppContextProvider = ({ children }) => {
 			// upload first to get image url
 			let folder = userId ? "profile-images" : "product-images";
 			let id = userId ? userId : productId;
+			console.log(
+				userId,
+				"<<uID",
+				productId,
+				"<<pID",
+				imageFile,
+				"received arg"
+			);
+			console.log(folder, "id>>", id, "folder and id");
 			const imageRef = ref(firebaseStorage, `${folder}/${id}`);
 			// const imageRef = ref(firebaseStorage, `profile-images/${id}`);
 			// 'file' comes from the Blob or File API
@@ -1076,6 +1135,7 @@ export const AppContextProvider = ({ children }) => {
 		doLogin,
 		doLogout,
 		doRegister,
+		doAdminCreateNewUser,
 		doCustomerProfileUpdate,
 		getCustomerProfileOrderList,
 		//============filter
