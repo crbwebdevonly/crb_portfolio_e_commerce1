@@ -86,7 +86,7 @@ const MyDropImageFile = ({ setimageURL, setimageFile }) => {
 				className="border border-3"
 			>
 				<input {...getInputProps()} />
-				<p>Drag 'n' drop new Profile Image here</p>
+				<p>Drag 'n' drop  Image here</p>
 			</div>
 			<aside style={thumbsContainer}>{thumbs}</aside>
 		</section>

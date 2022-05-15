@@ -113,7 +113,7 @@ export const AppContextReducer = (state, action) => {
 		//============
 		//============
 		//============customer profile
-          case "GET_CUSTOMER_PROFILE_ORDERS_LIST": {
+		case "GET_CUSTOMER_PROFILE_ORDERS_LIST": {
 			return {
 				...state,
 				customerProfileOrdersList: action.payload,
@@ -258,11 +258,21 @@ export const AppContextReducer = (state, action) => {
 		}
 		//============
 		//============
+		//============
+		case "ENABLE_EDIT_PRODUCT": {
+			return {
+				...state,
+				editProductEnable: true,
+			};
+		}
+		//============
+		//============
+		//============
 		case "CANCEL_EDIT_PRODUCT": {
 			return {
 				...state,
 				editProductEnable: false,
-				updateProductData: {},
+				// updateProductData: {},
 			};
 		}
 		//============

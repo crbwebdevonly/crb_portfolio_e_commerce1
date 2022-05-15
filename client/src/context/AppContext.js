@@ -124,7 +124,7 @@ const initialAppState = {
 	//============products
 	editProduct: {},
 	editProductEnable: false,
-	updateProductData: {},
+	// updateProductData: {},
 	// newProductData: {
 	// 	title: "",
 	// 	price: "",
@@ -236,17 +236,25 @@ export const AppContextProvider = ({ children }) => {
 		dispatch({ type: "FETCH_BEGIN" });
 
 		try {
-			if (newProfile.imageFile) {
+			let reply;
+			if (newProfile.removeImage) {
+				reply = await myAxios.put(
+					`/api/auth/updateuser/${state.user._id}`,
+					{ image: "" }
+				);
+			} else if (newProfile.imageFile) {
 				newProfile.image =
 					await uploadImageToFirebase_getPromisedURL({
 						userId: state.user._id,
 						imageFile: newProfile.imageFile,
 					});
 			}
-			const reply = await myAxios.put(
-				`/api/auth/updateuser/${state.user._id}`,
-				newProfile
-			);
+			if (!newProfile.removeImage) {
+				reply = await myAxios.put(
+					`/api/auth/updateuser/${state.user._id}`,
+					newProfile
+				);
+			}
 			doLogin(reply.data);
 			navigate("/profile");
 			toast.success("Update user success");
@@ -620,7 +628,49 @@ export const AppContextProvider = ({ children }) => {
 	};
 	//============
 	//============
-	const applyProductUpdate = async (id) => {
+	const applyProductUpdate = async (arg) => {
+		// console.log("begin prod update");
+		// console.log(arg, "received arg");
+
+		dispatch({ type: "FETCH_BEGIN" });
+		const { _id: id, imageFile, ...rest } = arg;
+		let updateProductData = { ...rest };
+
+		try {
+			// const reply = await myAxios.put(
+			// 	`/api/products/updateproduct/${id}`,
+			// 	updateProductData
+			// );
+			// console.log(imageFile, "received imagefile");
+			if (imageFile && imageFile.preview) {
+				// console.log("begin if image");
+
+				let image = await uploadImageToFirebase_getPromisedURL({
+					productId: id,
+					imageFile: imageFile,
+				});
+				updateProductData.image = image;
+			}
+			const reply = await myAxios.put(
+				`/api/products/updateproduct/${id}`,
+				updateProductData
+			);
+
+			dispatch({ type: "SET_EDIT_PRODUCT", payload: reply.data });
+			cancelEditProduct();
+			dispatch({ type: "FETCH_SUCCESS" });
+			toast.warning("product updated");
+		} catch (error) {
+			toast.error("error updating product");
+			cancelEditProduct();
+			blinkError();
+		}
+	};
+	//============
+	//============
+	//============
+	//============
+	const applyProductUpdate_v2 = async (id) => {
 		dispatch({ type: "FETCH_BEGIN" });
 		try {
 			const reply = await myAxios.put(

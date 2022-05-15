@@ -10,7 +10,6 @@ import Spinner from "../components/Spinner";
 import MyDropImageFile from "../components/MyDropImageFile";
 //
 
-
 const UserProfilePage = (props) => {
 	//============
 	//============
@@ -101,11 +100,16 @@ const UserProfilePage = (props) => {
 	//============
 	//============
 	//============
-	const applyProfileImageChangeOnly = async () => {
+	const applyProfileImageChangeOnly = async (arg) => {
 		try {
 			if (editProfileImage && imageURL) {
 				doCustomerProfileUpdate({ imageFile });
-				
+
+				handleCancleProfileImageChange();
+				setEditMode(false);
+			} else if (arg === "remove") {
+				doCustomerProfileUpdate({ removeImage: true });
+
 				handleCancleProfileImageChange();
 				setEditMode(false);
 			}
@@ -210,7 +214,7 @@ const UserProfilePage = (props) => {
 						</div>
 						<div className="row justify-content-center align-items-center">
 							<div className="col">
-								{!editProfileImage  && (
+								{!editProfileImage && (
 									<button
 										className="btn btn-warning my-3"
 										onClick={() =>
@@ -232,13 +236,21 @@ const UserProfilePage = (props) => {
 											Change
 										</button>
 										<button
-											className="btn btn-outline-danger my-3"
+											className="btn btn-outline-danger m-3"
 											onClick={
 												applyProfileImageChangeOnly
 											}
 										>
 											Apply Profile Image
 											Change Only
+										</button>
+										<button
+											className="btn btn-outline-danger my-3"
+											onClick={
+												()=>{applyProfileImageChangeOnly("remove")}
+											}
+										>
+											Remove Profile Image
 										</button>
 									</>
 								)}

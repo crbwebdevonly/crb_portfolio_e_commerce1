@@ -7,7 +7,7 @@ import MyDropImageFile from "./MyDropImageFile";
 //============
 //============
 
-const AdminAddNewProduct = () => {
+const AdminAddNewProduct = ({editMode}) => {
 	//============
 	//============
 	const {
@@ -16,6 +16,7 @@ const AdminAddNewProduct = () => {
 		// newProductData,
 		// handleNewProductDataChange,
 		addNewProduct,
+		applyProductUpdate,
 	} = useAppContext();
 	//============
 
@@ -129,11 +130,7 @@ const AdminAddNewProduct = () => {
 						/>
 					</div>
 					<div className="col-md-6">
-						<label
-							className="form-label"
-						>
-							Category
-						</label>
+						<label className="form-label">Category</label>
 						<input
 							type="text"
 							name="category"
@@ -179,11 +176,9 @@ const AdminAddNewProduct = () => {
 							/>
 						</>
 					)}
-					
+
 					{imageSelectOption === "upload-image" && (
 						<>
-							
-
 							<MyDropImageFile
 								setimageURL={setimageURL}
 								setimageFile={setimageFile}
