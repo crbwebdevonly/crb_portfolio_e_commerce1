@@ -1,6 +1,11 @@
 //============
+//============
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+//============
+//============
+//============
 
-const { response } = require("express");
 const UserModel = require("../DataModels/UserModel");
 
 //============
@@ -121,8 +126,19 @@ const handleLogin = async (req, res) => {
 		if (!findUser) {
 			return res.status(400).json({ msg: "login user not found" });
 		}
-		if (findUser.password === password) {
+		const match = await bcrypt.compare(password, findUser.password);
+
+		if (findUser.password === password || match) {
+			console.log("logged in, bcryptmatch==", match);
+			const { _id, isAdmin } = findUser;
+			const jwtToken = jwt.sign(
+				{ userId: _id, isAdmin },
+				process.env.JWT_SECRET
+			);
 			return res
+				.cookie("jwtToken_crb_portfolio_ecommerce1", jwtToken, {
+					httpOnly: true,
+				})
 				.status(200)
 				.json({ msg: "login success", user: findUser });
 		} else {
@@ -140,8 +156,9 @@ const handleLogin = async (req, res) => {
 //============
 //============
 const handleRegister = async (req, res) => {
-	const { email, password } = req.body;
-	const newUser = { email: email.trim(), password: password.trim() };
+	let { email, password } = req.body;
+	let hashedPassword = await bcrypt.hash(password, 10);
+	const newUser = { email: email.trim(), password: hashedPassword };
 	try {
 		const reply = await UserModel.create(newUser);
 		res.status(201).json(reply);
@@ -149,6 +166,61 @@ const handleRegister = async (req, res) => {
 		res.status(500).json({ msg: "error-register-user", error });
 	}
 };
+//============
+//============
+const handleLogout = (req, res) => {
+	return res
+		.cookie("jwtToken_crb_portfolio_ecommerce1", "logged out", {
+			httpOnly: true,
+		})
+		.status(200)
+		.json({ msg: "logout success" });
+};
+//============
+//============
+//============
+//============
+//============
+//============
+//============
+//============
+//============
+const decodeJwtToken = (req, res, next) => {
+	console.log(req.cookies, "reqcookies");
+	const jwtToken = req.cookies["jwtToken_crb_portfolio_ecommerce1"];
+	//     const decodedToken =
+	jwt.verify(jwtToken, process.env.JWT_SECRET, (error, decodedToken) => {
+		if (error) {
+			req.verifiedUserId = "";
+			req.verifiedUserIsAdmin = false;
+		} else if (decodedToken.userId ) {
+			req.verifiedUserId = decodedToken.userId;
+			req.verifiedUserIsAdmin = decodedToken.isAdmin;
+		}
+		console.log(decodedToken, "decode myjwt");
+		next();
+	});
+};
+
+//============
+//============
+const verifyLoggedInUser = (req, res, next) => {
+	console.log(req.verifiedUserId, "id verifyLoggedIn");
+	console.log(req.verifiedUserIsAdmin, "admin verifyLoggedIn");
+	next();
+};
+//============
+//============
+//============
+//============
+const verifyLoggedInAdmin = (req, res, next) => {
+	console.log(req.verifiedUserId, "id");
+	console.log(req.verifiedUserIsAdmin, "admin");
+	if (req.verifiedUserIsAdmin) next();
+	else return res.status(400).json({ msg: "NOT ADMIN, UnAuthorised" });
+};
+//============
+//============
 //============
 //============
 //============
@@ -160,7 +232,11 @@ module.exports = {
 	handleUpdateUser,
 	handleDeleteUser,
 	handleLogin,
+	handleLogout,
 	handleRegister,
+	decodeJwtToken,
+	verifyLoggedInUser,
+	verifyLoggedInAdmin,
 };
 //============
 //============

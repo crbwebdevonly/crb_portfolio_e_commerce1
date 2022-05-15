@@ -6,6 +6,7 @@ const {
 	handleUpdateUser,
 	handleDeleteUser,
      getUsersStats,
+     handleLogout,
 } = require("../controllers/authControllers");
 
 const authRouter = require("express").Router();
@@ -20,6 +21,7 @@ authRouter.put("/updateuser/:id", handleUpdateUser);
 authRouter.delete("/deleteuser/:id", handleDeleteUser);
 authRouter.post("/register", handleRegister);
 authRouter.post("/login", handleLogin);
+authRouter.get("/logout", handleLogout);
 //============
 //============
 //============

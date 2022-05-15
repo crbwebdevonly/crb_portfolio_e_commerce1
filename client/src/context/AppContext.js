@@ -212,7 +212,14 @@ export const AppContextProvider = ({ children }) => {
 	};
 	//============
 	//============
-	const doLogout = (user) => {
+	const doLogout = async (user) => {
+
+          try {
+               myAxios.get("/api/auth/logout")
+          } catch (error) {
+               
+          }
+
 		dispatch({ type: "DO_LOGOUT" });
 		removeUserFromLocalStorage();
 		resetCart();
