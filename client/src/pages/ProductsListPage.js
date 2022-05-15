@@ -41,7 +41,6 @@ const ProductsListPage = ({ admin }) => {
 			//     clear filter on this page dismount
 			//  so that next time the page is loaded ....
 			// the initial load will load with cleared filter
-			console.log("clear filter-products page");
 			ClearFilter_on_dismount();
 			setCurrentPage(1);
 		};
@@ -99,7 +98,7 @@ const ProductsListPage = ({ admin }) => {
 	//============
 	//============
 	return (
-		<StyledWrapper>
+		<StyledWrapper className="container">
 			<ProductsFilter />
 			<Paginator />
 			<div className="all-products-container ">
@@ -123,7 +122,7 @@ export default ProductsListPage;
 
 const StyledWrapper = styled.div`
 	/* border: 1px solid blue; */
-	margin: 5px 0;
+	margin: 5px auto;
 
 	/* display: flex;
 	flex-direction: column;

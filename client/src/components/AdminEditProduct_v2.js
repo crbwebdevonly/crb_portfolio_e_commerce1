@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import { useAppContext } from "../context/AppContext";
 import { fakeProducts } from "../fakeProducts";
 import MyDropImageFile from "./MyDropImageFile";
 
-const AdminEditProduct = () => {
+const AdminEditProduct_v2 = () => {
 	//============
 	//============
 	const { productId } = useParams();
@@ -17,12 +18,12 @@ const AdminEditProduct = () => {
 		error,
 		editProductEnable: editEnable,
 		editProduct: product,
-		updateProductData,
+		// updateProductData,
 
 		setEditProduct,
 		setEnableEditProduct,
 		cancelEditProduct,
-		handleupdateProductDataChange,
+		// handleupdateProductDataChange,
 		applyProductUpdate,
 		deleteProduct,
 	} = useAppContext();
@@ -38,10 +39,15 @@ const AdminEditProduct = () => {
 	} = product;
 	//============
 	//============
-	// const [product, setProduct] = useState({});
+	//============
+	//============
+	//============
+	//============
+	const [updateProductData, setUpdateProductData] = useState({});
 	// const [editEnable, setEditEnable] = useState(false);
+	// image upload
 	const [imageSelectOption, setImageSelectOption] = useState("none");
-     const [imageURL, setimageURL] = useState("");
+	const [imageURL, setimageURL] = useState("");
 	const [imageFile, setimageFile] = useState({});
 	//============
 
@@ -52,6 +58,17 @@ const AdminEditProduct = () => {
 		setImageSelectOption(v);
 	};
 	//============
+	//============
+	//============
+	//============
+	const handleupdateProductDataChange = (e) => {
+		let name = e.target.name;
+		let value = e.target.value;
+		if (name === "price" || name === "rating") {
+			value = Number(Number(value).toFixed(2));
+		}
+		setUpdateProductData((p) => ({ ...p, [name]: value }));
+	};
 	//============
 	//============
 	useEffect(() => {
@@ -65,6 +82,87 @@ const AdminEditProduct = () => {
 	}, [productId]);
 
 	//============
+	//============
+	useEffect(() => {
+		//   first
+		if (editEnable) {
+			const { createdAt, updatedAt, __v, ...rest } = product;
+			setUpdateProductData({ ...rest });
+		} else {
+			setUpdateProductData({});
+			setImageSelectOption("none");
+			setimageURL("");
+			setimageFile({});
+		}
+
+		return () => {
+			//     second
+		};
+	}, [editEnable]);
+
+	//============
+	//============
+	//============
+	//============
+	useEffect(() => {
+		//   first
+
+		if (imageSelectOption !== "input-url") {
+			setUpdateProductData((p) => ({
+				...p,
+				image: product?.image || "",
+			}));
+		}
+		if (imageSelectOption !== "upload-image") {
+			setimageURL("");
+			setimageFile({});
+			setUpdateProductData((p) => {
+				const { imageFile, ...rest } = p;
+				return { ...rest };
+			});
+		}
+
+		return () => {
+			//     second
+		};
+	}, [imageSelectOption]);
+
+	//============
+	//============
+	//============
+	const handleApplyUpdate = () => {
+		let updateProductData2 = updateProductData;
+		if (imageSelectOption === "upload-image") {
+			if (!imageFile || !imageURL) {
+				return toast.error("upload Image NOT selected");
+			}
+			updateProductData2 = { ...updateProductData2, imageFile };
+		}
+
+		// validate
+		// check valid
+		let validData = null;
+		let { price, rating, ...rest } = updateProductData2;
+		for (const v of Object.values(updateProductData2)) {
+			if (!v) {
+				return toast.error("No Empty values allowed");
+			}
+		}
+		price = Number(price);
+		rating = Number(rating);
+		if (isNaN(price) || isNaN(rating)) {
+			return toast.error("price / rating must be numbers");
+		}
+		validData = { ...rest, price, rating };
+		if (validData) {
+			applyProductUpdate(validData);
+		}
+	};
+	//============
+	//============
+	//============
+	// console.log(imageFile, imageURL, "image files");
+	// console.log(updateProductData, "updatedata");
 	//============
 	//============
 	if (loading) return <div className="spinner-border mx-auto d-grid "></div>;
@@ -245,7 +343,8 @@ const AdminEditProduct = () => {
 								<button
 									className="btn btn-warning w-75  "
 									onClick={() => {
-										applyProductUpdate(id);
+										// applyProductUpdate(id);
+										handleApplyUpdate();
 									}}
 								>
 									Apply Update
@@ -269,14 +368,18 @@ const AdminEditProduct = () => {
 	);
 };
 
-export default AdminEditProduct;
+export default AdminEditProduct_v2;
 
 const StyledWrapper = styled.div`
+	transition: all 0.5s ease-in-out;
 	padding: 10px;
 	/* max-width: 80%; */
 	width: 100%;
 	.title {
 		font-size: 1rem;
+	}
+	* {
+		transition: all 0.5s ease-in-out;
 	}
 
 	img {

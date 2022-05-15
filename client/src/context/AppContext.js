@@ -1,10 +1,15 @@
-import { useCallback } from "react";
 import { useContext, useReducer } from "react";
 import { createContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { myAxios } from "../myAxios";
 import { AppContextReducer } from "./AppContextReducer";
+// filebase
+//
+import { ref, uploadBytes } from "firebase/storage";
+import { firebaseStorage } from "../firebaseConfig";
+import { uploadBytesResumable, getDownloadURL } from "firebase/storage";
+// filebase
 
 const AppContext = createContext();
 //============
@@ -86,6 +91,7 @@ const initialAppState = {
 	//============
 	//============auth
 	user: getUserFromLocalStorage() || null,
+	customerProfileOrdersList: [],
 
 	//============filter-products
 	filter: initialFilter,
@@ -118,15 +124,15 @@ const initialAppState = {
 	//============products
 	editProduct: {},
 	editProductEnable: false,
-	updateProductData: {},
-	newProductData: {
-		title: "",
-		price: "",
-		description: "",
-		category: "",
-		image: "",
-		rating: "",
-	},
+	// updateProductData: {},
+	// newProductData: {
+	// 	title: "",
+	// 	price: "",
+	// 	description: "",
+	// 	category: "",
+	// 	// image: "",
+	// 	rating: "",
+	// },
 	//============
 	//============orders
 	editOrder: {},
@@ -209,6 +215,7 @@ export const AppContextProvider = ({ children }) => {
 	const doLogout = (user) => {
 		dispatch({ type: "DO_LOGOUT" });
 		removeUserFromLocalStorage();
+		resetCart();
 
 		navigate("/");
 	};
@@ -223,6 +230,104 @@ export const AppContextProvider = ({ children }) => {
 			blinkError();
 		}
 	};
+	//============
+	//============
+	const doCustomerProfileUpdate = async (newProfile = {}) => {
+		dispatch({ type: "FETCH_BEGIN" });
+
+		try {
+			let reply;
+			if (newProfile.removeImage) {
+				reply = await myAxios.put(
+					`/api/auth/updateuser/${state.user._id}`,
+					{ image: "" }
+				);
+			} else if (newProfile.imageFile) {
+				newProfile.image =
+					await uploadImageToFirebase_getPromisedURL({
+						userId: state.user._id,
+						imageFile: newProfile.imageFile,
+					});
+			}
+			if (!newProfile.removeImage) {
+				reply = await myAxios.put(
+					`/api/auth/updateuser/${state.user._id}`,
+					newProfile
+				);
+			}
+			doLogin(reply.data);
+			navigate("/profile");
+			toast.success("Update user success");
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			// dispatch({ type: "SET_ERROR" })
+			blinkError();
+			toast.error("Update user failed");
+		}
+	};
+	//============
+	//============
+	//============
+	const doAdminCreateNewUser = async (newProfile = {}) => {
+		dispatch({ type: "FETCH_BEGIN" });
+		const { email, password } = newProfile;
+		const newUser = {
+			email,
+			password,
+		};
+
+		try {
+			const reply = await myAxios.post("/api/auth/register", newUser);
+
+			if (newProfile.imageFile) {
+				newProfile.image =
+					await uploadImageToFirebase_getPromisedURL({
+						userId: reply.data._id,
+						imageFile: newProfile.imageFile,
+					});
+				const reply_2 = await myAxios.put(
+					`/api/auth/updateuser/${reply.data._id}`,
+					newProfile
+				);
+			}
+
+			navigate("/admin/users");
+			toast.success("user created successfully");
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			blinkError();
+			toast.error("Create New user failed");
+		}
+	};
+	//============
+	//============
+	//============
+	const getCustomerProfileOrderList = async () => {
+		dispatch({ type: "FETCH_BEGIN" });
+
+		try {
+			const reply = await myAxios.post(
+				"/api/orders/getCustomersOrdersList",
+				{ userId: state.user._id }
+			);
+			dispatch({
+				type: "GET_CUSTOMER_PROFILE_ORDERS_LIST",
+				payload: reply.data,
+			});
+
+			dispatch({ type: "FETCH_SUCCESS" });
+		} catch (error) {
+			dispatch({ type: "FETCH_ERROR" });
+			// blinkError();
+		}
+	};
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
+	//============
 	//============
 	//============
 	//============filter
@@ -523,7 +628,49 @@ export const AppContextProvider = ({ children }) => {
 	};
 	//============
 	//============
-	const applyProductUpdate = async (id) => {
+	const applyProductUpdate = async (arg) => {
+		// console.log("begin prod update");
+		// console.log(arg, "received arg");
+
+		dispatch({ type: "FETCH_BEGIN" });
+		const { _id: id, imageFile, ...rest } = arg;
+		let updateProductData = { ...rest };
+
+		try {
+			// const reply = await myAxios.put(
+			// 	`/api/products/updateproduct/${id}`,
+			// 	updateProductData
+			// );
+			// console.log(imageFile, "received imagefile");
+			if (imageFile && imageFile.preview) {
+				// console.log("begin if image");
+
+				let image = await uploadImageToFirebase_getPromisedURL({
+					productId: id,
+					imageFile: imageFile,
+				});
+				updateProductData.image = image;
+			}
+			const reply = await myAxios.put(
+				`/api/products/updateproduct/${id}`,
+				updateProductData
+			);
+
+			dispatch({ type: "SET_EDIT_PRODUCT", payload: reply.data });
+			cancelEditProduct();
+			dispatch({ type: "FETCH_SUCCESS" });
+			toast.warning("product updated");
+		} catch (error) {
+			toast.error("error updating product");
+			cancelEditProduct();
+			blinkError();
+		}
+	};
+	//============
+	//============
+	//============
+	//============
+	const applyProductUpdate_v2 = async (id) => {
 		dispatch({ type: "FETCH_BEGIN" });
 		try {
 			const reply = await myAxios.put(
@@ -556,14 +703,16 @@ export const AppContextProvider = ({ children }) => {
 	//============
 	//============
 	//============
-	const addNewProduct = async () => {
+	const addNewProduct = async (newProductData) => {
+		// console.log(newProductData, "received");
+		// return;
 		// check valid
 		let validData = null;
+		let { price, rating, imageFile, ...rest } = newProductData;
 		try {
-			for (const v of Object.values(state.newProductData)) {
+			for (const v of Object.values(newProductData)) {
 				if (!v) throw new Error("No Empty values allowed");
 			}
-			let { price, rating, ...rest } = state.newProductData;
 			price = Number(price);
 			rating = Number(rating);
 			if (isNaN(price) || isNaN(rating)) {
@@ -577,11 +726,24 @@ export const AppContextProvider = ({ children }) => {
 		}
 
 		// post data
+		let reply;
 		try {
-			const reply = await myAxios.post(
+			reply = await myAxios.post(
 				"/api/products/add-new-product",
 				validData
 			);
+			console.log(reply.data.reply._id);
+			if (imageFile) {
+				let image = await uploadImageToFirebase_getPromisedURL({
+					productId: reply.data.reply._id,
+					imageFile: imageFile,
+				});
+				const reply_2 = await myAxios.put(
+					`/api/products/updateproduct/${reply.data.reply._id}`,
+					{ image }
+				);
+			}
+
 			dispatch({ type: "ADD_NEW_PRODUCT_SUCCESS" });
 			toast.success("added new Product");
 			navigate("/admin/products");
@@ -789,7 +951,6 @@ export const AppContextProvider = ({ children }) => {
 			orderStatus = "check-issue";
 			currentPage = 1;
 		}
-		console.log(order_arg, "orderarg");
 
 		let qstring = `/api/orders/getorderswithquery?searchEmail=${searchEmail}&orderStatus=${orderStatus}&minAmount=${minAmount}&maxAmount=${maxAmount}&dateRange=${dateRange}&sort=${sort}&currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`;
 
@@ -805,7 +966,6 @@ export const AppContextProvider = ({ children }) => {
 			dispatch({ type: "FETCH_ERROR" });
 		}
 		setOrder_Arg(null);
-
 	};
 	// //============
 	// //============
@@ -882,6 +1042,128 @@ export const AppContextProvider = ({ children }) => {
 	//============
 	//============
 	//============
+	// const uploadImageToFirebase = ({ folder, id, imageFile }) => {
+	// 	// upload first to get image url
+	// 	const imageRef = ref(firebaseStorage, `${folder}/${id}`);
+	// 	// const imageRef = ref(firebaseStorage, `profile-images/${id}`);
+	// 	// 'file' comes from the Blob or File API
+	// 	// uploadBytes(imageRef, imageURL).then((snapshot) => {
+	// 	// 	console.log("Uploaded a blob or file!", snapshot);
+	// 	// });
+
+	// 	const uploadTask = uploadBytesResumable(imageRef, imageFile);
+
+	// 	// Register three observers:
+	// 	// 1. 'state_changed' observer, called any time the state changes
+	// 	// 2. Error observer, called on failure
+	// 	// 3. Completion observer, called on successful completion
+	// 	uploadTask.on(
+	// 		"state_changed",
+	// 		(snapshot) => {
+	// 			// Observe state change events such as progress, pause, and resume
+	// 			// Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+	// 			const progress =
+	// 				(snapshot.bytesTransferred / snapshot.totalBytes) *
+	// 				100;
+	// 			// console.log("Upload is " + progress + "% done");
+	// 			switch (snapshot.state) {
+	// 				case "paused":
+	// 					// console.log("Upload is paused");
+	// 					break;
+	// 				case "running":
+	// 					// console.log("Upload is running");
+	// 					break;
+	// 			}
+	// 		},
+	// 		(error) => {
+	// 			// Handle unsuccessful uploads
+	// 			toast.error("image upload error");
+	// 		},
+	// 		() => {
+	// 			// Handle successful uploads on complete
+	// 			// For instance, get the download URL: https://firebasestorage.googleapis.com/...
+	// 			getDownloadURL(uploadTask.snapshot.ref).then(
+	// 				(downloadURL) => {
+	// 					// console.log("File available at", downloadURL);
+	// 					doCustomerProfileUpdate({
+	// 						image: downloadURL,
+	// 					});
+	// 				}
+	// 			);
+	// 		}
+	// 	);
+	// };
+	// //============
+	// //============
+	const uploadImageToFirebase_getPromisedURL = ({
+		userId,
+		productId,
+		imageFile,
+	}) => {
+		return new Promise((resolve, reject) => {
+			// upload first to get image url
+			let folder = userId ? "profile-images" : "product-images";
+			let id = userId ? userId : productId;
+			console.log(
+				userId,
+				"<<uID",
+				productId,
+				"<<pID",
+				imageFile,
+				"received arg"
+			);
+			console.log(folder, "id>>", id, "folder and id");
+			const imageRef = ref(firebaseStorage, `${folder}/${id}`);
+			// const imageRef = ref(firebaseStorage, `profile-images/${id}`);
+			// 'file' comes from the Blob or File API
+			// uploadBytes(imageRef, imageURL).then((snapshot) => {
+			// 	console.log("Uploaded a blob or file!", snapshot);
+			// });
+
+			const uploadTask = uploadBytesResumable(imageRef, imageFile);
+
+			// Register three observers:
+			// 1. 'state_changed' observer, called any time the state changes
+			// 2. Error observer, called on failure
+			// 3. Completion observer, called on successful completion
+			uploadTask.on(
+				"state_changed",
+				(snapshot) => {
+					// Observe state change events such as progress, pause, and resume
+					// Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+					const progress =
+						(snapshot.bytesTransferred /
+							snapshot.totalBytes) *
+						100;
+					// console.log("Upload is " + progress + "% done");
+					switch (snapshot.state) {
+						case "paused":
+							// console.log("Upload is paused");
+							break;
+						case "running":
+							// console.log("Upload is running");
+							break;
+					}
+				},
+				(error) => {
+					// Handle unsuccessful uploads
+					return reject("error-uploading");
+				},
+				() => {
+					// Handle successful uploads on complete
+					// For instance, get the download URL: https://firebasestorage.googleapis.com/...
+					getDownloadURL(uploadTask.snapshot.ref).then(
+						(downloadURL) => {
+							// console.log("File available at", downloadURL);
+							return resolve(downloadURL);
+						}
+					);
+				}
+			);
+		});
+	};
+	//============
+	//============
 	//============
 	//============
 	//============
@@ -903,6 +1185,9 @@ export const AppContextProvider = ({ children }) => {
 		doLogin,
 		doLogout,
 		doRegister,
+		doAdminCreateNewUser,
+		doCustomerProfileUpdate,
+		getCustomerProfileOrderList,
 		//============filter
 		handleFilterChange,
 		ClearFilter_on_dismount,

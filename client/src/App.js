@@ -31,6 +31,8 @@ import TestPage from "./pages/TestPage";
 import styled from "styled-components";
 import AdminOrdersPage from "./pages/AdminOrdersPage";
 import AdminEditOrder from "./components/AdminEditOrder";
+import UserProfilePage from "./pages/UserProfilePage";
+import AdminEditProduct_v2 from "./components/AdminEditProduct_v2";
 //============
 //============
 
@@ -98,6 +100,7 @@ function App() {
 				{showMiniCart && <MiniCart />}
 				<Routes>
 					<Route path="/" element={<HomePage />} />
+					<Route path="/profile" element={<UserProfilePage />} />
 					<Route
 						path="login-register"
 						element={<LoginRegisterPage />}
@@ -138,7 +141,8 @@ function App() {
 							{/* <Route index element={<ProductsListPage />} /> */}
 							<Route
 								path="edit-product/:productId"
-								element={<AdminEditProduct />}
+								// element={<AdminEditProduct />}
+								element={<AdminEditProduct_v2 />}
 							/>
 							<Route
 								path="add-new-product"

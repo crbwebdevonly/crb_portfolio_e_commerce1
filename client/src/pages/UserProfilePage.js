@@ -2,27 +2,32 @@ import moment from "moment";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useContext } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAppContext } from "../context/AppContext";
-import { myAxios } from "../myAxios";
-import InputControlled from "./InputControlled";
-import Spinner from "./Spinner";
+import InputControlled from "../components/InputControlled";
+import Spinner from "../components/Spinner";
+import MyDropImageFile from "../components/MyDropImageFile";
+//
 
-const AdminEditUser = (props) => {
-	//============
-	const { handleGoToCustomersOrdersPageClick } = useAppContext();
-	//============
-	const { userId } = useParams();
+const UserProfilePage = (props) => {
 	//============
 	//============
-	const [loading, setLoading] = useState(true);
-	const [isError, setisError] = useState(false);
+	const {
+		loading,
+		error,
+		user,
+		customerProfileOrdersList,
+		doCustomerProfileUpdate,
+		getCustomerProfileOrderList,
+	} = useAppContext();
+	//============
+	//============
+	//============
+	const [editProfileImage, seteditProfileImage] = useState(false);
+	const [imageURL, setimageURL] = useState("");
+	const [imageFile, setimageFile] = useState({});
 	const [editMode, setEditMode] = useState(false);
-	const [user, setUser] = useState({});
-	const [customersOrderList, setCustomersOrderList] = useState([]);
 	const [userUpdate, setUserUpdate] = useState({});
 	const [applyDisable, setapplyDisable] = useState(true);
 	//============
@@ -34,24 +39,8 @@ const AdminEditUser = (props) => {
 	//============
 	//============
 	useEffect(() => {
-		//   first -fetch user
-		const fetchUser = async () => {
-			try {
-				const reply = await myAxios.post("/api/auth/getoneuser", {
-					userId,
-				});
-				setUser(reply.data);
-				// const { email, password, isAdmin } = reply.data;
-				// setUserUpdate({ email, password, isAdmin });
-				const orders = await myAxios.post(
-					"/api/orders/getCustomersOrdersList",
-					{ userId }
-				);
-				setCustomersOrderList(orders.data);
-				setLoading(false);
-			} catch (error) {}
-		};
-		fetchUser();
+		//   first
+		getCustomerProfileOrderList();
 		return () => {
 			//     second
 		};
@@ -88,17 +77,6 @@ const AdminEditUser = (props) => {
 
 	//============
 	//============
-	// const generateInputs = () => {
-	// 	const entries = Object.entries(userUpdate);
-	// 	return entries.map((e, i) => (
-	// 		<InputControlled
-	// 			key={i}
-	// 			label={e[0]}
-	// 			updateValue={userUpdate[e[0]]}
-	// 			handleChange={handleUserUpdateChange}
-	// 		/>
-	// 	));
-	// };
 	//============
 	//============
 	const handleUserUpdateChange = (e) => {
@@ -113,41 +91,51 @@ const AdminEditUser = (props) => {
 	};
 	//============
 	//============
-	const handleApplyUpdate = async () => {
-		console.log(userUpdate);
-		try {
-			const reply = await myAxios.put(
-				`/api/auth/updateuser/${user._id}`,
-				userUpdate
-			);
-			// window.location.reload(true);
-			// console.log(reply.data);
-			toast.success("Update user success");
-			setUser(reply.data);
-		} catch (error) {
-			toast.error("Update user failed");
-		}
+	const handleCancleProfileImageChange = () => {
+		seteditProfileImage(false);
+		setimageFile({});
+		setimageURL("");
 	};
 	//============
 	//============
-	const handleDeleteUser = async () => {
-		try {
-			const reply = await myAxios.delete(`/api/auth/deleteuser/${id}`);
-			toast.success(" user Deleted");
-			setTimeout(() => {
-				navigate("/admin/users");
-			}, 2000);
-		} catch (error) {
-			toast.error("Update user failed");
-		}
-	};
 	//============
+	//============
+	const applyProfileImageChangeOnly = async (arg) => {
+		try {
+			if (editProfileImage && imageURL) {
+				doCustomerProfileUpdate({ imageFile });
 
+				handleCancleProfileImageChange();
+				setEditMode(false);
+			} else if (arg === "remove") {
+				doCustomerProfileUpdate({ removeImage: true });
+
+				handleCancleProfileImageChange();
+				setEditMode(false);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	//============
+	//============
+	//============
+	const handleApplyUpdate = () => {
+		let updateArg = { ...userUpdate };
+		if (editProfileImage && imageURL) updateArg.imageFile = imageFile;
+
+		doCustomerProfileUpdate(updateArg);
+		setEditMode(false);
+		handleCancleProfileImageChange();
+	};
 	//============
 	//============
 	//============
 	//============
-	if (isError)
+	//============
+	//============
+	//============
+	if (error)
 		return (
 			<div className="alert-danger p-3 my-3">error loading user</div>
 		);
@@ -156,15 +144,14 @@ const AdminEditUser = (props) => {
 	//============
 	//============
 	return (
-		<StyledWrapper>
-			{/* <h6>user: {JSON.stringify(user)}</h6> */}
-			{/* <h6>update: {JSON.stringify(userUpdate)}</h6> */}
+		<StyledWrapper className="container">
+			{/* {image && <img className="profile-image" src={image} alt="" />} */}
 			<div className="card p-2">
 				<div className="img-wrap d-grid justify-content-center">
 					{image ? (
 						<img
 							src={image}
-							className="card-img-top mx-auto profile-img"
+							className="card-img-top mx-auto"
 							alt="profile image"
 						/>
 					) : (
@@ -172,9 +159,6 @@ const AdminEditUser = (props) => {
 					)}
 				</div>
 				<div className="info-wrap">
-					<h5 className="card-title">
-						Admin: {isAdmin ? "Yes" : "No"}
-					</h5>
 					<h5>userID: {id}</h5>
 					<h5>Email: {email}</h5>
 					<h5>password: {password}</h5>
@@ -187,11 +171,10 @@ const AdminEditUser = (props) => {
 							setEditMode(true);
 						}}
 					>
-						Enable Edit
+						Edit Profile
 					</button>
 				) : (
 					<>
-						{" "}
 						<div className="d-sm-flex">
 							<button
 								className="btn btn-info w-50 "
@@ -201,31 +184,12 @@ const AdminEditUser = (props) => {
 							>
 								Disable Edit
 							</button>
-							<i className="fa-solid fa-user-slash ms-auto fs-1 shadowp p-1  ">
-								<button
-									className="btn btn-danger fs-6 ms-2"
-									onClick={handleDeleteUser}
-								>
-									Delete this User
-								</button>
-							</i>
 						</div>
 					</>
 				)}
 				<hr />
 				{editMode && (
 					<>
-						<div className="edit-control-wrap">
-							<InputControlled
-								type="select-bool"
-								label="isAdmin"
-								name="isAdmin"
-								originalData={user.isAdmin}
-								updateValue={userUpdate.isAdmin}
-								handleChange={handleUserUpdateChange}
-								setUpdateObject={setUserUpdate}
-							/>
-						</div>
 						<div className="edit-control-wrap">
 							<InputControlled
 								type="text"
@@ -248,6 +212,68 @@ const AdminEditUser = (props) => {
 								setUpdateObject={setUserUpdate}
 							/>
 						</div>
+						<div className="row justify-content-center align-items-center">
+							<div className="col">
+								{!editProfileImage && (
+									<button
+										className="btn btn-warning my-3"
+										onClick={() =>
+											seteditProfileImage(true)
+										}
+									>
+										Change Profile Image
+									</button>
+								)}
+								{editProfileImage && (
+									<>
+										<button
+											className="btn btn-outline-warning my-3"
+											onClick={
+												handleCancleProfileImageChange
+											}
+										>
+											Cancle Profile Image
+											Change
+										</button>
+										<button
+											className="btn btn-outline-danger m-3"
+											onClick={
+												applyProfileImageChangeOnly
+											}
+										>
+											Apply Profile Image
+											Change Only
+										</button>
+										<button
+											className="btn btn-outline-danger my-3"
+											onClick={
+												()=>{applyProfileImageChangeOnly("remove")}
+											}
+										>
+											Remove Profile Image
+										</button>
+									</>
+								)}
+
+								{editProfileImage && (
+									<div className="img-upload">
+										<MyDropImageFile
+											setimageURL={setimageURL}
+											setimageFile={
+												setimageFile
+											}
+										/>
+									</div>
+								)}
+							</div>
+							{/* {editProfileImage && (
+								<div className="col">
+									{imageURL && (
+										<img src={imageURL} alt="" />
+									)}
+								</div>
+							)} */}
+						</div>
 						<button
 							className="btn btn-danger w-50"
 							onClick={handleApplyUpdate}
@@ -261,22 +287,13 @@ const AdminEditUser = (props) => {
 			{!editMode && (
 				<div className="container">
 					<div className="row border border-2 p-2">
-						<h2
-							className="btn btn-info"
-							onClick={() => {
-								handleGoToCustomersOrdersPageClick({
-									userId: id,
-								});
-							}}
-						>
-							Go to Customer's orders page{" "}
-						</h2>
-						{/* {JSON.stringify(customersOrderList)} */}
-						{customersOrderList.length < 1 && (
+						<h2>Your Orders History</h2>
+
+						{customerProfileOrdersList.length < 1 && (
 							<h5>No Orders to Display</h5>
 						)}
-						{customersOrderList.length > 0 &&
-							customersOrderList.map((e) => (
+						{customerProfileOrdersList.length > 0 &&
+							customerProfileOrdersList.map((e) => (
 								<LocalOrderListItem
 									key={e._id}
 									{...e}
@@ -289,7 +306,7 @@ const AdminEditUser = (props) => {
 	);
 };
 
-export default AdminEditUser;
+export default UserProfilePage;
 
 const StyledWrapper = styled.div`
 	height: 100%;
@@ -297,11 +314,6 @@ const StyledWrapper = styled.div`
 	padding: 10px;
 	/* max-width: 24rem; */
 	margin: 0 auto;
-	.profile-img {
-		height: 200px;
-		width: 200px;
-		object-fit: contain;
-	}
 	a {
 		text-decoration: none;
 		color: inherit;
@@ -317,6 +329,28 @@ const StyledWrapper = styled.div`
 	}
 	.input-group input {
 		font-size: 0.8rem !important;
+	}
+	.img-upload {
+		/* height: 200px; */
+		/* width: 400px; */
+		/* border: 1px solid green; */
+		/* margin: 10px; */
+
+		p {
+			height: 100px;
+			border: 1px solid blue;
+			/* width: 100%; */
+		}
+	}
+	img {
+		height: 150px;
+		width: 150px;
+		object-fit: contain;
+	}
+	.profile-image {
+		height: 250px;
+		width: 250px;
+		object-fit: contain;
 	}
 `;
 

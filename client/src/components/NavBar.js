@@ -102,7 +102,7 @@ const NavBar = () => {
 									className="nav-link active"
 									to={"/"}
 								>
-									Home2
+									Home
 								</Link>
 							</li>
 							<li className="nav-item">
@@ -121,7 +121,7 @@ const NavBar = () => {
 									Checkout
 								</Link>
 							</li>
-                                   {/* <li className="nav-item">
+							{/* <li className="nav-item">
 								<Link
 									className="nav-link active"
 									to={"/testpage"}
@@ -149,11 +149,13 @@ const NavBar = () => {
 										Logout
 									</li>
 									<li className="nav-item nav-link active user-icon">
-										<i className="fa-solid fa-user">
-											<div className="name">
-												{user.email}
-											</div>
-										</i>
+										<Link to="/profile">
+											<i className="fa-solid fa-user">
+												<div className="name">
+													{user.email}
+												</div>
+											</i>
+										</Link>
 									</li>
 								</>
 							) : (

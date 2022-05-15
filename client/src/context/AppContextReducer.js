@@ -1,6 +1,9 @@
 //============
 //============
 export const AppContextReducer = (state, action) => {
+	// let c = 0;
+	// c++;
+	// console.count("reducer==============", c, "===");
 	switch (action.type) {
 		case "SET_LOADING_TRUE": {
 			return { ...state, loading: true };
@@ -106,6 +109,17 @@ export const AppContextReducer = (state, action) => {
 				},
 			};
 		}
+		//============
+		//============
+		//============
+		//============customer profile
+		case "GET_CUSTOMER_PROFILE_ORDERS_LIST": {
+			return {
+				...state,
+				customerProfileOrdersList: action.payload,
+			};
+		}
+		//============
 		//============
 		//============
 		//============
@@ -244,11 +258,21 @@ export const AppContextReducer = (state, action) => {
 		}
 		//============
 		//============
+		//============
+		case "ENABLE_EDIT_PRODUCT": {
+			return {
+				...state,
+				editProductEnable: true,
+			};
+		}
+		//============
+		//============
+		//============
 		case "CANCEL_EDIT_PRODUCT": {
 			return {
 				...state,
 				editProductEnable: false,
-				updateProductData: {},
+				// updateProductData: {},
 			};
 		}
 		//============
@@ -379,7 +403,7 @@ export const AppContextReducer = (state, action) => {
 		//============
 		//============
 		case "SET_USER_ORDERS_LIST": {
-               console.log(action.payload, "set cus o l");
+			console.log(action.payload, "set cus o l");
 			return {
 				...state,
 				ordersList: action.payload,
