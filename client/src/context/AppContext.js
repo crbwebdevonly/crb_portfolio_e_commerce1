@@ -88,6 +88,7 @@ const initialAdminStats = {
 const initialAppState = {
 	loading: false,
 	error: false,
+	errorMessage: "",
 	//============
 	//============auth
 	user: getUserFromLocalStorage() || null,
@@ -197,14 +198,31 @@ export const AppContextProvider = ({ children }) => {
 	};
 	//============
 	//============
+	const setFetchErrorWithMessage = (error) => {
+		dispatch({
+			type: "FETCH_ERROR",
+			payload:
+				error?.response?.data?.msg ||
+				JSON.stringify(error) ||
+				"error-message",
+		});
+	};
+	//============
+	//============
+	//============
 	//============
 	//============Auth
 	const doLogin = async (user) => {
 		try {
 			const reply = await myAxios.post("/api/auth/login", user);
-			dispatch({ type: "LOGIN_SUCCESS", payload: reply.data.user });
+			console.log("login success", reply);
+			dispatch({
+				type: "LOGIN_SUCCESS",
+				payload: reply ? reply.data.user : null,
+			});
 			setUserInLocalStorage(reply.data.user);
 		} catch (error) {
+			console.log("login fail 123>>>", error);
 			dispatch({ type: "LOGIN_FAIL" });
 			toast.error("Login failed");
 			blinkError();
@@ -213,12 +231,9 @@ export const AppContextProvider = ({ children }) => {
 	//============
 	//============
 	const doLogout = async (user) => {
-
-          try {
-               myAxios.get("/api/auth/logout")
-          } catch (error) {
-               
-          }
+		try {
+			myAxios.get("/api/auth/logout");
+		} catch (error) {}
 
 		dispatch({ type: "DO_LOGOUT" });
 		removeUserFromLocalStorage();
@@ -226,6 +241,24 @@ export const AppContextProvider = ({ children }) => {
 
 		navigate("/");
 	};
+	//============
+	//============
+	myAxios.interceptors.response.use(
+		(res) => res,
+		(error) => {
+			if (error.response.status === 401) {
+				toast.error("Unauthorised----Please Login");
+				setTimeout(() => {
+					doLogout();
+				}, 2000);
+			}
+
+			console.log("intercept error....");
+			return Promise.reject(error);
+			// throw new Error(error.response.data.msg || "Intercepted error");
+		}
+	);
+
 	//============
 	//============
 	const doRegister = async (newUser) => {
@@ -533,56 +566,206 @@ export const AppContextProvider = ({ children }) => {
 	};
 	//============
 	//============
+	//============
 	const placeOrder = async () => {
-		let orderData = {};
 		// validate
+		const getValidOrderData = async () => {
+			let orderData = {};
+			try {
+				if (state.cartItems < 1) {
+					throw new Error("Empty Cart");
+				}
+				if (!state.user) {
+					throw new Error("You must login");
+				}
+				const orderItemsID = state.cartItems.map((e) => e._id);
+				orderData = {
+					customerID: state.user._id,
+					customerEmail: state.user.email,
+					orderItemsID,
+					orderTotalAmount: state.totalAmount,
+					orderTotalQuantity: state.totalQty,
+					stringifiedOrderItems: JSON.stringify(state.cartItems),
+					stringifiedCustomer: JSON.stringify(state.user),
+				};
+				return orderData;
+			} catch (error) {
+				console.log("throw..place order");
+				toast.error(error.message);
+				if (!state.user) {
+					setTimeout(() => {
+						navigate("login-register");
+					}, 1500);
+				}
+				return null;
+			}
+		};
+		// order
+		// const sendOrderRequest = async () => {
+		// throw new Error("ttt");
 		try {
-			if (state.cartItems < 1) {
-				throw new Error("Empty Cart");
+			const orderData = getValidOrderData();
+			if (!orderData) {
+				throw new Error("Invalid order Data");
 			}
-			if (!state.user) {
-				throw new Error("You must login");
-			}
-			const orderItemsID = state.cartItems.map((e) => e._id);
-			orderData = {
-				customerID: state.user._id,
-				customerEmail: state.user.email,
-				orderItemsID,
-				orderTotalAmount: state.totalAmount,
-				orderTotalQuantity: state.totalQty,
-				stringifiedOrderItems: JSON.stringify(state.cartItems),
-				stringifiedCustomer: JSON.stringify(state.user),
-			};
-		} catch (error) {
-			toast.error(error.message);
-			if (!state.user) {
-				setTimeout(() => {
-					navigate("login-register");
-				}, 1500);
-			}
-			return;
-		}
-
-		// place order
-
-		try {
 			const reply = await myAxios.post(
 				"/api/orders/createorder",
 				orderData
 			);
 			// dispatch({type:"ORDER_SUBMIT_SUCCESS"})
+			console.log("order success", reply);
 			toast.success("order placed");
 			setTimeout(() => {
 				resetCart();
 				navigate("/");
 			}, 2000);
+			// return true
 		} catch (error) {
-			toast.error("error-placing order");
-			toast.error(error.response.msg);
+			// let {response } = error
+
+			console.log("order error", error.response);
+			toast.error(error.response.data.msg || "error-placing order");
+			// toast.error(error.message || "errror occuered");
+			// toast.error(error?.response?.msg);
+			// return false
 		}
 	};
 	//============
 	//============
+	//============
+	//============
+	const placeOrder_deleteme = async () => {
+		try {
+			const reply = await myAxios.post("/api/orders/createorder", {});
+			console.log("order success", reply);
+			toast.success("order placed");
+		} catch (error) {
+			console.log("order error");
+			toast.error("error-placing order");
+			toast.error(error?.response?.msg);
+		}
+	};
+	//============
+	//============
+	// //============
+	// //============
+	// const placeOrder_org = async () => {
+	// 	try {
+	// 		// validate
+	// 		const getValidOrderData = async () => {
+	// 			let orderData = {};
+	// 			try {
+	// 				if (state.cartItems < 1) {
+	// 					throw new Error("Empty Cart");
+	// 				}
+	// 				if (!state.user) {
+	// 					throw new Error("You must login");
+	// 				}
+	// 				const orderItemsID = state.cartItems.map((e) => e._id);
+	// 				orderData = {
+	// 					customerID: state.user._id,
+	// 					customerEmail: state.user.email,
+	// 					orderItemsID,
+	// 					orderTotalAmount: state.totalAmount,
+	// 					orderTotalQuantity: state.totalQty,
+	// 					stringifiedOrderItems: JSON.stringify(
+	// 						state.cartItems
+	// 					),
+	// 					stringifiedCustomer: JSON.stringify(state.user),
+	// 				};
+	// 				return orderData;
+	// 			} catch (error) {
+	// 				toast.error(error.message);
+	// 				if (!state.user) {
+	// 					setTimeout(() => {
+	// 						navigate("login-register");
+	// 					}, 1500);
+	// 				}
+	// 				return null;
+	// 			}
+	// 		};
+	// 		// order
+	// 		// const sendOrderRequest = async () => {
+	// 		// throw new Error("ttt");
+	// 		const orderData = getValidOrderData();
+	// 		if (!orderData) {
+	// 			throw new Error("Invalid order Data");
+	// 		}
+	// 		const reply = await myAxios.post(
+	// 			"/api/orders/createorder",
+	// 			orderData
+	// 		);
+	// 		// dispatch({type:"ORDER_SUBMIT_SUCCESS"})
+	// 		console.log("order success", reply);
+	// 		toast.success("order placed");
+	// 		setTimeout(() => {
+	// 			resetCart();
+	// 			navigate("/");
+	// 		}, 2000);
+	// 		// return true
+	// 	} catch (error) {
+	// 		console.log("order error");
+	// 		toast.error("error-placing order");
+	// 		toast.error(error?.response?.msg);
+	// 		// return false
+	// 	}
+	// 	// };
+
+	// 	// try {
+
+	// 	// } catch (error) {
+
+	// 	// }
+	// 	// original v1 below
+	// 	// try {
+	// 	// 	if (state.cartItems < 1) {
+	// 	// 		throw new Error("Empty Cart");
+	// 	// 	}
+	// 	// 	if (!state.user) {
+	// 	// 		throw new Error("You must login");
+	// 	// 	}
+	// 	// 	const orderItemsID = state.cartItems.map((e) => e._id);
+	// 	// 	orderData = {
+	// 	// 		customerID: state.user._id,
+	// 	// 		customerEmail: state.user.email,
+	// 	// 		orderItemsID,
+	// 	// 		orderTotalAmount: state.totalAmount,
+	// 	// 		orderTotalQuantity: state.totalQty,
+	// 	// 		stringifiedOrderItems: JSON.stringify(state.cartItems),
+	// 	// 		stringifiedCustomer: JSON.stringify(state.user),
+	// 	// 	};
+	// 	// } catch (error) {
+	// 	// 	toast.error(error.message);
+	// 	// 	if (!state.user) {
+	// 	// 		setTimeout(() => {
+	// 	// 			navigate("login-register");
+	// 	// 		}, 1500);
+	// 	// 	}
+	// 	// 	return;
+	// 	// }
+
+	// 	// // place order
+
+	// 	// try {
+	// 	// 	const reply = await myAxios.post(
+	// 	// 		"/api/orders/createorder",
+	// 	// 		orderData
+	// 	// 	);
+	// 	// 	// dispatch({type:"ORDER_SUBMIT_SUCCESS"})
+	// 	//      console.log("order success");
+	// 	// 	toast.success("order placed");
+	// 	// 	setTimeout(() => {
+	// 	// 		resetCart();
+	// 	// 		navigate("/");
+	// 	// 	}, 2000);
+	// 	// } catch (error) {
+	// 	//      console.log("order error");
+	// 	// 	toast.error("error-placing order");
+	// 	// 	toast.error(error.response.msg);
+	// 	// }
+	// };
+	// //============
+	// //============
 	//============
 	//============
 
@@ -1001,7 +1184,9 @@ export const AppContextProvider = ({ children }) => {
 			});
 			dispatch({ type: "FETCH_SUCCESS" });
 		} catch (error) {
-			dispatch({ type: "FETCH_ERROR" });
+			// dispatch({ type: "FETCH_ERROR" });
+			// console.log(error.response.data.msg);
+			setFetchErrorWithMessage(error);
 		}
 	};
 	//============

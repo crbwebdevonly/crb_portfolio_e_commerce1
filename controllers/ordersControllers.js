@@ -113,7 +113,9 @@ const getAllOrders = async (req, res) => {
 //============
 const getCustomersOrdersList = async (req, res) => {
 	try {
-		const reply = await OrderModel.find({ customerID: req.body.userId }).sort({createdAt:-1});
+		const reply = await OrderModel.find({
+			customerID: req.body.userId,
+		}).sort({ createdAt: -1 });
 		res.status(200).json(reply);
 	} catch (error) {
 		res.status(500).json({
@@ -127,6 +129,11 @@ const getCustomersOrdersList = async (req, res) => {
 //============
 //============
 const createOrder = async (req, res) => {
+	// return res.status(200).json({ msg: "test 200" });
+	// return res.status(300).json({ msg: "test 300" });
+	// return res.status(400).json({ msg: "test 400" });
+	// return res.status(500).json({ msg: "test 500" });
+
 	try {
 		const reply = await OrderModel.create(req.body);
 		res.status(200).json({ msg: "order placed success", reply });

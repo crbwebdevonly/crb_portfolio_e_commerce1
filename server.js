@@ -33,7 +33,7 @@ myServer.use(cors());
 myServer.use(cookieParser());
 //============
 myServer.use(decodeJwtToken);
-myServer.use(verifyLoggedInUser);
+// myServer.use(verifyLoggedInUser);
 //============
 //============
 //============routes

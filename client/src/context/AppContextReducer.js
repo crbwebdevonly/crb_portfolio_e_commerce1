@@ -20,11 +20,11 @@ export const AppContextReducer = (state, action) => {
 		//============
 		//============
 		case "FETCH_BEGIN":
-			return { ...state, loading: true, error: false };
+			return { ...state, loading: true, error: false, errorMessage:"" };
 		case "FETCH_SUCCESS":
-			return { ...state, loading: false, error: false };
+			return { ...state, loading: false, error: false, errorMessage:"" };
 		case "FETCH_ERROR":
-			return { ...state, loading: false, error: true };
+			return { ...state, loading: false, error: true, errorMessage:action.payload };
 		//============
 		//============
 		//============auth

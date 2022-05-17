@@ -14,3 +14,9 @@ myAxios.interceptors.request.use((req) => {
 	count++;
 	return req;
 });
+
+// exported and used in context file
+// myAxios.interceptors.response.use(
+// 	(res) => res,
+// 	(error) => {if(error.response.status === 401) //must logout}
+// );

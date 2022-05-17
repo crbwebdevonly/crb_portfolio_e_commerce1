@@ -80,17 +80,26 @@ const handleUpdateUser = async (req, res) => {
 			.json({ msg: "cannot -update , this account is protected" });
 	}
 	try {
-		const user = await UserModel.findByIdAndUpdate(
-			req.params.id,
-			req.body,
-			{ new: true }
-		);
-		if (!user) {
-			res.status(400).json({
-				msg: "error updating user- not found",
-			});
-		}
-		res.status(200).json(user);
+		if (req.verifiedUserId === req.params.id || req.verifiedUserIsAdmin) {
+			let updateData = req.body;
+			let { password } = req.body;
+			if (password) {
+				let hashedPassword = await bcrypt.hash(password, 10);
+				updateData.password = hashedPassword;
+			}
+			const user = await UserModel.findByIdAndUpdate(
+				req.params.id,
+				updateData,
+				{ new: true }
+			);
+			if (!user) {
+				return res.status(400).json({
+					msg: "error updating user- not found",
+				});
+			}
+
+			res.status(200).json(user);
+		} else throw new Error("NOt -Authorised");
 	} catch (error) {
 		res.status(500).json({ msg: "error updating user", error });
 	}
@@ -104,8 +113,10 @@ const handleDeleteUser = async (req, res) => {
 			.json({ msg: "cannot -delete , this account is protected" });
 	}
 	try {
-		const reply = await UserModel.deleteOne({ _id: req.params.id });
-		res.status(200).json({ msg: "user delete success", reply });
+		if (req.verifiedUserId === req.params.id || req.verifiedUserIsAdmin) {
+			const reply = await UserModel.deleteOne({ _id: req.params.id });
+			res.status(200).json({ msg: "user delete success", reply });
+		} else throw new Error("NOt -Authorised");
 	} catch (error) {
 		res.status(500).json({ msg: "error-deleting-user", error });
 	}
@@ -119,9 +130,19 @@ const handleDeleteUser = async (req, res) => {
 //============
 //============
 const handleLogin = async (req, res) => {
+	// return res.status(500).json({ msg: "test k500" });
+	// return res.status(400).json({ msg: "test k400" });
+
 	const loginUser = req.body;
 	const { email, password } = req.body;
 	try {
+		// throw new Error("e-test");
+		if (!email || !password) {
+			return res
+				.status(400)
+				.json({ msg: "must provide email and password details" });
+		}
+
 		const findUser = await UserModel.findOne({ email });
 		if (!findUser) {
 			return res.status(400).json({ msg: "login user not found" });
@@ -148,7 +169,7 @@ const handleLogin = async (req, res) => {
 			});
 		}
 	} catch (error) {
-		res.status(500).json({ msg: "error-login-user", error });
+		res.status(500).json({ msg: "error-login-user", e: error?.message });
 	}
 };
 //============
@@ -169,12 +190,15 @@ const handleRegister = async (req, res) => {
 //============
 //============
 const handleLogout = (req, res) => {
-	return res
-		.cookie("jwtToken_crb_portfolio_ecommerce1", "logged out", {
-			httpOnly: true,
-		})
-		.status(200)
-		.json({ msg: "logout success" });
+	return (
+		res
+			.clearCookie("jwtToken_crb_portfolio_ecommerce1")
+			// .cookie("jwtToken_crb_portfolio_ecommerce1", "logged out", {
+			// 	httpOnly: true,
+			// })
+			.status(200)
+			.json({ msg: "logout success" })
+	);
 };
 //============
 //============
@@ -186,18 +210,18 @@ const handleLogout = (req, res) => {
 //============
 //============
 const decodeJwtToken = (req, res, next) => {
-	console.log(req.cookies, "reqcookies");
+	// console.log(req.cookies, "reqcookies");
 	const jwtToken = req.cookies["jwtToken_crb_portfolio_ecommerce1"];
 	//     const decodedToken =
 	jwt.verify(jwtToken, process.env.JWT_SECRET, (error, decodedToken) => {
 		if (error) {
 			req.verifiedUserId = "";
 			req.verifiedUserIsAdmin = false;
-		} else if (decodedToken.userId ) {
+		} else if (decodedToken.userId) {
 			req.verifiedUserId = decodedToken.userId;
 			req.verifiedUserIsAdmin = decodedToken.isAdmin;
 		}
-		console.log(decodedToken, "decode myjwt");
+		// console.log(decodedToken, "decode myjwt");
 		next();
 	});
 };
@@ -205,19 +229,27 @@ const decodeJwtToken = (req, res, next) => {
 //============
 //============
 const verifyLoggedInUser = (req, res, next) => {
-	console.log(req.verifiedUserId, "id verifyLoggedIn");
-	console.log(req.verifiedUserIsAdmin, "admin verifyLoggedIn");
-	next();
+	// console.log(req.verifiedUserId, "id verifyLoggedIn");
+	// console.log(req.verifiedUserIsAdmin, "admin verifyLoggedIn");
+	// next();
+	if (req.verifiedUserId) next();
+	else
+		return res
+			.status(401)
+			.json({ msg: "NOT logged in, Please login " });
 };
 //============
 //============
 //============
 //============
 const verifyLoggedInAdmin = (req, res, next) => {
-	console.log(req.verifiedUserId, "id");
-	console.log(req.verifiedUserIsAdmin, "admin");
+	// console.log(req.verifiedUserId, "id");
+	// console.log(req.verifiedUserIsAdmin, "admin");
 	if (req.verifiedUserIsAdmin) next();
-	else return res.status(400).json({ msg: "NOT ADMIN, UnAuthorised" });
+	else
+		return res
+			.status(401)
+			.json({ msg: "NOT ADMIN, UnAuthorised, Please login as ADMIN" });
 };
 //============
 //============
