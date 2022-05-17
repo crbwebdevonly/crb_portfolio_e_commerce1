@@ -41,7 +41,7 @@ const AdminEditProduct = () => {
 	// const [product, setProduct] = useState({});
 	// const [editEnable, setEditEnable] = useState(false);
 	const [imageSelectOption, setImageSelectOption] = useState("none");
-     const [imageURL, setimageURL] = useState("");
+	const [imageURL, setimageURL] = useState("");
 	const [imageFile, setimageFile] = useState({});
 	//============
 
@@ -245,6 +245,7 @@ const AdminEditProduct = () => {
 								<button
 									className="btn btn-warning w-75  "
 									onClick={() => {
+										console.log("c123");
 										applyProductUpdate(id);
 									}}
 								>

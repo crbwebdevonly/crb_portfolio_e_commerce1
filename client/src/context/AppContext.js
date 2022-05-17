@@ -231,8 +231,11 @@ export const AppContextProvider = ({ children }) => {
 	//============
 	//============
 	const doLogout = async (user) => {
+		dispatch({ type: "FETCH_BEGIN" });
+
 		try {
-			myAxios.get("/api/auth/logout");
+			await myAxios.get("/api/auth/logout");
+			dispatch({ type: "FETCH_SUCCESS" });
 		} catch (error) {}
 
 		dispatch({ type: "DO_LOGOUT" });
@@ -247,7 +250,9 @@ export const AppContextProvider = ({ children }) => {
 		(res) => res,
 		(error) => {
 			if (error.response.status === 401) {
-				toast.error("Unauthorised----Please Login");
+				// toast.error("Unauthorised----Please Login");
+				dispatch({ type: "SET_ERROR" });
+
 				setTimeout(() => {
 					doLogout();
 				}, 2000);
@@ -1296,15 +1301,15 @@ export const AppContextProvider = ({ children }) => {
 			// upload first to get image url
 			let folder = userId ? "profile-images" : "product-images";
 			let id = userId ? userId : productId;
-			console.log(
-				userId,
-				"<<uID",
-				productId,
-				"<<pID",
-				imageFile,
-				"received arg"
-			);
-			console.log(folder, "id>>", id, "folder and id");
+			// console.log(
+			// 	userId,
+			// 	"<<uID",
+			// 	productId,
+			// 	"<<pID",
+			// 	imageFile,
+			// 	"received arg"
+			// );
+			// console.log(folder, "id>>", id, "folder and id");
 			const imageRef = ref(firebaseStorage, `${folder}/${id}`);
 			// const imageRef = ref(firebaseStorage, `profile-images/${id}`);
 			// 'file' comes from the Blob or File API

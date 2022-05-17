@@ -131,14 +131,15 @@ const AdminEditProduct_v2 = () => {
 	//============
 	//============
 	const handleApplyUpdate = () => {
-		let updateProductData2 = updateProductData;
+		let updateProductData2 = { ...updateProductData };
 		if (imageSelectOption === "upload-image") {
 			if (!imageFile || !imageURL) {
 				return toast.error("upload Image NOT selected");
 			}
+			delete updateProductData2.image;
 			updateProductData2 = { ...updateProductData2, imageFile };
 		}
-
+		// console.log(updateProductData2, ">>>");
 		// validate
 		// check valid
 		let validData = null;
