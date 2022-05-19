@@ -574,7 +574,7 @@ export const AppContextProvider = ({ children }) => {
 	//============
 	const placeOrder = async () => {
 		// validate
-		const getValidOrderData = async () => {
+		const getValidOrderData =  () => {
 			let orderData = {};
 			try {
 				if (state.cartItems < 1) {
@@ -610,6 +610,7 @@ export const AppContextProvider = ({ children }) => {
 		// throw new Error("ttt");
 		try {
 			const orderData = getValidOrderData();
+               // console.log(orderData, "get");
 			if (!orderData) {
 				throw new Error("Invalid order Data");
 			}
