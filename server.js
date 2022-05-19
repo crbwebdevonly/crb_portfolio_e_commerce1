@@ -3,10 +3,16 @@ const mongoose = require("mongoose");
 const path = require("path");
 const morgan = require("morgan");
 const cors = require("cors");
+
 const dotenv = require("dotenv");
+const cookieParser = require("cookie-parser");
 const authRouter = require("./routes/authRoutes");
 const productsRouter = require("./routes/productsRoutes");
 const ordersRouter = require("./routes/ordersRoutes");
+const {
+	decodeJwtToken,
+	verifyLoggedInUser,
+} = require("./controllers/authControllers");
 dotenv.config();
 
 const myServer = express();
@@ -24,7 +30,10 @@ const myServer = express();
 //============
 myServer.use(express.json());
 myServer.use(cors());
+myServer.use(cookieParser());
 //============
+myServer.use(decodeJwtToken);
+// myServer.use(verifyLoggedInUser);
 //============
 //============
 //============routes
@@ -40,11 +49,12 @@ if (process.env.NODE_ENV === "development") {
 }
 //============
 //============
+
 //============
 
 myServer.use("/api/auth", authRouter);
-myServer.use("/api/products",productsRouter)
-myServer.use("/api/orders",ordersRouter)
+myServer.use("/api/products", productsRouter);
+myServer.use("/api/orders", ordersRouter);
 //============
 //============
 //============

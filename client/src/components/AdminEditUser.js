@@ -124,6 +124,7 @@ const AdminEditUser = (props) => {
 			// console.log(reply.data);
 			toast.success("Update user success");
 			setUser(reply.data);
+			setEditMode(false);
 		} catch (error) {
 			toast.error("Update user failed");
 		}

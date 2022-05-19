@@ -10,8 +10,14 @@ const AdminStats = () => {
 	const [localLoading, setlocalLoading] = useState(true);
 	const navigate = useNavigate();
 	//============
-	const { loading, error, adminStats, getAdminStats, handleIssueClick } =
-		useAppContext();
+	const {
+		loading,
+		error,
+		errorMessage,
+		adminStats,
+		getAdminStats,
+		handleIssueClick,
+	} = useAppContext();
 	//============
 	//============
 	const { usersStats, ordersStats, productsStats } = adminStats;
@@ -79,6 +85,10 @@ const AdminStats = () => {
 		return (
 			<h5 className="alert alert-danger">
 				Error occured- getting admin stats
+				<p>
+					{errorMessage}
+					{/* {JSON.stringify(errorMessage)} */}
+				</p>
 			</h5>
 		);
 	//============
