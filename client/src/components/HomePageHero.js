@@ -14,15 +14,21 @@ const HomePageHero = () => {
 						<div className="card-title small bg-secondary text-light p-2">
 							{e.title}
 						</div>
-						<img
-							src={
-								e.image ||
-								"https://placekitten.com/400/600"
-							}
-							alt=""
-							className="img-fluid"
-							style={{ objectFit: "contain" }}
-						/>
+						<div className="" style={{ height: "300px" }}>
+							<img
+								src={
+									e.image ||
+									"https://placekitten.com/400/600"
+								}
+								alt=""
+								className="img-fluid99"
+								style={{
+									objectFit: "contain",
+									width: "100%",
+									height: "100%",
+								}}
+							/>
+						</div>
 						<div className="row my-2">
 							<div className="col">
 								<Link to={`/product-item/${e._id}`}>
