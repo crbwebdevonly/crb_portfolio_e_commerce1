@@ -17,7 +17,7 @@ const HomePageSlider = (props) => {
 	//============
 	//============
 	return (
-		<StyledWrapper>
+		<StyledWrapper className="shadow my-3 p-2 bg-light">
 			<Carousel>
 				{sliderProductsList.map((e, i) => (
 					<Carousel.Item key={i}>

@@ -16,7 +16,7 @@ const Footer = () => {
 				<div className="col-md-4 my-2 ">
 					<ul className="list-group list-group-flush border-0  ">
 						<div className="row ">
-							<div className="col-md-6  ">
+							<div className="col-sm-6  ">
 								<li className="list-group-item bg-dark border-0 text-light">
 									Home
 								</li>
@@ -27,7 +27,7 @@ const Footer = () => {
 									Checkout
 								</li>
 							</div>
-							<div className="col-md-6">
+							<div className="col-sm-6">
 								<li className="list-group-item bg-dark border-0 text-light">
 									Profile
 								</li>

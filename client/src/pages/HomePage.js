@@ -48,8 +48,8 @@ const HomePage = () => {
 	//============
 	return (
 		<div className="container">
-			<HomePageHero />
 			<HomePageSlider sliderProductsList={sliderProductsList} />
+			<HomePageHero />
 			<Footer />
 		</div>
 	);
