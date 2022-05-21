@@ -64,9 +64,14 @@ const NavBar = () => {
 		<StyledWrapper className="containerNO">
 			<nav className="navbar navbar-expand-md navbar-light bg-light ">
 				<div className="container-fluid">
-					<div className="navbar-brand" onClick={testFetch}>
-						crb_eCommerce1
-					</div>
+					<Link to="/">
+						<div
+							className="navbar-brand fw-bold"
+							onClick={testFetch}
+						>
+							crb_eCommerce1
+						</div>
+					</Link>
 					<button
 						className="navbar-toggler"
 						type="button"

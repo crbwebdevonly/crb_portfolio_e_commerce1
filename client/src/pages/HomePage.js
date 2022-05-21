@@ -1,5 +1,6 @@
 import React from "react";
 import { useEffect } from "react";
+import Footer from "../components/Footer";
 import HomePageHero from "../components/HomePageHero";
 import HomePageSlider from "../components/HomePageSlider";
 import { useAppContext } from "../context/AppContext";
@@ -49,7 +50,7 @@ const HomePage = () => {
 		<div className="container">
 			<HomePageHero />
 			<HomePageSlider sliderProductsList={sliderProductsList} />
-               homefooter??
+			<Footer />
 		</div>
 	);
 };
